@@ -76,8 +76,45 @@
   }
 
   function saveCatalogStore(store) {
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    store = store || loadCatalogStore();
+    if (global.UWURailwaySync && global.UWURailwaySync.isReady()) {
+      pruneHeavyLocalData(store);
+    }
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    } catch (e) {
+      if (e && e.name === 'QuotaExceededError') {
+        pruneHeavyLocalData(store, true);
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(store));
+        } catch (e2) {
+          throw new Error('Espacio del navegador lleno. Conecta Railway y guarda de nuevo.');
+        }
+      } else {
+        throw e;
+      }
+    }
     applyCatalogFromStore(store);
+  }
+
+  function pruneHeavyLocalData(store, aggressive) {
+    if (store.audio) {
+      Object.keys(store.audio).forEach(function (k) { delete store.audio[k]; });
+    }
+    if (aggressive || (global.UWURailwaySync && global.UWURailwaySync.isReady())) {
+      if (store.html) {
+        Object.keys(store.html).forEach(function (k) { delete store.html[k]; });
+      }
+      if (store.versions) {
+        Object.keys(store.versions).forEach(function (slug) {
+          (store.versions[slug] || []).forEach(function (v) { delete v.html; });
+        });
+      }
+    }
+  }
+
+  function canUseServerStorage() {
+    return !!(global.UWURailwaySync && global.UWURailwaySync.isReady());
   }
 
   function applyCatalogFromStore(store) {
@@ -100,7 +137,14 @@
   }
 
   function initCatalog() {
-    applyCatalogFromStore(loadCatalogStore());
+    var store = loadCatalogStore();
+    if (canUseServerStorage()) {
+      pruneHeavyLocalData(store, true);
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      } catch (e) { /* quota ya limpio */ }
+    }
+    applyCatalogFromStore(store);
   }
 
   function hasRemoteData(remote) {
@@ -199,6 +243,17 @@
         reject(new Error('El MP3 no puede superar 8 MB'));
         return;
       }
+      if (canUseServerStorage()) {
+        global.UWURailwaySync.uploadAudio(slug, file).then(function () {
+          markTemplateAudioPublished(slug, { name: file.name, size: file.size });
+          resolve({ name: file.name, size: file.size });
+        }).catch(reject);
+        return;
+      }
+      if (file.size > 512 * 1024) {
+        reject(new Error('MP3 demasiado grande para guardar local (' + Math.round(file.size / 1024) + ' KB). Usa Railway.'));
+        return;
+      }
       var reader = new FileReader();
       reader.onload = function () {
         var parts = String(reader.result).split(',');
@@ -216,6 +271,51 @@
       reader.onerror = function () { reject(new Error('No se pudo leer el MP3')); };
       reader.readAsDataURL(file);
     });
+  }
+
+  function markTemplateAudioPublished(slug, meta) {
+    var store = loadCatalogStore();
+    if (!store.audio) store.audio = {};
+    if (!store.audioMeta) store.audioMeta = {};
+    delete store.audio[slug];
+    store.audioMeta[slug] = meta || { name: slug + '.mp3' };
+    if (!store.catalog[slug] && _baseCatalog[slug]) {
+      store.catalog[slug] = JSON.parse(JSON.stringify(_baseCatalog[slug]));
+    }
+    if (store.catalog[slug]) store.catalog[slug].audio = slug + '.mp3';
+    saveCatalogStore(store);
+  }
+
+  function markTemplateHtmlPublished(slug, html, opts) {
+    opts = opts || {};
+    var store = loadCatalogStore();
+    if (!store.versions) store.versions = {};
+    if (!store.activeVersion) store.activeVersion = {};
+    if (!store.versions[slug]) store.versions[slug] = [];
+    var versionId = opts.versionId;
+    if (opts.newVersion || !versionId) {
+      versionId = 'v' + Date.now();
+      store.versions[slug].push({
+        id: versionId,
+        name: opts.versionName || ('Versión ' + store.versions[slug].length + 1),
+        at: new Date().toISOString()
+      });
+    } else {
+      var cur = store.versions[slug].filter(function (v) { return v.id === versionId; })[0];
+      if (cur) {
+        cur.at = new Date().toISOString();
+        if (opts.versionName) cur.name = opts.versionName;
+        delete cur.html;
+      }
+    }
+    store.activeVersion[slug] = versionId;
+    delete store.html[slug];
+    if (!store.catalog[slug] && _baseCatalog[slug]) {
+      store.catalog[slug] = JSON.parse(JSON.stringify(_baseCatalog[slug]));
+    }
+    if (store.catalog[slug]) store.catalog[slug].page = slug + '.html';
+    saveCatalogStore(store);
+    return versionId;
   }
 
   function removeTemplateAudio(slug) {
@@ -284,6 +384,9 @@
 
   function saveTemplateHtml(slug, html, opts) {
     opts = opts || {};
+    if (canUseServerStorage() && opts.serverPublished) {
+      return markTemplateHtmlPublished(slug, html, opts);
+    }
     var store = loadCatalogStore();
     if (!store.versions) store.versions = {};
     if (!store.activeVersion) store.activeVersion = {};
@@ -978,8 +1081,11 @@
     listTemplateVersions: listTemplateVersions,
     setActiveTemplateVersion: setActiveTemplateVersion,
     buildTemplateStub: buildTemplateStub,
-    hasTemplateAudio: hasTemplateAudio,
     saveTemplateAudio: saveTemplateAudio,
+    hasTemplateAudio: hasTemplateAudio,
+    markTemplateAudioPublished: markTemplateAudioPublished,
+    markTemplateHtmlPublished: markTemplateHtmlPublished,
+    canUseServerStorage: canUseServerStorage,
     removeTemplateAudio: removeTemplateAudio,
     getTemplateAudioFetchUrl: getTemplateAudioFetchUrl,
     prepareTemplateOutput: prepareTemplateOutput,

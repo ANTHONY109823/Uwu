@@ -98,6 +98,68 @@
     };
   }
 
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var parts = String(reader.result).split(',');
+        resolve(parts.length > 1 ? parts[1] : parts[0]);
+      };
+      reader.onerror = function () { reject(new Error('No se pudo leer el archivo')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function uploadTemplate(slug, html) {
+    var cfg = getConfig();
+    return request(cfg, '/api/sync/template/' + encodeURIComponent(slug), {
+      method: 'PUT',
+      body: { content: html }
+    });
+  }
+
+  function uploadAudio(slug, file) {
+    var cfg = getConfig();
+    return fileToBase64(file).then(function (b64) {
+      return request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), {
+        method: 'PUT',
+        body: { content: b64 }
+      });
+    });
+  }
+
+  function deleteAudio(slug) {
+    var cfg = getConfig();
+    return request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), { method: 'DELETE' });
+  }
+
+  function syncWorkspace(opts) {
+    opts = opts || {};
+    var slug = opts.slug;
+    if (!slug) return Promise.reject(new Error('Falta slug'));
+    var cfg = getConfig();
+    if (!isReady()) {
+      return Promise.reject(new Error('Configura Railway o inicia sesión en el admin.'));
+    }
+    var chain = Promise.resolve();
+    if (opts.html != null) {
+      chain = chain.then(function () { return uploadTemplate(slug, opts.html); });
+    }
+    if (opts.removeAudio) {
+      chain = chain.then(function () { return deleteAudio(slug); });
+    } else if (opts.audioFile) {
+      chain = chain.then(function () { return uploadAudio(slug, opts.audioFile); });
+    }
+    return chain.then(function () {
+      if (!global.UWU) return { ok: true, at: new Date().toISOString() };
+      var store = global.UWU.loadCatalogStore();
+      var payload = buildRemotePayload(store);
+      return request(cfg, '/api/sync/catalog', { method: 'PUT', body: payload });
+    }).then(function () {
+      return { ok: true, at: new Date().toISOString() };
+    });
+  }
+
   function syncCatalog(store, opts) {
     opts = opts || {};
     var cfg = getConfig();
@@ -185,6 +247,10 @@
     getConfig: getConfig,
     saveConfig: saveConfig,
     isReady: isReady,
+    uploadTemplate: uploadTemplate,
+    uploadAudio: uploadAudio,
+    deleteAudio: deleteAudio,
+    syncWorkspace: syncWorkspace,
     syncCatalog: syncCatalog,
     pullCatalog: pullCatalog,
     testConnection: testConnection,

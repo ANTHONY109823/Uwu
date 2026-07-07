@@ -60,6 +60,10 @@
   function afterCatalogChange(msg, slug, extraOpts) {
     renderBrowser();
     if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
+    if (UWU.canUseServerStorage && UWU.canUseServerStorage()) {
+      if (msg) alert(msg);
+      return Promise.resolve();
+    }
     var provider = getSyncProvider();
     if (provider) {
       var label = provider === UWURailwaySync ? 'Railway' : 'GitHub';
@@ -257,35 +261,98 @@
     };
   }
 
+  function setSaveBusy(busy) {
+    ['btnSaveWs', 'btnSaveWsNew'].forEach(function (id) {
+      var b = el(id);
+      if (!b) return;
+      b.disabled = busy;
+      if (busy) b.dataset.prevLabel = b.textContent;
+      b.textContent = busy ? 'Guardando…' : (b.dataset.prevLabel || b.textContent);
+    });
+  }
+
   function saveWorkspace(asNewVersion) {
     if (!editingSlug) return;
     var meta = readMeta();
     if (!meta.name) { alert('El nombre es obligatorio.'); return; }
     var html = el('fHtmlEditor').value;
     var slug = editingSlug;
-    UWU.saveTemplate(slug, meta, { showcase: el('fShowcase').checked });
     var versionId = el('fVersion').value;
-    UWU.saveTemplateHtml(slug, html, {
-      newVersion: !!asNewVersion,
-      versionId: asNewVersion ? null : versionId,
-      versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(slug).length + 1)) : undefined
-    });
-    var audioChain = Promise.resolve();
-    var syncOpts = {};
-    if (pendingAudio === null) {
-      UWU.removeTemplateAudio(slug);
-      syncOpts.removeAudio = [slug];
-    } else if (pendingAudio) {
-      audioChain = UWU.saveTemplateAudio(slug, pendingAudio);
+    var useServer = UWU.canUseServerStorage && UWU.canUseServerStorage();
+    var audioFile = pendingAudio && pendingAudio !== null ? pendingAudio : null;
+    var removeAudio = pendingAudio === null;
+    var syncOpts = removeAudio ? { removeAudio: [slug] } : {};
+
+    setSaveBusy(true);
+
+    try {
+      UWU.saveTemplate(slug, meta, { showcase: el('fShowcase').checked });
+    } catch (err) {
+      setSaveBusy(false);
+      alert('No se pudo guardar metadatos: ' + (err.message || err));
+      return;
     }
-    audioChain.then(function () {
+
+    function onDone(msg, extra) {
       pendingAudio = undefined;
       fillVersionSelect(slug);
       updateAudioStatus();
-      afterCatalogChange('Plantilla guardada.', slug, syncOpts);
+      setSaveBusy(false);
+      afterCatalogChange(msg, slug, extra || syncOpts);
+    }
+
+    function onFail(err, partialMsg) {
+      setSaveBusy(false);
+      alert((partialMsg || 'Error al guardar') + ': ' + (err && err.message ? err.message : err));
+    }
+
+    if (useServer && typeof UWURailwaySync !== 'undefined') {
+      UWU.saveTemplateHtml(slug, html, {
+        newVersion: !!asNewVersion,
+        versionId: asNewVersion ? null : versionId,
+        versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(slug).length + 1)) : undefined,
+        serverPublished: true
+      });
+      if (audioFile) {
+        UWU.markTemplateAudioPublished(slug, { name: audioFile.name, size: audioFile.size });
+      } else if (removeAudio) {
+        UWU.removeTemplateAudio(slug);
+      }
+      UWURailwaySync.syncWorkspace({
+        slug: slug,
+        html: html,
+        audioFile: audioFile,
+        removeAudio: removeAudio
+      }).then(function () {
+        onDone('Plantilla guardada.');
+      }).catch(function (err) {
+        onFail(err, 'No se pudo publicar en Railway');
+      });
+      return;
+    }
+
+    try {
+      UWU.saveTemplateHtml(slug, html, {
+        newVersion: !!asNewVersion,
+        versionId: asNewVersion ? null : versionId,
+        versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(slug).length + 1)) : undefined
+      });
+    } catch (err) {
+      onFail(err, 'No se pudo guardar el HTML localmente');
+      return;
+    }
+
+    var audioChain = Promise.resolve();
+    if (removeAudio && UWU.hasTemplateAudio(slug)) {
+      UWU.removeTemplateAudio(slug);
+    } else if (audioFile) {
+      audioChain = UWU.saveTemplateAudio(slug, audioFile);
+    }
+    audioChain.then(function () {
+      onDone('Plantilla guardada.');
     }).catch(function (err) {
+      onDone('Plantilla guardada (sin audio).', syncOpts);
       alert('HTML guardado, pero falló el audio: ' + err.message);
-      afterCatalogChange('Plantilla guardada (sin audio).', slug);
     });
   }
 
