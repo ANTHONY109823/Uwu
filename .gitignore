@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Builds
+.next/
+dist/
+build/
+out/
+.turbo/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Local / IDE
+.claude/
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db

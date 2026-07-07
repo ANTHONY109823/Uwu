@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UWU 🧸 Detalles Románticos — Próximamente</title>
+  <meta name="description" content="UWU convierte tus sentimientos en una experiencia web inolvidable. Crea, personaliza y comparte dedicatorias románticas digitales en minutos." />
+  <meta property="og:title" content="UWU 🧸 Detalles Románticos" />
+  <meta property="og:description" content="El regalo digital que nunca va a olvidar. Próximamente." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink-50:  #FDF2F7;
+      --pink-100: #FBE4EF;
+      --pink-300: #F4A7CB;
+      --pink-500: #EE7EB1;
+      --pink-600: #E75FA0;
+      --rose-500: #E8447A;
+      --bear-600: #7A4E2D;
+      --cream:    #FFF9F5;
+      --night:    #1C1420;
+      --grad-hero: linear-gradient(135deg, #EE7EB1 0%, #E8447A 60%, #C2418F 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(180deg, var(--pink-50) 0%, var(--cream) 45%, var(--pink-100) 100%);
+      color: var(--night);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    /* Corazones flotantes */
+    #hearts { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .heart {
+      position: absolute; bottom: -40px;
+      animation: floatUp linear infinite;
+      opacity: 0; user-select: none;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(-8deg) scale(.8); opacity: 0; }
+      12%  { opacity: .55; }
+      100% { transform: translateY(-110vh) rotate(10deg) scale(1.15); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .heart { display: none; }
+      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    header { text-align: center; padding: 88px 0 40px; }
+    .logo-circle {
+      width: 150px; height: 150px; margin: 0 auto 28px;
+      background: var(--pink-100);
+      border: 2px solid rgba(238,126,177,.35);
+      border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 12px 40px rgba(238,126,177,.28);
+      animation: pulse 3.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 12px 40px rgba(238,126,177,.28); }
+      50%      { transform: scale(1.035); box-shadow: 0 16px 52px rgba(238,126,177,.42); }
+    }
+    .logo-circle .script { font-family: 'Dancing Script', cursive; font-size: 52px; font-weight: 700; color: var(--pink-500); line-height: 1; }
+    .logo-circle .bear { font-size: 26px; margin-top: 2px; }
+    .badge {
+      display: inline-block; padding: 8px 18px; border-radius: 999px;
+      background: rgba(255,255,255,.6); backdrop-filter: blur(12px);
+      border: 1px solid rgba(238,126,177,.3);
+      font-size: 13px; font-weight: 600; color: var(--rose-500);
+      letter-spacing: .04em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Sora', sans-serif; font-weight: 800;
+      font-size: clamp(2.1rem, 6vw, 3.6rem); line-height: 1.12;
+      letter-spacing: -.02em;
+    }
+    h1 .grad { background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { margin: 18px auto 0; max-width: 560px; font-size: clamp(1rem, 2.4vw, 1.15rem); color: #6b5560; line-height: 1.65; }
+
+    .flow {
+      margin: 36px auto 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      font-size: 13.5px; font-weight: 500; color: var(--bear-600);
+    }
+    .flow span {
+      background: rgba(255,255,255,.65); backdrop-filter: blur(10px);
+      border: 1px solid rgba(238,126,177,.25);
+      padding: 8px 14px; border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(238,126,177,.12);
+    }
+
+    /* Secciones */
+    section { padding: 48px 0; }
+    h2 { font-family: 'Sora', sans-serif; font-size: clamp(1.4rem, 3.5vw, 1.9rem); text-align: center; margin-bottom: 8px; }
+    .h2sub { text-align: center; color: #8a6f7c; font-size: 15px; margin-bottom: 32px; }
+
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 900px) { .grid.g3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .card {
+      background: rgba(255,255,255,.62); backdrop-filter: blur(16px);
+      border: 1px solid rgba(238,126,177,.25); border-radius: 20px;
+      padding: 24px; text-decoration: none; color: inherit;
+      box-shadow: 0 8px 30px rgba(238,126,177,.13);
+      transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s;
+      display: block;
+    }
+    a.card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 16px 44px rgba(238,126,177,.26); }
+    .card .emoji { font-size: 26px; }
+    .card h3 { font-family: 'Sora', sans-serif; font-size: 16px; margin: 10px 0 6px; }
+    .card p { font-size: 13.5px; color: #7d6470; line-height: 1.55; }
+    .card .go { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--rose-500); }
+
+    /* Categorías */
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 720px; margin: 0 auto; }
+    .chip {
+      padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 500;
+      background: rgba(255,255,255,.7); border: 1px solid rgba(238,126,177,.28);
+      box-shadow: 0 3px 10px rgba(238,126,177,.1);
+    }
+
+    /* Stack */
+    .stack { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 680px; margin: 0 auto; }
+    .stack span {
+      font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 8px;
+      background: var(--night); color: #f7cfe2; letter-spacing: .02em;
+    }
+
+    /* CTA */
+    .cta { text-align: center; padding: 56px 0 24px; }
+    .btn {
+      display: inline-block; padding: 15px 34px; border-radius: 999px;
+      background: var(--grad-hero); color: #fff; text-decoration: none;
+      font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15.5px;
+      box-shadow: 0 10px 34px rgba(232,68,122,.42);
+      transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s;
+    }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 16px 44px rgba(232,68,122,.55); }
+    .btn.ghost {
+      background: rgba(255,255,255,.7); color: var(--rose-500);
+      border: 1px solid rgba(238,126,177,.35); box-shadow: 0 6px 20px rgba(238,126,177,.15);
+      margin-left: 10px;
+    }
+
+    footer { text-align: center; padding: 40px 0 56px; font-size: 13.5px; color: #9a7f8c; }
+    footer .script { font-family: 'Dancing Script', cursive; font-size: 22px; color: var(--pink-500); display: block; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div id="hearts"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="logo-circle">
+        <span class="script">Uwu</span>
+        <span class="bear">🧸</span>
+      </div>
+      <div class="badge">✨ Próximamente</div>
+      <h1>El regalo digital que<br /><span class="grad">nunca va a olvidar</span></h1>
+      <p class="sub">
+        <strong>UWU</strong> convierte tus sentimientos en una experiencia web inolvidable.
+        Crea, personaliza y comparte dedicatorias románticas en minutos — sin saber nada de tecnología.
+      </p>
+      <div class="flow">
+        <span>1 · Elige plantilla</span>
+        <span>2 · Personalízala</span>
+        <span>3 · Vista previa</span>
+        <span>4 · Paga</span>
+        <span>5 · Comparte 💝</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>📐 La planificación está lista</h2>
+      <p class="h2sub">18 entregables de negocio y arquitectura, completados antes de la primera línea de código</p>
+      <div class="grid g3">
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/01-mercado-y-negocio.md">
+          <span class="emoji">📊</span>
+          <h3>Mercado y negocio</h3>
+          <p>Análisis de competencia, investigación de mercado, propuesta de valor y modelo de monetización.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/02-arquitectura.md">
+          <span class="emoji">🏗️</span>
+          <h3>Arquitectura técnica</h3>
+          <p>Stack completo, base de datos, APIs REST, sistema de plantillas, seguridad y CI/CD.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/03-ux-ui-design-system.md">
+          <span class="emoji">🎨</span>
+          <h3>UX/UI y Design System</h3>
+          <p>Wireframes, mapa de navegación y el sistema de diseño derivado del logotipo de la marca.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/04-paneles.md">
+          <span class="emoji">🖥️</span>
+          <h3>Paneles</h3>
+          <p>Panel del cliente (editar, estadísticas, QR, compartir) y panel de administración completo.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/05-roadmap-seo-crecimiento.md">
+          <span class="emoji">🚀</span>
+          <h3>Roadmap y crecimiento</h3>
+          <p>Fases de desarrollo rumbo a San Valentín 2027, estrategia SEO y motores de viralidad.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+        <a class="card" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/README.md">
+          <span class="emoji">📋</span>
+          <h3>Resumen ejecutivo</h3>
+          <p>Índice general con las decisiones técnicas clave del proyecto y su justificación.</p>
+          <span class="go">Leer documento →</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>💝 Una categoría para cada sentimiento</h2>
+      <p class="h2sub">Más de 50 plantillas premium en camino, organizadas por emociones y ocasiones</p>
+      <div class="chips">
+        <span class="chip">❤️ Enamorar</span><span class="chip">💕 Amar</span><span class="chip">🥰 Sorprender</span>
+        <span class="chip">🎂 Cumpleaños</span><span class="chip">💍 Pedida de mano</span><span class="chip">💒 Aniversarios</span>
+        <span class="chip">🌹 San Valentín</span><span class="chip">🌸 Perdón</span><span class="chip">🤗 Extrañar</span>
+        <span class="chip">💌 Agradecer</span><span class="chip">👨‍👩‍👧 Familia</span><span class="chip">🐶 Mascotas</span>
+        <span class="chip">🎄 Fechas especiales</span><span class="chip">😢 Despedidas</span><span class="chip">💔 Soltar</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>⚙️ Construido con tecnología de clase mundial</h2>
+      <p class="h2sub">La misma base que usan los mejores productos SaaS del planeta</p>
+      <div class="stack">
+        <span>Next.js 15</span><span>React</span><span>TypeScript</span><span>Tailwind CSS</span>
+        <span>shadcn/ui</span><span>Framer Motion</span><span>NestJS</span><span>PostgreSQL</span>
+        <span>Prisma</span><span>Redis</span><span>Docker</span><span>Vercel</span><span>Railway</span>
+      </div>
+    </section>
+
+    <div class="cta">
+      <a class="btn" href="https://github.com/ANTHONY109823/Uwu">Ver el repositorio</a>
+      <a class="btn ghost" href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/README.md">Leer la documentación</a>
+    </div>
+
+    <footer>
+      <span class="script">Uwu</span>
+      Hecho con 🧸 y mucho amor · UWU Detalles Románticos · 2026
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var container = document.getElementById('hearts');
+      var emojis = ['💖', '💝', '💕', '🩷', '💗'];
+      var isMobile = window.innerWidth < 640;
+      var count = isMobile ? 10 : 18;
+      for (var i = 0; i < count; i++) {
+        var h = document.createElement('span');
+        h.className = 'heart';
+        h.textContent = emojis[i % emojis.length];
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = (12 + Math.random() * 16) + 'px';
+        h.style.animationDuration = (9 + Math.random() * 9) + 's';
+        h.style.animationDelay = (Math.random() * 12) + 's';
+        container.appendChild(h);
+      }
+    })();
+  </script>
+</body>
+</html>
