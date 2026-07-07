@@ -21,9 +21,11 @@
       --glass:rgba(255,255,255,.6);
       --glass-b:1px solid rgba(238,126,177,.28);
       --shadow:0 8px 30px rgba(238,126,177,.14);
+      --nav-h:64px;
+      --marquee-h:96px;
     }
     *{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--marquee-h) + 12px)}
     body{
       font-family:'Inter',system-ui,sans-serif;color:var(--ink);
       background:linear-gradient(180deg,var(--pink-50) 0%,var(--cream) 40%,var(--pink-100) 100%);
@@ -75,9 +77,16 @@
     .btn.sm{padding:11px 22px;font-size:13.5px}
 
     /* ============ HERO ============ */
-    .hero{min-height:100svh;display:flex;align-items:center;padding:88px 0 48px;position:relative;overflow:hidden}
-    .hero .wrap{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;width:100%}
+    .hero{min-height:calc(100svh - var(--marquee-h));display:flex;align-items:center;padding:calc(var(--nav-h) + 16px) 0 20px;position:relative;overflow-x:hidden}
+    .hero .wrap{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;width:100%}
     @media(min-width:960px){.hero .wrap{grid-template-columns:1.05fr .95fr;gap:20px}}
+    @media(max-height:780px){
+      .hero{padding-top:calc(var(--nav-h) + 8px)}
+      .stage{min-height:300px!important}
+      .hero .sub{margin-top:12px}
+      .hero .ctas{margin-top:18px}
+      .hero .proof{margin-top:14px}
+    }
     .hero h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(2.3rem,6.2vw,4rem);line-height:1.06;letter-spacing:-.03em}
     .hero h1 .grad{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent}
     .hero h1 .script{font-family:'Dancing Script',cursive;font-weight:700;color:var(--pink-500);font-size:1.15em}
@@ -147,7 +156,7 @@
     @media(max-width:520px){.fc2{display:none}}
 
     /* ===== marquee ===== */
-    .marquee{overflow:hidden;padding:16px 0 18px;border-top:var(--glass-b);border-bottom:var(--glass-b);background:rgba(255,255,255,.62);backdrop-filter:blur(12px);width:100%;position:sticky;top:64px;z-index:45}
+    .marquee{overflow:hidden;min-height:var(--marquee-h);padding:14px 0 16px;border-top:var(--glass-b);border-bottom:var(--glass-b);background:rgba(255,255,255,.96);backdrop-filter:blur(14px);width:100%;position:sticky;top:var(--nav-h);z-index:45;box-shadow:0 6px 24px rgba(238,126,177,.1)}
     .marquee .track{display:flex;gap:28px;width:max-content;animation:scrollX 80s linear infinite;padding:6px 0;align-items:center}
     .marquee:hover .track{animation-play-state:paused}
     @keyframes scrollX{to{transform:translateX(-50%)}}
@@ -163,6 +172,7 @@
     .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
+    #plantillas{scroll-margin-top:calc(var(--nav-h) + var(--marquee-h) + 8px);padding-top:28px}
     #plantillas .show-grid{margin-top:24px}
     #plantillas .cur-toggle{margin-top:18px}
 
@@ -378,16 +388,17 @@
   <!-- ============ NAV ============ -->
   <nav>
     <div class="bar">
-      <a class="logo" href="#">Uwu <span style="font-size:18px">🧸</span></a>
+      <a class="logo" href="#inicio">Uwu <span style="font-size:18px">🧸</span></a>
       <div class="links">
+        <a href="#inicio">Inicio</a>
         <a href="#plantillas">Plantillas</a>
       </div>
       <a class="cta" href="#plantillas"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
     </div>
   </nav>
 
-  <!-- ============ HERO ============ -->
-  <header class="hero">
+  <!-- ============ HERO / INICIO ============ -->
+  <header class="hero" id="inicio">
     <div class="blob" style="width:520px;height:520px;background:#F4A7CB;top:-140px;left:-160px"></div>
     <div class="blob" style="width:460px;height:460px;background:#E8447A;bottom:-120px;right:-140px;animation-delay:3s;opacity:.3"></div>
     <div class="wrap">
@@ -454,14 +465,14 @@
       </div>
   </header>
 
-  <!-- Cinta de categorías (única — sticky bajo el nav en plantillas) -->
+  <!-- Cinta única: pie del inicio → sticky arriba en plantillas -->
   <div class="marquee" id="categorias">
     <div class="marquee-label">Categorías · una para cada latido</div>
     <div class="track" id="marquee" aria-label="Categorías de dedicatorias"></div>
   </div>
 
   <!-- ============ SHOWCASE ============ -->
-  <section id="plantillas" style="padding-top:32px">
+  <section id="plantillas">
     <div class="wrap">
       <span class="kicker rv">Showcase</span>
       <h2 class="rv">Cada plantilla es <span class="grad">una experiencia completa</span></h2>
@@ -505,6 +516,7 @@
       <div>
         <h5>Producto</h5>
         <ul>
+          <li><a href="#inicio">Inicio</a></li>
           <li><a href="#plantillas">Plantillas</a></li>
         </ul>
       </div>
@@ -593,7 +605,7 @@
     (function(){
       var ops=JSON.parse(localStorage.getItem('uwuOps')||'{}');
       var map={
-        hero:'header.hero',marquee:'#categorias',showcase:'#plantillas','cta-final':'#cta-final'
+        hero:'#inicio',marquee:'#categorias',showcase:'#plantillas','cta-final':'#cta-final'
       };
       if(ops.sections){Object.keys(ops.sections).forEach(function(id){
         if(ops.sections[id]===false&&map[id]){var el=document.querySelector(map[id]);if(el)el.style.display='none';}
