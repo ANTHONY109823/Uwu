@@ -291,6 +291,11 @@
     .price.hot li::before{color:#F4A7CB}
     .price .btn{justify-content:center;width:100%}
     .price .btn.inv{background:#fff;color:var(--rose-500);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+    .cur-toggle{display:flex;justify-content:center;margin-top:22px}
+    .cur-toggle button{border:var(--glass-b);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);padding:10px 22px;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:all .25s var(--ease)}
+    .cur-toggle button:first-child{border-radius:999px 0 0 999px}
+    .cur-toggle button:last-child{border-radius:0 999px 999px 0}
+    .cur-toggle button.on{background:var(--grad-hero);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(232,68,122,.35)}
 
     /* ===== faq ===== */
     .faq{max-width:720px;margin:44px auto 0;display:grid;gap:12px}
@@ -596,7 +601,7 @@
         <div class="arrow rv">↓</div>
         <div class="step rv d2"><span class="n">3</span><div class="ico">📱</div><b>Vista previa en vivo</b><p>Ve exactamente lo que recibirá, mientras escribes.</p></div>
         <div class="arrow rv">↓</div>
-        <div class="step rv d3"><span class="n">4</span><div class="ico">💳</div><b>Paga seguro</b><p>Tarjeta, Yape o MercadoPago. Desde $3.99.</p></div>
+        <div class="step rv d3"><span class="n">4</span><div class="ico">💳</div><b>Paga seguro</b><p>Tarjeta, Yape o MercadoPago. Desde <span class="money" data-usd="$3.99" data-pen="S/ 14.90">S/ 14.90</span>.</p></div>
         <div class="arrow rv">↓</div>
         <div class="step rv d4"><span class="n">5</span><div class="ico">🚀</div><b>Comparte la magia</b><p>Enlace y QR al instante. WhatsApp, Instagram o impreso.</p></div>
       </div>
@@ -672,10 +677,14 @@
       <span class="kicker rv">Precios</span>
       <h2 class="rv">Cuesta menos que un ramo, <span class="grad">dura para siempre</span></h2>
       <p class="lead rv d1">Sin suscripciones obligatorias. Pagas por tu dedicatoria una vez y listo.</p>
+      <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
+        <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
+        <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
+      </div>
       <div class="prices">
         <div class="price rv">
           <h4>Gratis</h4>
-          <div class="amt">$0</div>
+          <div class="amt"><span class="money" data-usd="$0" data-pen="S/ 0">S/ 0</span></div>
           <div class="desc">Para probar la magia</div>
           <ul>
             <li>3 plantillas gratuitas</li>
@@ -688,7 +697,7 @@
         <div class="price hot rv d1">
           <span class="tag2">💝 El favorito de los enamorados</span>
           <h4>Premium</h4>
-          <div class="amt">$6.99 <small>/ dedicatoria</small></div>
+          <div class="amt"><span class="money" data-usd="$6.99" data-pen="S/ 25.90">S/ 25.90</span> <small>/ dedicatoria</small></div>
           <div class="desc" style="color:#F4A7CB">Todo desbloqueado, tuya para siempre</div>
           <ul>
             <li>Más de 50 plantillas premium</li>
@@ -1009,7 +1018,7 @@
 
       /* en modo admin los enlaces/botones no navegan (para poder editarlos) */
       document.addEventListener('click',function(e){
-        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,#admLogin'))return;
+        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,#admLogin,.cur-toggle'))return;
         if(e.target.closest('a,button,.mini,.env')){e.preventDefault();e.stopPropagation();}
       },true);
 
@@ -1061,6 +1070,14 @@
         alert('📄 index.html descargado con tus cambios.\n\nPara publicarlos para todos los visitantes, reemplaza el archivo docs/index.html en tu repositorio de GitHub (o pídele a Claude que lo haga).');
       });
     }
+
+    /* ================= MONEDA (Soles / Dólares) ================= */
+    window.setCur=function(c){
+      localStorage.setItem('uwuCur',c);
+      document.querySelectorAll('.money').forEach(function(el){if(el.dataset[c])el.textContent=el.dataset[c];});
+      document.querySelectorAll('.cur-toggle button').forEach(function(b){b.classList.toggle('on',b.dataset.c===c);});
+    };
+    setCur(localStorage.getItem('uwuCur')||'pen');
   </script>
 </body>
 </html>
