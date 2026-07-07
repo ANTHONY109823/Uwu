@@ -181,6 +181,13 @@
     .mini .minf .tg{margin-left:auto;font-size:10px;font-weight:700;padding:5px 11px;border-radius:999px}
     .tg.prem{background:linear-gradient(135deg,#FBE4EF,#F9D2E5);color:#C2418F;border:1px solid #F4A7CB}
     .tg.free{background:#ECFDF5;color:#059669;border:1px solid #A7F3D0}
+    .tg.code{font-family:monospace;font-size:9px;background:rgba(28,20,32,.06);color:#7a4e5e;border:1px solid rgba(238,126,177,.2);letter-spacing:.04em}
+    .mini .price-tag{font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:var(--rose-500);margin-left:auto}
+    .mini .minf{flex-wrap:wrap}
+    .mini .buy-row{width:100%;display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f7e3ee}
+    .mini .buy-row .btn{flex:1;justify-content:center;padding:10px 14px;font-size:12px}
+    .tcard .price{font-family:'Sora',sans-serif;font-weight:800;font-size:13px;color:var(--rose-500);margin-top:6px;display:block}
+    .tcard .code{font-family:monospace;font-size:8.5px;color:#a58a99;margin-top:2px;display:block}
     .shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.25) 50%,transparent 60%);transform:translateX(-100%);transition:transform .9s var(--ease)}
     .mini:hover .shimmer{transform:translateX(100%)}
 
@@ -273,24 +280,25 @@
     .test .who b{font-size:13px;font-family:'Sora',sans-serif;display:block}
     .test .who span{font-size:11px;color:var(--muted)}
 
-    /* ===== pricing ===== */
-    .prices{display:grid;grid-template-columns:1fr;gap:20px;margin-top:48px;align-items:stretch}
-    @media(min-width:900px){.prices{grid-template-columns:repeat(3,1fr)}}
-    .price{background:var(--glass);backdrop-filter:blur(16px);border:var(--glass-b);border-radius:26px;padding:32px 26px;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative;transition:transform .3s var(--ease)}
-    .price:hover{transform:translateY(-6px)}
-    .price.hot{background:linear-gradient(165deg,#2b0f22,#6d1a41);color:#fff;border:1px solid rgba(238,126,177,.5);box-shadow:0 26px 70px rgba(232,68,122,.4);transform:scale(1.03)}
-    .price.hot:hover{transform:scale(1.03) translateY(-6px)}
-    .price .tag2{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--grad-hero);color:#fff;font-size:10.5px;font-weight:700;padding:6px 16px;border-radius:999px;letter-spacing:.06em;box-shadow:0 6px 18px rgba(232,68,122,.45);white-space:nowrap}
-    .price h4{font-family:'Sora',sans-serif;font-size:16px}
-    .price .amt{font-family:'Sora',sans-serif;font-size:42px;font-weight:800;margin-top:10px}
-    .price .amt small{font-size:13px;font-weight:500;opacity:.65}
-    .price .desc{font-size:12.5px;opacity:.75;margin-top:6px}
-    .price ul{list-style:none;margin:22px 0;display:grid;gap:11px;flex:1}
-    .price li{font-size:13px;display:flex;gap:9px;align-items:flex-start;line-height:1.4}
-    .price li::before{content:'✓';color:#22C55E;font-weight:800;flex-shrink:0}
-    .price.hot li::before{color:#F4A7CB}
-    .price .btn{justify-content:center;width:100%}
-    .price .btn.inv{background:#fff;color:var(--rose-500);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+    /* ===== checkout modal ===== */
+    .chk-ov{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(28,20,32,.6);backdrop-filter:blur(14px)}
+    .chk-ov.open{display:flex}
+    .chk-box{width:min(440px,94vw);max-height:90svh;overflow-y:auto;background:#fff;border-radius:28px;padding:28px 24px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.35);color:var(--ink)}
+    .chk-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:none;background:#f7e3ee;cursor:pointer;font-size:14px}
+    .chk-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .chk-head span{font-size:40px}
+    .chk-head b{font-family:'Sora',sans-serif;font-size:17px;display:block}
+    .chk-head small{font-size:11px;color:var(--muted)}
+    .chk-code{font-size:11px;background:#fdf4f8;border:1px solid #f7e3ee;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-family:monospace;color:#7a4e5e}
+    .chk-code.big{font-size:18px;text-align:center;font-weight:700;color:var(--rose-500);padding:16px;letter-spacing:.1em}
+    .chk-box label{display:block;font-size:12px;font-weight:600;color:#6b5560;margin-bottom:14px}
+    .chk-box input,.chk-box textarea{width:100%;margin-top:6px;padding:12px 14px;border-radius:12px;border:1px solid #f0d9e6;font-family:Inter,sans-serif;font-size:14px}
+    .chk-price{text-align:center;font-size:15px;margin:18px 0;padding:14px;background:#fdf4f8;border-radius:14px}
+    .chk-price strong{font-family:'Sora',sans-serif;font-size:22px;color:var(--rose-500)}
+    .chk-pay,.chk-free{width:100%;justify-content:center}
+    .chk-success{font-family:'Sora',sans-serif;font-weight:800;font-size:18px;text-align:center;margin-bottom:12px;color:var(--rose-500)}
+    .chk-hint,.chk-note{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin:10px 0}
+    .chk-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
     .cur-toggle{display:flex;justify-content:center;margin-top:22px}
     .cur-toggle button{border:var(--glass-b);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);padding:10px 22px;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:all .25s var(--ease)}
     .cur-toggle button:first-child{border-radius:999px 0 0 999px}
@@ -330,9 +338,7 @@
     footer .bottom{border-top:1px solid #2A1E2E;padding:22px 24px;text-align:center;font-size:12px;color:#8a7080}
     footer .bottom .script{font-family:'Dancing Script',cursive;color:var(--pink-500);font-size:16px}
 
-    /* ===== modo administrador ===== */
-    .adm-login{margin-left:2px;width:34px;height:34px;flex-shrink:0;border-radius:50%;border:var(--glass-b);background:rgba(255,255,255,.6);cursor:pointer;font-size:14px;opacity:.45;transition:opacity .2s,transform .2s var(--ease)}
-    .adm-login:hover{opacity:1;transform:scale(1.1)}
+    /* ===== modo administrador (solo vía admin.html) ===== */
     body.adm [data-ub]:hover{outline:1.5px dashed rgba(232,68,122,.55);outline-offset:3px}
     body.adm [data-ut]{cursor:text}
     body.adm [data-ut]:hover{outline:1px dashed rgba(238,126,177,.6);outline-offset:2px}
@@ -359,11 +365,9 @@
         <a href="#plantillas">Plantillas</a>
         <a href="#categorias">Categorías</a>
         <a href="#como">Cómo funciona</a>
-        <a href="#precios">Precios</a>
         <a href="#faq">FAQ</a>
       </div>
-      <a class="cta" href="#demo"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
-      <button class="adm-login" id="admLogin" title="Ingresar · solo administrador" aria-label="Ingresar administrador">🔑</button>
+      <a class="cta" href="#plantillas"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
     </div>
   </nav>
 
@@ -467,108 +471,13 @@
     <div class="wrap">
       <span class="kicker rv">Showcase</span>
       <h2 class="rv">Cada plantilla es <span class="grad">una experiencia completa</span></h2>
-      <p class="lead rv d1">No son tarjetas. Son páginas web reales con música, animaciones y su propia personalidad. Toca cualquiera para imaginar la tuya.</p>
-
-      <div class="show-grid">
-        <div class="mini rv" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/carta-eterna</s></div>
-          <div class="mview" style="background:linear-gradient(165deg,#4a1030,#8e2461)">
-            <div class="shimmer"></div>
-            <div class="big">💌</div><div class="t1">Mi carta para ti</div>
-            <div class="t2">Una carta que se abre con tu voz, tus palabras y la canción de los dos.</div>
-            <div class="pill">Tocar para abrir 💝</div>
-          </div>
-          <div class="minf"><div><div class="nm">Carta Eterna</div><div class="ct">❤️ Carta romántica</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv d1" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/feliz-cumple</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#F6A13C,#F0567B)">
-            <div class="shimmer"></div>
-            <div class="big">🎂</div><div class="t1">¡Feliz cumpleaños!</div>
-            <div class="t2">Sopla las velitas, revienta los globos y descubre 25 razones para celebrarte.</div>
-            <div class="pill">Soplar velitas 🎉</div>
-          </div>
-          <div class="minf"><div><div class="nm">Fiesta Infinita</div><div class="ct">🎂 Cumpleaños</div></div><span class="tg free">Gratis</span></div>
-        </div>
-
-        <div class="mini rv d2" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/quieres-casarte</s></div>
-          <div class="mview" style="background:linear-gradient(165deg,#1C1420,#5b2a5e)">
-            <div class="shimmer"></div>
-            <div class="big">💍</div><div class="t1">¿Te casarías conmigo?</div>
-            <div class="t2">Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.</div>
-            <div class="pill">Ver nuestra historia ✨</div>
-          </div>
-          <div class="minf"><div><div class="nm">La Gran Pregunta</div><div class="ct">💍 Pedida de mano</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/nuestro-tiempo</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#8e2461,#E8447A)">
-            <div class="shimmer"></div>
-            <div class="big">💕</div><div class="t1">847 días juntos</div>
-            <div class="t2">Un contador en vivo de cada segundo a tu lado, con la línea de tiempo de los dos.</div>
-            <div class="pill">Ver cada momento ⏳</div>
-          </div>
-          <div class="minf"><div><div class="nm">Nuestro Tiempo</div><div class="ct">💕 Aniversario</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv d1" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/mi-valentin</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#C21E4C,#F45C7F)">
-            <div class="shimmer"></div>
-            <div class="big">🌹</div><div class="t1">Mi San Valentín</div>
-            <div class="t2">Un jardín de rosas que florece mientras lee por qué la elegiste a ella.</div>
-            <div class="pill">Abrir el jardín 🌹</div>
-          </div>
-          <div class="minf"><div><div class="nm">Jardín de Rosas</div><div class="ct">🌹 San Valentín</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv d2" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/perdoname</s></div>
-          <div class="mview" style="background:linear-gradient(165deg,#7899d4,#c6a9e8)">
-            <div class="shimmer"></div>
-            <div class="big">🌸</div><div class="t1">Perdóname</div>
-            <div class="t2">A veces las palabras cuestan. Esta página las dice bonito por ti, con lluvia de flores.</div>
-            <div class="pill">Leer mi disculpa 🌸</div>
-          </div>
-          <div class="minf"><div><div class="nm">Lluvia de Flores</div><div class="ct">🌸 Perdón</div></div><span class="tg free">Gratis</span></div>
-        </div>
-
-        <div class="mini rv" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/gracias-por-todo</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#5f72bd,#9b23ea)">
-            <div class="shimmer"></div>
-            <div class="big">💔</div><div class="t1">Gracias por todo</div>
-            <div class="t2">Cerrar un ciclo también puede ser hermoso. Una despedida en paz, sin rencor.</div>
-            <div class="pill">Soltar con amor 🕊️</div>
-          </div>
-          <div class="minf"><div><div class="nm">Volar de Nuevo</div><div class="ct">💔 Cerrar ciclos</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv d1" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/para-mama</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#E88A4A,#F2BC5C)">
-            <div class="shimmer"></div>
-            <div class="big">👨‍👩‍👧</div><div class="t1">Para mamá</div>
-            <div class="t2">El álbum de la familia con las fotos de siempre y las palabras que nunca le dijiste.</div>
-            <div class="pill">Abrir el álbum 📖</div>
-          </div>
-          <div class="minf"><div><div class="nm">Raíces</div><div class="ct">👨‍👩‍👧 Familia</div></div><span class="tg prem">💎 Premium</span></div>
-        </div>
-
-        <div class="mini rv d2" onclick="openDemo()">
-          <div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/firulais-forever</s></div>
-          <div class="mview" style="background:linear-gradient(160deg,#C98A4B,#E8B34B)">
-            <div class="shimmer"></div>
-            <div class="big">🐶</div><div class="t1">Firulais 4ever</div>
-            <div class="t2">Porque también son familia: la página de tu mejor amigo de cuatro patas.</div>
-            <div class="pill">Ver sus travesuras 🐾</div>
-          </div>
-          <div class="minf"><div><div class="nm">Mejor Amigo</div><div class="ct">🐶 Mascotas</div></div><span class="tg free">Gratis</span></div>
-        </div>
+      <p class="lead rv d1">No son tarjetas. Son páginas web reales con música, animaciones y su propia personalidad. Cada una tiene su precio y código único.</p>
+      <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
+        <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
+        <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
       </div>
+
+      <div class="show-grid" id="showGrid"></div>
     </div>
   </section>
 
@@ -671,62 +580,6 @@
     </div>
   </section>
 
-  <!-- ============ PRICING ============ -->
-  <section id="precios" style="padding-top:30px">
-    <div class="wrap">
-      <span class="kicker rv">Precios</span>
-      <h2 class="rv">Cuesta menos que un ramo, <span class="grad">dura para siempre</span></h2>
-      <p class="lead rv d1">Sin suscripciones obligatorias. Pagas por tu dedicatoria una vez y listo.</p>
-      <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
-        <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
-        <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
-      </div>
-      <div class="prices">
-        <div class="price rv">
-          <h4>Gratis</h4>
-          <div class="amt"><span class="money" data-usd="$0" data-pen="S/ 0">S/ 0</span></div>
-          <div class="desc">Para probar la magia</div>
-          <ul>
-            <li>3 plantillas gratuitas</li>
-            <li>1 foto y música de la biblioteca</li>
-            <li>Enlace válido por 7 días</li>
-            <li>Marca de agua UWU 🧸</li>
-          </ul>
-          <a class="btn ghost" href="#demo">Empezar gratis</a>
-        </div>
-        <div class="price hot rv d1">
-          <span class="tag2">💝 El favorito de los enamorados</span>
-          <h4>Premium</h4>
-          <div class="amt"><span class="money" data-usd="$6.99" data-pen="S/ 25.90">S/ 25.90</span> <small>/ dedicatoria</small></div>
-          <div class="desc" style="color:#F4A7CB">Todo desbloqueado, tuya para siempre</div>
-          <ul>
-            <li>Más de 50 plantillas premium</li>
-            <li>Fotos y videos ilimitados</li>
-            <li>Tu música: Spotify, YouTube o MP3</li>
-            <li>Contraseña secreta y cuenta regresiva</li>
-            <li>Estadísticas: sabrás cuando la abrió 💌</li>
-            <li>QR en alta calidad + enlace de por vida</li>
-            <li>Sin marca de agua</li>
-          </ul>
-          <a class="btn inv" href="#demo">Crear la mía 💘</a>
-        </div>
-        <div class="price rv d2">
-          <h4>Personalizado</h4>
-          <div class="amt">A tu medida</div>
-          <div class="desc">Para momentos irrepetibles</div>
-          <ul>
-            <li>Todo lo del plan Premium</li>
-            <li>Dominio personalizado (ella.tunombre.com)</li>
-            <li>Diseño exclusivo hecho para ti</li>
-            <li>Pedidas de mano y bodas</li>
-            <li>Soporte prioritario 1 a 1</li>
-          </ul>
-          <a class="btn ghost" href="#faq">Hablemos 💬</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ FAQ ============ -->
   <section id="faq" style="padding-top:30px">
     <div class="wrap">
@@ -734,11 +587,12 @@
       <h2 class="rv">Preguntas <span class="grad">frecuentes</span></h2>
       <div class="faq rv d1">
         <div class="qa"><button>¿Necesito saber programar o diseñar?<i>+</i></button><div class="a"><p>Para nada. Eliges una plantilla, escribes tus palabras, subes fotos y eliges la canción. El editor te muestra el resultado en vivo mientras lo haces. Si sabes usar WhatsApp, sabes usar UWU.</p></div></div>
-        <div class="qa"><button>¿Cuánto tarda en estar lista?<i>+</i></button><div class="a"><p>Al instante. En cuanto confirmas el pago, tu página se genera automáticamente y recibes el enlace y el QR en segundos. Sin esperas, sin intermediarios.</p></div></div>
+        <div class="qa"><button>¿Recibo un código al pagar?<i>+</i></button><div class="a"><p>Sí. Al confirmar el pago recibes un código único (ej. UWU-A7K2-9M4P), el enlace de tu dedicatoria y un archivo HTML descargable con tus textos para seguir editando cuando quieras.</p></div></div>
+        <div class="qa"><button>¿Cuánto tarda en estar lista?<i>+</i></button><div class="a"><p>Al instante. En cuanto confirmas el pago, tu página se genera automáticamente y recibes el enlace, el código y el QR en segundos. Sin esperas, sin intermediarios.</p></div></div>
         <div class="qa"><button>¿Cómo la comparto?<i>+</i></button><div class="a"><p>Como quieras: por WhatsApp con un tap, en Instagram o TikTok, con un QR para imprimir (en una carta, una taza, la torta 🎂) o incluso con un dominio personalizado.</p></div></div>
         <div class="qa"><button>¿Puedo editarla después de enviarla?<i>+</i></button><div class="a"><p>Sí 💝. Desde tu panel puedes cambiar textos, fotos y música cuando quieras — el enlace que ya compartiste se actualiza solo, sin que tengas que reenviar nada.</p></div></div>
         <div class="qa"><button>¿Sabré si la vio?<i>+</i></button><div class="a"><p>Sí. Te avisamos cuando tu dedicatoria se abre por primera vez, y en tu panel ves cuántas veces la ha visto, cuánto tiempo se quedó y cuántas veces la compartió.</p></div></div>
-        <div class="qa"><button>¿Cuánto tiempo dura el enlace?<i>+</i></button><div class="a"><p>En el plan Premium, para siempre. Tu dedicatoria queda en línea de por vida, protegida y con la opción de contraseña para que solo la vea quien tú quieras.</p></div></div>
+        <div class="qa"><button>¿Cuánto tiempo dura el enlace?<i>+</i></button><div class="a"><p>Las dedicatorias premium quedan en línea de por vida, protegidas con tu código de acceso. Las gratuitas son válidas por 7 días.</p></div></div>
       </div>
     </div>
   </section>
@@ -773,7 +627,6 @@
         <ul>
           <li><a href="#plantillas">Plantillas</a></li>
           <li><a href="#categorias">Categorías</a></li>
-          <li><a href="#precios">Precios</a></li>
           <li><a href="#demo">Demo interactiva</a></li>
         </ul>
       </div>
@@ -783,7 +636,6 @@
           <li><a href="#como">Cómo funciona</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
           <li><a href="#demo">Demo interactiva</a></li>
-          <li><a href="#precios">Precios</a></li>
         </ul>
       </div>
       <div>
@@ -824,6 +676,7 @@
     </div>
   </div>
 
+  <script src="js/uwu.js"></script>
   <script>
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -882,42 +735,45 @@
       var s=document.querySelector('.stats');if(s)io.observe(s);
     })();
 
-    /* ---- carousel (App Store style) ---- */
-    (function(){
-      var data=[
-        ['💌','Carta Eterna','Carta romántica','prem','linear-gradient(150deg,#4a1030,#8e2461)'],
-        ['🎂','Fiesta Infinita','Cumpleaños','free','linear-gradient(150deg,#F6A13C,#F0567B)'],
-        ['💍','La Gran Pregunta','Pedida de mano','prem','linear-gradient(150deg,#1C1420,#5b2a5e)'],
-        ['💕','Nuestro Tiempo','Aniversario','prem','linear-gradient(150deg,#8e2461,#E8447A)'],
-        ['🌹','Jardín de Rosas','San Valentín','prem','linear-gradient(150deg,#C21E4C,#F45C7F)'],
-        ['🌸','Lluvia de Flores','Perdón','free','linear-gradient(150deg,#7899d4,#c6a9e8)'],
-        ['🎬','Netflix del Amor','Aniversario','prem','linear-gradient(150deg,#141414,#E50914)'],
-        ['🎧','Nuestro Playlist','Amar','prem','linear-gradient(150deg,#121212,#1DB954)'],
-        ['⭐','Constelación','Enamorar','prem','linear-gradient(150deg,#0f1030,#4b3f8e)'],
-        ['⏳','Cuenta Regresiva','Sorprender','prem','linear-gradient(150deg,#B06AB3,#7873f5)'],
-        ['📼','VHS de Recuerdos','Extrañar','prem','linear-gradient(150deg,#3a2d20,#8a6a3c)'],
-        ['📍','El Mapa del Primer Beso','Amar','prem','linear-gradient(150deg,#134E5E,#71B280)'],
-        ['💗','Latidos','Enamorar','free','linear-gradient(150deg,#FF6584,#E8447A)'],
-        ['🕊️','Volar de Nuevo','Cerrar ciclos','prem','linear-gradient(150deg,#5f72bd,#9b23ea)'],
-        ['👨‍👩‍👧','Raíces','Familia','prem','linear-gradient(150deg,#E88A4A,#F2BC5C)'],
-        ['🐶','Mejor Amigo','Mascotas','free','linear-gradient(150deg,#C98A4B,#E8B34B)'],
-        ['🎄','Navidad Juntos','Fechas especiales','prem','linear-gradient(150deg,#c23a3a,#1e5e3a)'],
-        ['✈️','Amor a Distancia','Extrañar','prem','linear-gradient(150deg,#56A8E8,#8ED0F8)'],
-        ['📖','Nuestra Historia','Aniversario','prem','linear-gradient(150deg,#6d4226,#b8845a)'],
-        ['🌙','Buenas Noches','Amar','prem','linear-gradient(150deg,#1C1420,#3d2a6e)'],
-        ['🥂','Año Nuevo, Amor Nuevo','Fechas especiales','prem','linear-gradient(150deg,#2d2410,#c9a227)'],
-        ['💐','Ramo Infinito','San Valentín','prem','linear-gradient(150deg,#E8447A,#F4A7CB)'],
-        ['🤍','Perdóname Bonito','Perdón','prem','linear-gradient(150deg,#8a9bb8,#c4d0e0)'],
-        ['🎈','Globos y Deseos','Cumpleaños','prem','linear-gradient(150deg,#F0567B,#FDD35C)']
-      ];
+    /* ---- catálogo: showcase + carousel ---- */
+    var SHOWCASE=['carta-eterna','feliz-cumple','quieres-casarte','nuestro-tiempo','mi-valentin','perdoname','gracias-por-todo','para-mama','firulais-forever'];
+    function buildCatalogUI(){
+      var cur=UWU.getCur();
+      var grid=document.getElementById('showGrid');
+      if(grid){
+        grid.innerHTML=SHOWCASE.map(function(slug,i){
+          var t=UWU.CATALOG[slug];if(!t)return '';
+          var delay=i%3?' d'+(i%3):'';
+          return '<div class="mini rv'+delay+'" data-slug="'+slug+'">'+
+            '<div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/'+slug+'</s></div>'+
+            '<div class="mview" style="background:'+t.grad+'">'+
+            '<div class="shimmer"></div><div class="big">'+t.emoji+'</div>'+
+            '<div class="t1">'+(t.title||t.name)+'</div>'+
+            '<div class="t2">'+(t.desc||t.cat)+'</div>'+
+            '<div class="pill">'+t.pill+'</div></div>'+
+            '<div class="minf"><div><div class="nm">'+t.name+'</div><div class="ct">'+t.emoji+' '+t.cat+'</div></div>'+
+            '<span class="tg code">'+t.id+'</span>'+
+            '<span class="price-tag tpl-price" data-slug="'+slug+'">'+UWU.fmtPrice(t,cur)+'</span>'+
+            '<div class="buy-row">'+
+            '<button class="btn sm ghost" type="button" onclick="openDemo()">👁 Demo</button>'+
+            '<button class="btn sm" type="button" onclick="openCheckout(\''+slug+'\')">💳 Comprar</button>'+
+            '</div></div></div>';
+        }).join('');
+      }
       var car=document.getElementById('car');
-      car.innerHTML=data.map(function(d){
-        return '<div class="tcard"><div class="art" style="background:'+d[4]+'">'+d[0]+
-        '<small>Ver demo</small></div><div class="inf"><span class="tg '+d[3]+'">'+(d[3]==='prem'?'💎 Premium':'Gratis')+
-        '</span><b>'+d[1]+'</b><span>'+d[2]+'</span></div></div>';
-      }).join('');
-      window.slide=function(dir){car.scrollBy({left:dir*440,behavior:'smooth'});};
-    })();
+      if(car){
+        car.innerHTML=Object.keys(UWU.CATALOG).map(function(slug){
+          var t=UWU.CATALOG[slug];
+          return '<div class="tcard" data-slug="'+slug+'" onclick="openCheckout(\''+slug+'\')" style="cursor:pointer">'+
+            '<div class="art" style="background:'+t.grad+'">'+t.emoji+'<small>Comprar</small></div>'+
+            '<div class="inf"><span class="tg code">'+t.id+'</span>'+
+            '<b>'+t.name+'</b><span>'+t.cat+'</span>'+
+            '<span class="price tpl-price" data-slug="'+slug+'">'+UWU.fmtPrice(t,cur)+'</span></div></div>';
+        }).join('');
+      }
+    }
+    buildCatalogUI();
+    window.slide=function(dir){document.getElementById('car').scrollBy({left:dir*440,behavior:'smooth'});};
 
     /* ---- FAQ ---- */
     document.querySelectorAll('.qa button').forEach(function(b){
@@ -969,22 +825,18 @@
     document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeDemo();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
 
-    /* ================= MODO ADMINISTRADOR ================= */
-    /* Contraseña: hash SHA-256. Para cambiarla ejecuta en la consola: uwuHash('tu-nueva-contraseña') y pega el resultado aquí. */
-    var ADMIN_HASH='e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';
-    window.uwuHash=function(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')});};
+    /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
     var ADM=sessionStorage.getItem('uwuAdm')==='1';
     var OPS=JSON.parse(localStorage.getItem('uwuOps')||'{"text":{},"hidden":[],"deleted":[],"order":{}}');
     function saveOps(){localStorage.setItem('uwuOps',JSON.stringify(OPS));var s=document.getElementById('admSaved');if(s){s.textContent='✓ Guardado ahora';clearTimeout(saveOps._t);saveOps._t=setTimeout(function(){s.textContent='✓ Autoguardado';},1400);}}
 
-    /* ids deterministas (se excluye todo contenido generado al azar) */
-    var SKIP='#hearts,.hearts-in,.confetti,.dhearts,.ov,.adm-ui,.adm-ctl,.eq';
-    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.price,.qa,.step,.arrow,.float-chip,.demo-box,.final,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
-    var TEXTS='h1,h2,h3,h4,h5,p,li,.kicker,.lead,.btn,.cta,.tag2,.minf .nm,.minf .ct,.tg,.stat span,.cat b,.cat span,.step b,.qa button,.inf b,.inf span,.who b,.who span,.amt,.desc,nav .links a,footer a,.bottom,.t1,.t2,.pill,.mbar s,.scr .tag,.scr .name,.scr .msg,.lview .btag,.lview .bname,.lview .bmsg,.lview .bbtn,.float-chip,.stars';
+    var SKIP='#hearts,.hearts-in,.confetti,.dhearts,.ov,.adm-ui,.adm-ctl,.eq,#showGrid,#car,.chk-ov';
+    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.qa,.step,.arrow,.float-chip,.demo-box,.final,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
+    var TEXTS='h1,h2,h3,h4,h5,p,li,.kicker,.lead,.btn,.cta,.minf .nm,.minf .ct,.tg,.stat span,.cat b,.cat span,.step b,.qa button,.inf b,.inf span,.who b,.who span,nav .links a,footer a,.bottom,.t1,.t2,.pill,.mbar s,.scr .tag,.scr .name,.scr .msg,.lview .btag,.lview .bname,.lview .bmsg,.lview .bbtn,.float-chip,.stars';
     (function(){
       var b=0,t=0,p=0;
       document.querySelectorAll(BLOCKS).forEach(function(el){if(el.closest(SKIP))return;el.dataset.ub='b'+(b++);});
-      document.querySelectorAll(TEXTS).forEach(function(el){if(el.closest(SKIP)||el.id==='admLogin')return;el.dataset.ut='t'+(t++);});
+      document.querySelectorAll(TEXTS).forEach(function(el){if(el.closest(SKIP))return;el.dataset.ut='t'+(t++);});
       document.querySelectorAll('[data-ub]').forEach(function(el){var par=el.parentElement;if(par&&!par.dataset.up)par.dataset.up='p'+(p++);});
     })();
 
@@ -996,21 +848,15 @@
       OPS.hidden.forEach(function(id){var el=document.querySelector('[data-ub="'+id+'"]');if(!el)return;if(ADM)el.classList.add('ghosted');else el.style.display='none';});
     })();
 
-    /* login / logout */
-    document.getElementById('admLogin').addEventListener('click',function(){
-      if(ADM){if(confirm('¿Salir del modo administrador?')){sessionStorage.removeItem('uwuAdm');location.reload();}return;}
-      var pw=prompt('🔑 Contraseña de administrador:');if(pw===null||pw==='')return;
-      uwuHash(pw).then(function(h){if(h===ADMIN_HASH){sessionStorage.setItem('uwuAdm','1');location.reload();}else{alert('Contraseña incorrecta 🙈');}});
-    });
-
     if(ADM){
       document.body.classList.add('adm');
-      var lg=document.getElementById('admLogin');lg.textContent='🚪';lg.title='Salir del modo administrador';lg.style.opacity='1';
 
-      /* barra de herramientas */
       var bar=document.createElement('div');bar.className='adm-ui adm-bar';
-      bar.innerHTML='<b>🔧 Modo admin</b><span id="admSaved">✓ Autoguardado</span><button id="admDl">⬇ Descargar HTML</button><button id="admReset">♻ Restaurar</button>';
+      bar.innerHTML='<b>🔧 Modo admin</b><span id="admSaved">✓ Autoguardado</span><button id="admDl">⬇ Descargar HTML</button><button id="admReset">♻ Restaurar</button><button id="admOut">🚪 Salir</button>';
       document.body.appendChild(bar);
+      document.getElementById('admOut').addEventListener('click',function(){
+        if(confirm('¿Salir del modo administrador?')){sessionStorage.removeItem('uwuAdm');location.href='admin.html';}
+      });
 
       /* edición de textos: clic sobre cualquier texto */
       document.querySelectorAll('[data-ut]').forEach(function(el){el.setAttribute('contenteditable','true');el.setAttribute('spellcheck','false');});
@@ -1018,7 +864,7 @@
 
       /* en modo admin los enlaces/botones no navegan (para poder editarlos) */
       document.addEventListener('click',function(e){
-        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,#admLogin,.cur-toggle'))return;
+        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,.cur-toggle,.buy-row,.chk-ov'))return;
         if(e.target.closest('a,button,.mini,.env')){e.preventDefault();e.stopPropagation();}
       },true);
 
@@ -1061,7 +907,7 @@
         OPS.hidden.forEach(function(id){var n=doc.querySelector('[data-ub="'+id+'"]');if(n){n.classList.remove('ghosted');n.setAttribute('hidden','');n.style.display='none';}});
         doc.querySelectorAll('[contenteditable]').forEach(function(n){n.removeAttribute('contenteditable');n.removeAttribute('spellcheck');});
         var bd=doc.querySelector('body');bd.classList.remove('adm');bd.style.overflow='';
-        ['#hearts','#phoneHearts','#confetti','#dhearts','#car'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
+        ['#hearts','#phoneHearts','#confetti','#dhearts','#car','#showGrid'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
         var m=doc.querySelector('#marquee');if(m&&window.__marqHalf)m.innerHTML=window.__marqHalf;
         doc.querySelectorAll('[data-ub],[data-ut],[data-up]').forEach(function(n){n.removeAttribute('data-ub');n.removeAttribute('data-ut');n.removeAttribute('data-up');});
         doc.querySelectorAll('.rv').forEach(function(n){n.classList.remove('on');});
@@ -1075,7 +921,11 @@
     window.setCur=function(c){
       localStorage.setItem('uwuCur',c);
       document.querySelectorAll('.money').forEach(function(el){if(el.dataset[c])el.textContent=el.dataset[c];});
+      document.querySelectorAll('.tpl-price').forEach(function(el){
+        var t=UWU.CATALOG[el.dataset.slug];if(t)el.textContent=UWU.fmtPrice(t,c);
+      });
       document.querySelectorAll('.cur-toggle button').forEach(function(b){b.classList.toggle('on',b.dataset.c===c);});
+      var cp=document.getElementById('chkPrice');if(cp&&window.__chkSlug){var t=UWU.CATALOG[window.__chkSlug];if(t)cp.textContent=UWU.fmtPrice(t,c);}
     };
     setCur(localStorage.getItem('uwuCur')||'pen');
   </script>
