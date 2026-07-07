@@ -96,6 +96,52 @@
     applyCatalogFromStore(loadCatalogStore());
   }
 
+  function hasRemoteData(remote) {
+    if (!remote) return false;
+    if (remote.updatedAt) return true;
+    return !!(Object.keys(remote.catalog || {}).length ||
+      (remote.order || []).length ||
+      (remote.showcase || []).length ||
+      (remote.hidden || []).length);
+  }
+
+  function applyRemoteCatalog(remote) {
+    if (!hasRemoteData(remote)) return false;
+    var store = { catalog: {}, order: [], showcase: [], hidden: [], html: {} };
+    if (global.UWUGitHubSync && global.UWUGitHubSync.remoteToStore) {
+      store = global.UWUGitHubSync.remoteToStore(remote);
+    } else {
+      store.catalog = remote.catalog || {};
+      store.order = remote.order || [];
+      store.showcase = remote.showcase || [];
+      store.hidden = remote.hidden || [];
+    }
+    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    return true;
+  }
+
+  function loadRemoteCatalog() {
+    var pull = (global.UWUGitHubSync && global.UWUGitHubSync.pullCatalog)
+      ? global.UWUGitHubSync.pullCatalog()
+      : fetch('data/catalog.json?v=' + Date.now()).then(function (res) {
+        return res.ok ? res.json() : null;
+      }).catch(function () { return null; });
+    return pull.then(function (remote) {
+      applyRemoteCatalog(remote);
+      return remote;
+    });
+  }
+
+  function bootstrap(cb) {
+    loadRemoteCatalog().then(function () {
+      initCatalog();
+      if (typeof cb === 'function') cb();
+    }).catch(function () {
+      initCatalog();
+      if (typeof cb === 'function') cb();
+    });
+  }
+
   function getStoredHtml(slug) {
     var store = loadCatalogStore();
     return (store.html && store.html[slug]) || null;
@@ -686,8 +732,6 @@
     updatePrices(c);
   }
 
-  initCatalog();
-
   global.UWU = {
     SHOWCASE: SHOWCASE,
     CATALOG_ORDER: CATALOG_ORDER,
@@ -712,6 +756,8 @@
     setCurrency: setCurrency,
     getOrders: getOrders,
     initCatalog: initCatalog,
+    bootstrap: bootstrap,
+    loadRemoteCatalog: loadRemoteCatalog,
     loadCatalogStore: loadCatalogStore,
     saveCatalogStore: saveCatalogStore,
     getStoredHtml: getStoredHtml,

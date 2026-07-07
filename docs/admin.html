@@ -79,6 +79,9 @@
     .html-status{font-size:11px;color:#86efac;margin-top:8px}
     .file-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px dashed rgba(238,126,177,.4);background:rgba(0,0,0,.2);font-size:12px;color:#cbb3c0;cursor:pointer}
     .file-btn input{display:none}
+    .sync-ok{color:#86efac}
+    .sync-err{color:#ffb4c8}
+    .sync-wait{color:#f6d28b}
   </style>
 </head>
 <body>
@@ -137,9 +140,26 @@
       <div class="sections" id="secList"></div>
     </div>
 
+    <div class="card panel" id="githubPanel">
+      <h2>Sincronización con GitHub</h2>
+      <p class="tpl-hint">Al guardar plantillas se suben al repositorio y todos los visitantes las ven al recargar. Se actualiza <code>docs/data/catalog.json</code> y los HTML en <code>docs/d/</code>.</p>
+      <div class="form-grid">
+        <div class="full"><label>Token de GitHub<input id="ghToken" type="password" placeholder="github_pat_…" autocomplete="off" /></label></div>
+        <div><label>Usuario / org<input id="ghOwner" placeholder="ANTHONY109823" /></label></div>
+        <div><label>Repositorio<input id="ghRepo" placeholder="Uwu" /></label></div>
+        <div><label>Rama<input id="ghBranch" placeholder="main" /></label></div>
+      </div>
+      <div class="tpl-toolbar" style="margin-top:14px">
+        <button class="btn sm" id="btnSaveGh" type="button">💾 Guardar configuración</button>
+        <button class="btn ghost sm" id="btnSyncNow" type="button">☁️ Sincronizar ahora</button>
+      </div>
+      <div class="html-status" id="ghSyncStatus">Sin configurar — añade tu token para publicar cambios</div>
+      <p class="tpl-hint" style="margin-top:10px">Token en GitHub → Settings → Developer settings → Fine-grained token con permiso <b>Contents: Read and write</b> en el repo.</p>
+    </div>
+
     <div class="card panel">
       <h2>Plantillas del catálogo</h2>
-      <p class="tpl-hint">Sube archivos HTML, edita precios, categorías y textos. Los cambios se guardan en este navegador y se ven al instante en la web. Para publicarlos para todos, exporta y sube los archivos a GitHub.</p>
+      <p class="tpl-hint">Sube archivos HTML, edita precios, categorías y textos. Al guardar se sincroniza con GitHub si configuraste el token arriba.</p>
       <div class="tpl-toolbar">
         <button class="btn sm" id="btnNewTpl" type="button">➕ Nueva plantilla</button>
         <button class="btn ghost sm" id="btnExportTpl" type="button">⬇ Exportar catálogo</button>
@@ -186,6 +206,7 @@
   </div>
 
   <script src="js/uwu.js"></script>
+  <script src="js/github-sync.js"></script>
   <script src="js/admin-templates.js"></script>
   <script>
     var ADMIN_HASH = 'e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';

@@ -533,6 +533,7 @@
   </div>
 
   <script src="js/uwu.js"></script>
+  <script src="js/github-sync.js"></script>
   <script>
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -561,20 +562,6 @@
         u.style.left=Math.random()*100+'%';u.style.background=cols[j%cols.length];
         u.style.animationDuration=(3.5+Math.random()*3)+'s';u.style.animationDelay=(Math.random()*4)+'s';cf.appendChild(u);}}
     })();
-
-    /* ---- marquee categorías ---- */
-    UWU.initCatalog();
-    UWU.renderMarquee();
-
-    /* ---- scroll reveal ---- */
-    (function(){
-      var io=new IntersectionObserver(function(es){
-        es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}});
-      },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-      document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
-    })();
-
-    /* ---- counters (removed stats section) ---- */
 
     /* ---- aplicar visibilidad de secciones (admin) ---- */
     (function(){
@@ -661,12 +648,14 @@
         window.scrollTo({top:0,behavior:'smooth'});
       });
     });
-    if(location.hash==='#plantillas'||new URLSearchParams(location.search).get('cat')){
-      requestAnimationFrame(function(){scrollToPlantillas(false);});
-    }
-
-    UWU.buildCatalogUI(window.__uwuCatalogOpts);
-    UWU.applyCategoryFromUrl();
+    UWU.bootstrap(function(){
+      UWU.renderMarquee();
+      UWU.buildCatalogUI(window.__uwuCatalogOpts);
+      UWU.applyCategoryFromUrl();
+      if(location.hash==='#plantillas'||new URLSearchParams(location.search).get('cat')){
+        requestAnimationFrame(function(){scrollToPlantillas(false);});
+      }
+    });
 
     /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
     var ADM=sessionStorage.getItem('uwuAdm')==='1';

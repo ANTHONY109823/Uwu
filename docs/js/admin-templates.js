@@ -13,6 +13,73 @@
 
   function el(id) { return document.getElementById(id); }
 
+  function setSyncStatus(msg, kind) {
+    var node = el('ghSyncStatus');
+    if (!node) return;
+    node.textContent = msg;
+    node.className = 'html-status' + (kind ? ' sync-' + kind : '');
+  }
+
+  function syncNow(showAlert) {
+    if (typeof UWUGitHubSync === 'undefined' || !UWUGitHubSync.isReady()) {
+      if (showAlert) alert('Configura tu token de GitHub arriba para sincronizar.');
+      return Promise.reject(new Error('GitHub no configurado'));
+    }
+    setSyncStatus('Sincronizando con GitHub…', 'wait');
+    return UWUGitHubSync.syncCatalog().then(function (res) {
+      var when = new Date(res.at).toLocaleString();
+      setSyncStatus('✓ Sincronizado — ' + when, 'ok');
+      if (showAlert) alert('¡Catálogo publicado! Los visitantes verán los cambios al recargar.');
+      return res;
+    }).catch(function (err) {
+      setSyncStatus('✗ ' + err.message, 'err');
+      if (showAlert) alert('Error al sincronizar: ' + err.message);
+      throw err;
+    });
+  }
+
+  function afterCatalogChange(doneMsg) {
+    renderList();
+    if (typeof UWUGitHubSync !== 'undefined' && UWUGitHubSync.isReady()) {
+      return syncNow(false).then(function () {
+        if (doneMsg) alert(doneMsg + ' Sincronizado con GitHub.');
+      }).catch(function () {
+        if (doneMsg) alert(doneMsg + ' Guardado localmente, pero falló la sincronización.');
+      });
+    }
+    if (doneMsg) alert(doneMsg + ' Configura GitHub arriba para publicar a todos.');
+    return Promise.resolve();
+  }
+
+  function initGitHubPanel() {
+    if (!el('ghToken') || typeof UWUGitHubSync === 'undefined') return;
+    var cfg = UWUGitHubSync.getConfig();
+    el('ghOwner').value = cfg.owner || '';
+    el('ghRepo').value = cfg.repo || '';
+    el('ghBranch').value = cfg.branch || 'main';
+    if (cfg.token) {
+      el('ghToken').value = cfg.token;
+      setSyncStatus('✓ GitHub listo — los cambios se sincronizan al guardar', 'ok');
+    }
+    el('btnSaveGh').onclick = function () {
+      UWUGitHubSync.saveConfig({
+        token: el('ghToken').value.trim(),
+        owner: el('ghOwner').value.trim() || 'ANTHONY109823',
+        repo: el('ghRepo').value.trim() || 'Uwu',
+        branch: el('ghBranch').value.trim() || 'main',
+        enabled: true
+      });
+      if (UWUGitHubSync.isReady()) {
+        setSyncStatus('✓ Configuración guardada', 'ok');
+        alert('Token guardado en este navegador. Ya puedes sincronizar plantillas.');
+      } else {
+        setSyncStatus('Falta el token de GitHub', 'err');
+        alert('Pega tu token de GitHub para activar la sincronización.');
+      }
+    };
+    el('btnSyncNow').onclick = function () { syncNow(true); };
+  }
+
   function catSelectHtml(selected) {
     return CAT_OPTIONS.map(function (c) {
       return '<option value="' + c + '"' + (c === selected ? ' selected' : '') + '>' + c + '</option>';
@@ -53,7 +120,7 @@
         var item = UWU.listAdminTemplates().find(function (i) { return i.slug === slug; });
         if (item && item.hidden) UWU.unhideTemplate(slug);
         else UWU.deleteTemplate(slug, true);
-        renderList();
+        afterCatalogChange('Visibilidad actualizada.');
       };
     });
   }
@@ -134,8 +201,7 @@
     if (pendingHtml !== null) opts.html = pendingHtml;
     UWU.saveTemplate(slug, tpl, opts);
     closeEditor();
-    renderList();
-    alert('Plantilla guardada. Los visitantes la verán al recargar la web.');
+    afterCatalogChange('Plantilla guardada.');
   }
 
   function onHtmlFile(file) {
@@ -165,7 +231,7 @@
         l.click();
       });
     }
-    alert('Exportado JSON + archivos HTML. Sube los .html a docs/d/ en GitHub para publicarlos para todos.');
+    alert('Exportado JSON + archivos HTML (respaldo manual).');
   }
 
   function importJson(file) {
@@ -174,8 +240,7 @@
     reader.onload = function () {
       try {
         UWU.importCatalogBundle(JSON.parse(reader.result));
-        renderList();
-        alert('Catálogo importado correctamente.');
+        afterCatalogChange('Catálogo importado.');
       } catch (e) {
         alert('No se pudo importar: ' + e.message);
       }
@@ -187,8 +252,7 @@
     if (!confirm('¿Restaurar catálogo de plantillas al original?\nSe pierden plantillas nuevas y ediciones.')) return;
     localStorage.removeItem('uwuCatalogAdmin');
     UWU.initCatalog();
-    renderList();
-    alert('Catálogo restaurado.');
+    afterCatalogChange('Catálogo restaurado.');
   }
 
   function bind() {
@@ -215,10 +279,15 @@
 
   window.UWUAdminTemplates = {
     init: function () {
-      UWU.initCatalog();
-      bind();
-      renderList();
+      var start = function () {
+        bind();
+        initGitHubPanel();
+        renderList();
+      };
+      if (UWU.bootstrap) UWU.bootstrap(start);
+      else { UWU.initCatalog(); start(); }
     },
-    renderList: renderList
+    renderList: renderList,
+    syncNow: syncNow
   };
 })();
