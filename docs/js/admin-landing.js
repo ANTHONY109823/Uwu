@@ -60,6 +60,8 @@
   }
 
   function bind() {
+    if (bind._done) return;
+    bind._done = true;
     if (el('btnSaveSite')) el('btnSaveSite').onclick = saveForm;
     if (el('btnResetSite')) el('btnResetSite').onclick = resetForm;
     if (el('btnPreviewSite')) {

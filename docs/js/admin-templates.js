@@ -1,6 +1,13 @@
-/* Panel admin — gestión de plantillas UWU */
+/* Panel admin — plantillas por categoría, tier y editor HTML */
 (function () {
   'use strict';
+
+  var TIERS = [
+    { id: 'all', label: 'Todas' },
+    { id: 'free', label: 'Gratis' },
+    { id: 'prem', label: 'Premium' },
+    { id: 'excl', label: '💎 Exclusiva' }
+  ];
 
   var CAT_OPTIONS = [
     'Enamorar', 'Amar', 'Carta romántica', 'Sorprender', 'Pedida de mano', 'Cumpleaños',
@@ -8,8 +15,10 @@
     'Mascotas', 'Fechas especiales'
   ];
 
+  var activeTier = 'all';
+  var activeCat = 'all';
   var editingSlug = null;
-  var pendingHtml = null;
+  var currentHtml = '';
 
   function el(id) { return document.getElementById(id); }
 
@@ -22,33 +31,222 @@
 
   function syncNow(showAlert) {
     if (typeof UWUGitHubSync === 'undefined' || !UWUGitHubSync.isReady()) {
-      if (showAlert) alert('Configura tu token de GitHub arriba para sincronizar.');
+      if (showAlert) alert('Configura tu token de GitHub en Configuración.');
       return Promise.reject(new Error('GitHub no configurado'));
     }
     setSyncStatus('Sincronizando con GitHub…', 'wait');
     return UWUGitHubSync.syncCatalog().then(function (res) {
-      var when = new Date(res.at).toLocaleString();
-      setSyncStatus('✓ Sincronizado — ' + when, 'ok');
-      if (showAlert) alert('¡Catálogo publicado! Los visitantes verán los cambios al recargar.');
+      setSyncStatus('✓ Sincronizado — ' + new Date(res.at).toLocaleString(), 'ok');
+      if (showAlert) alert('¡Publicado! Los visitantes verán los cambios al recargar.');
+      if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
       return res;
     }).catch(function (err) {
       setSyncStatus('✗ ' + err.message, 'err');
-      if (showAlert) alert('Error al sincronizar: ' + err.message);
+      if (showAlert) alert('Error: ' + err.message);
       throw err;
     });
   }
 
-  function afterCatalogChange(doneMsg) {
-    renderList();
+  function afterCatalogChange(msg) {
+    renderBrowser();
+    if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
     if (typeof UWUGitHubSync !== 'undefined' && UWUGitHubSync.isReady()) {
       return syncNow(false).then(function () {
-        if (doneMsg) alert(doneMsg + ' Sincronizado con GitHub.');
+        if (msg) alert(msg + ' Sincronizado con GitHub.');
       }).catch(function () {
-        if (doneMsg) alert(doneMsg + ' Guardado localmente, pero falló la sincronización.');
+        if (msg) alert(msg + ' Guardado localmente; falló GitHub.');
       });
     }
-    if (doneMsg) alert(doneMsg + ' Configura GitHub arriba para publicar a todos.');
+    if (msg) alert(msg + ' Guardado. Configura GitHub para publicar a todos.');
     return Promise.resolve();
+  }
+
+  function filteredItems() {
+    return UWU.listAdminTemplates().filter(function (item) {
+      if (item.hidden) return false;
+      var tier = item.tpl.tier || 'prem';
+      if (activeTier !== 'all' && tier !== activeTier) return false;
+      if (activeCat !== 'all' && item.tpl.cat !== activeCat) return false;
+      return true;
+    });
+  }
+
+  function tierBadge(tier) {
+    if (tier === 'free') return '<span class="tpl-badge tier-free">Gratis</span>';
+    if (tier === 'excl') return '<span class="tpl-badge tier-excl">💎 Exclusiva</span>';
+    return '<span class="tpl-badge tier-prem">Premium</span>';
+  }
+
+  function renderBrowser() {
+    var browser = el('tplBrowser');
+    if (!browser) return;
+    var items = filteredItems();
+    var byCat = {};
+    items.forEach(function (item) {
+      var cat = item.tpl.cat || 'Otra';
+      if (!byCat[cat]) byCat[cat] = [];
+      byCat[cat].push(item);
+    });
+    var cats = Object.keys(byCat).sort();
+    if (!cats.length) {
+      browser.innerHTML = '<p class="tpl-empty">No hay plantillas con estos filtros.</p>';
+      return;
+    }
+    browser.innerHTML = cats.map(function (cat) {
+      var cards = byCat[cat].map(function (item) {
+        var t = item.tpl;
+        return '<button type="button" class="tpl-card' + (editingSlug === item.slug ? ' on' : '') + '" data-slug="' + item.slug + '">' +
+          '<div class="tpl-card-art" style="background:' + (t.grad || '#333') + '">' + (t.emoji || '💌') + '</div>' +
+          '<div class="tpl-card-body"><b>' + UWU.esc(t.name) + '</b>' +
+          '<small>' + UWU.esc(t.id) + '</small>' +
+          '<div class="tpl-badges">' + tierBadge(t.tier) +
+          (item.hasHtml ? '<span class="tpl-badge html">HTML</span>' : '') + '</div>' +
+          '<span class="tpl-card-price">' + UWU.fmtPrice(t) + '</span></div></button>';
+      }).join('');
+      return '<section class="tpl-cat-block"><h3>' + UWU.esc(cat) + ' <span>(' + byCat[cat].length + ')</span></h3><div class="tpl-card-grid">' + cards + '</div></section>';
+    }).join('');
+    browser.querySelectorAll('.tpl-card').forEach(function (card) {
+      card.onclick = function () { openWorkspace(card.dataset.slug); };
+    });
+  }
+
+  function renderTierTabs() {
+    var tabs = el('tierTabs');
+    if (!tabs) return;
+    tabs.innerHTML = TIERS.map(function (t) {
+      return '<button type="button" class="tier-tab' + (activeTier === t.id ? ' on' : '') + '" data-tier="' + t.id + '">' + t.label + '</button>';
+    }).join('');
+    tabs.querySelectorAll('.tier-tab').forEach(function (btn) {
+      btn.onclick = function () {
+        activeTier = btn.dataset.tier;
+        renderTierTabs();
+        renderBrowser();
+      };
+    });
+  }
+
+  function renderCatFilter() {
+    var sel = el('catFilter');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">Todas las categorías</option>' +
+      CAT_OPTIONS.map(function (c) {
+        return '<option value="' + c + '"' + (activeCat === c ? ' selected' : '') + '>' + c + '</option>';
+      }).join('');
+    sel.onchange = function () {
+      activeCat = sel.value;
+      renderBrowser();
+    };
+  }
+
+  function fillVersionSelect(slug) {
+    var sel = el('fVersion');
+    if (!sel) return;
+    var versions = UWU.listTemplateVersions(slug);
+    var store = UWU.loadCatalogStore();
+    var active = store.activeVersion && store.activeVersion[slug];
+    if (!versions.length) {
+      sel.innerHTML = '<option value="">Versión actual</option>';
+      return;
+    }
+    sel.innerHTML = versions.map(function (v) {
+      return '<option value="' + v.id + '"' + (v.id === active ? ' selected' : '') + '>' + UWU.esc(v.name) + ' · ' + new Date(v.at).toLocaleDateString() + '</option>';
+    }).join('');
+    sel.onchange = function () {
+      if (!sel.value) return;
+      UWU.setActiveTemplateVersion(slug, sel.value);
+      UWU.loadTemplateHtml(slug).then(function (html) {
+        currentHtml = html;
+        el('fHtmlEditor').value = html;
+      });
+    };
+  }
+
+  function openWorkspace(slug) {
+    editingSlug = slug;
+    var t = UWU.CATALOG[slug];
+    if (!t) return;
+    el('tplWorkspace').classList.add('open');
+    el('tplBrowser').style.display = 'none';
+    el('tplFilters').style.display = 'none';
+    el('wsTitle').textContent = t.emoji + ' ' + t.name;
+    el('fSlug').value = slug;
+    el('fId').value = t.id || '';
+    el('fName').value = t.name || '';
+    el('fEmoji').value = t.emoji || '💌';
+    el('fCat').innerHTML = CAT_OPTIONS.map(function (c) {
+      return '<option value="' + c + '"' + (c === t.cat ? ' selected' : '') + '>' + c + '</option>';
+    }).join('');
+    el('fTier').value = t.tier || 'prem';
+    el('fPen').value = t.pen || '0';
+    el('fUsd').value = t.usd || '0';
+    el('fGrad').value = t.grad || '';
+    el('fTitle').value = t.title || '';
+    el('fPill').value = t.pill || '';
+    el('fDesc').value = t.desc || '';
+    el('fShowcase').checked = UWU.SHOWCASE.indexOf(slug) !== -1;
+    fillVersionSelect(slug);
+    UWU.loadTemplateHtml(slug).then(function (html) {
+      currentHtml = html;
+      el('fHtmlEditor').value = html;
+    });
+    renderBrowser();
+  }
+
+  function closeWorkspace() {
+    editingSlug = null;
+    el('tplWorkspace').classList.remove('open');
+    el('tplBrowser').style.display = '';
+    el('tplFilters').style.display = '';
+    renderBrowser();
+  }
+
+  function readMeta() {
+    return {
+      id: el('fId').value.trim(),
+      name: el('fName').value.trim(),
+      emoji: el('fEmoji').value.trim(),
+      cat: el('fCat').value,
+      tier: el('fTier').value,
+      pen: el('fPen').value.trim(),
+      usd: el('fUsd').value.trim(),
+      grad: el('fGrad').value.trim(),
+      title: el('fTitle').value.trim(),
+      pill: el('fPill').value.trim(),
+      desc: el('fDesc').value.trim(),
+      page: editingSlug ? editingSlug + '.html' : undefined
+    };
+  }
+
+  function saveWorkspace(asNewVersion) {
+    if (!editingSlug) return;
+    var meta = readMeta();
+    if (!meta.name) { alert('El nombre es obligatorio.'); return; }
+    var html = el('fHtmlEditor').value;
+    UWU.saveTemplate(editingSlug, meta, { showcase: el('fShowcase').checked });
+    var versionId = el('fVersion').value;
+    UWU.saveTemplateHtml(editingSlug, html, {
+      newVersion: !!asNewVersion,
+      versionId: asNewVersion ? null : versionId,
+      versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(editingSlug).length + 1)) : undefined
+    });
+    fillVersionSelect(editingSlug);
+    afterCatalogChange('Plantilla guardada.');
+  }
+
+  function previewHtml() {
+    var html = el('fHtmlEditor').value;
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    window.open(URL.createObjectURL(blob), '_blank');
+  }
+
+  function onHtmlUpload(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      el('fHtmlEditor').value = reader.result;
+      currentHtml = reader.result;
+    };
+    reader.readAsText(file, 'UTF-8');
   }
 
   function initGitHubPanel() {
@@ -59,7 +257,7 @@
     el('ghBranch').value = cfg.branch || 'main';
     if (cfg.token) {
       el('ghToken').value = cfg.token;
-      setSyncStatus('✓ GitHub listo — los cambios se sincronizan al guardar', 'ok');
+      setSyncStatus('✓ GitHub listo', 'ok');
     }
     el('btnSaveGh').onclick = function () {
       UWUGitHubSync.saveConfig({
@@ -69,212 +267,28 @@
         branch: el('ghBranch').value.trim() || 'main',
         enabled: true
       });
-      if (UWUGitHubSync.isReady()) {
-        setSyncStatus('✓ Configuración guardada', 'ok');
-        alert('Token guardado en este navegador. Ya puedes sincronizar plantillas.');
-      } else {
-        setSyncStatus('Falta el token de GitHub', 'err');
-        alert('Pega tu token de GitHub para activar la sincronización.');
-      }
+      setSyncStatus(UWUGitHubSync.isReady() ? '✓ Token guardado' : 'Falta token', UWUGitHubSync.isReady() ? 'ok' : 'err');
     };
     el('btnSyncNow').onclick = function () { syncNow(true); };
   }
 
-  function catSelectHtml(selected) {
-    return CAT_OPTIONS.map(function (c) {
-      return '<option value="' + c + '"' + (c === selected ? ' selected' : '') + '>' + c + '</option>';
-    }).join('');
-  }
-
-  function renderList() {
-    var list = el('tplList');
-    if (!list) return;
-    var items = UWU.listAdminTemplates();
-    el('stTpl').textContent = items.filter(function (i) { return !i.hidden; }).length;
-    if (!items.length) {
-      list.innerHTML = '<p class="tpl-empty">No hay plantillas.</p>';
-      return;
-    }
-    list.innerHTML = items.map(function (item) {
-      var t = item.tpl;
-      var badges = '';
-      if (item.custom) badges += '<span class="tpl-badge">Editada</span>';
-      if (item.hasHtml) badges += '<span class="tpl-badge html">HTML</span>';
-      if (item.hidden) badges += '<span class="tpl-badge off">Oculta</span>';
-      return '<div class="tpl-row' + (item.hidden ? ' is-hidden' : '') + '" data-slug="' + item.slug + '">' +
-        '<div class="tpl-preview" style="background:' + (t.grad || '#333') + '">' + (t.emoji || '💌') + '</div>' +
-        '<div class="tpl-info"><b>' + UWU.esc(t.name) + '</b>' +
-        '<small>' + UWU.esc(t.id) + ' · ' + UWU.esc(t.cat) + ' · ' + UWU.fmtPrice(t) + '</small>' +
-        '<div class="tpl-badges">' + badges + '</div></div>' +
-        '<div class="tpl-actions">' +
-        '<button type="button" class="btn ghost sm" data-act="demo" title="Vista previa">👁</button>' +
-        '<button type="button" class="btn ghost sm" data-act="edit" title="Editar">✏️</button>' +
-        '<button type="button" class="btn ghost sm" data-act="hide" title="Ocultar/mostrar">' + (item.hidden ? '👁‍🗨' : '🙈') + '</button>' +
-        '</div></div>';
-    }).join('');
-    list.querySelectorAll('.tpl-row').forEach(function (row) {
-      var slug = row.dataset.slug;
-      row.querySelector('[data-act=demo]').onclick = function () { UWU.openTemplatePreview(slug); };
-      row.querySelector('[data-act=edit]').onclick = function () { openEditor(slug); };
-      row.querySelector('[data-act=hide]').onclick = function () {
-        var item = UWU.listAdminTemplates().find(function (i) { return i.slug === slug; });
-        if (item && item.hidden) UWU.unhideTemplate(slug);
-        else UWU.deleteTemplate(slug, true);
-        afterCatalogChange('Visibilidad actualizada.');
-      };
-    });
-  }
-
-  function openEditor(slug) {
-    editingSlug = slug || null;
-    pendingHtml = null;
-    var form = el('tplForm');
-    var title = el('tplModalTitle');
-    if (slug) {
-      var t = UWU.CATALOG[slug];
-      if (!t) return;
-      title.textContent = 'Editar plantilla';
-      el('fSlug').value = slug;
-      el('fSlug').disabled = true;
-      el('fId').value = t.id || '';
-      el('fName').value = t.name || '';
-      el('fEmoji').value = t.emoji || '💌';
-      el('fCat').innerHTML = catSelectHtml(t.cat);
-      el('fTier').value = t.tier || 'prem';
-      el('fPen').value = t.pen || '0';
-      el('fUsd').value = t.usd || '0';
-      el('fGrad').value = t.grad || '';
-      el('fTitle').value = t.title || '';
-      el('fPill').value = t.pill || '';
-      el('fDesc').value = t.desc || '';
-      el('fPage').value = t.page || '';
-      el('fShowcase').checked = UWU.SHOWCASE.indexOf(slug) !== -1;
-      var html = UWU.getStoredHtml(slug);
-      el('fHtmlStatus').textContent = html ? 'HTML personalizado cargado (' + Math.round(html.length / 1024) + ' KB)' : (t.page ? 'Usa archivo d/' + t.page : 'Sin HTML — se genera automática');
-    } else {
-      title.textContent = 'Nueva plantilla';
-      form.reset();
-      el('fSlug').disabled = false;
-      el('fSlug').value = '';
-      el('fCat').innerHTML = catSelectHtml('Enamorar');
-      el('fTier').value = 'prem';
-      el('fEmoji').value = '💌';
-      el('fGrad').value = 'linear-gradient(150deg,#EE7EB1,#E8447A)';
-      el('fShowcase').checked = true;
-      el('fHtmlStatus').textContent = 'Sin HTML subido';
-    }
-    el('tplModal').classList.add('open');
-  }
-
-  function closeEditor() {
-    el('tplModal').classList.remove('open');
-    editingSlug = null;
-    pendingHtml = null;
-  }
-
-  function readFormTpl() {
-    return {
-      id: el('fId').value.trim() || 'UWU-NEW',
-      name: el('fName').value.trim() || 'Nueva plantilla',
-      emoji: el('fEmoji').value.trim() || '💌',
-      cat: el('fCat').value,
-      tier: el('fTier').value,
-      pen: el('fPen').value.trim() || '0',
-      usd: el('fUsd').value.trim() || '0',
-      grad: el('fGrad').value.trim() || 'linear-gradient(150deg,#EE7EB1,#E8447A)',
-      title: el('fTitle').value.trim(),
-      pill: el('fPill').value.trim(),
-      desc: el('fDesc').value.trim(),
-      page: el('fPage').value.trim() || undefined
-    };
-  }
-
-  function saveForm() {
-    var slug = editingSlug || el('fSlug').value.trim() || UWU.slugifyName(el('fName').value);
-    if (!/^[a-z0-9-]+$/.test(slug)) {
-      alert('El slug solo puede tener letras minúsculas, números y guiones.');
-      return;
-    }
-    var tpl = readFormTpl();
-    if (!tpl.name) { alert('El nombre es obligatorio.'); return; }
-    var opts = { showcase: el('fShowcase').checked ? true : false };
-    if (pendingHtml !== null) opts.html = pendingHtml;
-    UWU.saveTemplate(slug, tpl, opts);
-    closeEditor();
-    afterCatalogChange('Plantilla guardada.');
-  }
-
-  function onHtmlFile(file) {
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      pendingHtml = reader.result;
-      el('fHtmlStatus').textContent = 'HTML listo para guardar: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
-    };
-    reader.readAsText(file, 'UTF-8');
-  }
-
-  function exportAll() {
-    var bundle = UWU.exportCatalogBundle();
-    var blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'uwu-catalog-' + new Date().toISOString().slice(0, 10) + '.json';
-    a.click();
-    var store = bundle.store;
-    if (store.html) {
-      Object.keys(store.html).forEach(function (slug) {
-        var hb = new Blob([store.html[slug]], { type: 'text/html' });
-        var l = document.createElement('a');
-        l.href = URL.createObjectURL(hb);
-        l.download = slug + '.html';
-        l.click();
-      });
-    }
-    alert('Exportado JSON + archivos HTML (respaldo manual).');
-  }
-
-  function importJson(file) {
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      try {
-        UWU.importCatalogBundle(JSON.parse(reader.result));
-        afterCatalogChange('Catálogo importado.');
-      } catch (e) {
-        alert('No se pudo importar: ' + e.message);
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  function resetCatalog() {
-    if (!confirm('¿Restaurar catálogo de plantillas al original?\nSe pierden plantillas nuevas y ediciones.')) return;
-    localStorage.removeItem('uwuCatalogAdmin');
-    UWU.initCatalog();
-    afterCatalogChange('Catálogo restaurado.');
-  }
-
   function bind() {
-    el('btnNewTpl').onclick = function () { openEditor(null); };
-    el('btnExportTpl').onclick = exportAll;
-    el('btnResetTpl').onclick = resetCatalog;
-    el('tplModalClose').onclick = closeEditor;
-    el('tplModalCancel').onclick = closeEditor;
-    el('tplForm').onsubmit = function (e) { e.preventDefault(); saveForm(); };
-    el('fName').addEventListener('input', function () {
-      if (!editingSlug && el('fSlug') && !el('fSlug').disabled) {
-        el('fSlug').value = UWU.slugifyName(el('fName').value);
-      }
-    });
-    el('fHtmlFile').onchange = function () { onHtmlFile(this.files[0]); };
-    el('fTier').onchange = function () {
+    renderTierTabs();
+    renderCatFilter();
+    if (el('btnCloseWs')) el('btnCloseWs').onclick = closeWorkspace;
+    if (el('btnSaveWs')) el('btnSaveWs').onclick = function () { saveWorkspace(false); };
+    if (el('btnSaveWsNew')) el('btnSaveWsNew').onclick = function () { saveWorkspace(true); };
+    if (el('btnPreviewWs')) el('btnPreviewWs').onclick = previewHtml;
+    if (el('fHtmlUpload')) el('fHtmlUpload').onchange = function () { onHtmlUpload(this.files[0]); this.value = ''; };
+    if (el('fTier')) el('fTier').onchange = function () {
       if (this.value === 'free') { el('fPen').value = '0'; el('fUsd').value = '0'; }
     };
-    el('importJsonFile').onchange = function () { importJson(this.files[0]); this.value = ''; };
-    el('tplModal').addEventListener('click', function (e) {
-      if (e.target === el('tplModal')) closeEditor();
-    });
+    if (el('btnResetTpl')) el('btnResetTpl').onclick = function () {
+      if (!confirm('¿Restaurar catálogo original?')) return;
+      localStorage.removeItem('uwuCatalogAdmin');
+      UWU.initCatalog();
+      afterCatalogChange('Catálogo restaurado.');
+    };
   }
 
   window.UWUAdminTemplates = {
@@ -282,12 +296,12 @@
       var start = function () {
         bind();
         initGitHubPanel();
-        renderList();
+        renderBrowser();
       };
       if (UWU.bootstrap) UWU.bootstrap(start);
       else { UWU.initCatalog(); start(); }
     },
-    renderList: renderList,
+    renderBrowser: renderBrowser,
     syncNow: syncNow
   };
 })();

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<title>🥂 Año Nuevo, Amor Nuevo — UWU</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;min-height:100svh;background:linear-gradient(150deg,#2d2410,#c9a227);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{max-width:400px;width:100%;text-align:center;background:rgba(0,0,0,.22);border-radius:28px;padding:32px 22px;border:1px solid rgba(255,255,255,.2)}
+.big{font-size:64px;margin-bottom:12px}
+h1{font-size:1.35rem;margin-bottom:8px}
+.pill{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:700;cursor:pointer}
+.msg{margin:18px 0;font-size:15px;line-height:1.7;font-style:italic;min-height:3em}
+.sub{font-size:12px;opacity:.85;margin-top:12px}
+.code{margin-top:16px;font-size:10px;opacity:.65;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="big">🥂</div>
+<h1>Un brindis por nosotros</h1>
+<p class="sub" id="uwuSubtitle">__UWU_SUBTITLE__</p>
+<p class="msg" id="uwuMsg">__UWU_MSG__</p>
+<button class="pill" type="button">Brindar 🥂</button>
+<div class="code">__UWU_CODE__</div>
+<p class="sub">Plantilla UWU-ANUE · Edita este HTML en el panel admin</p>
+</div>
+<script>
+(function(){
+var p=new URLSearchParams(location.search);
+var msg=p.get("msg")||"__UWU_MSG__";
+var sub=p.get("subtitle")||"__UWU_SUBTITLE__";
+var code=p.get("code")||"__UWU_CODE__";
+if(msg!=="__UWU_MSG__")document.getElementById("uwuMsg").textContent=msg;
+if(sub!=="__UWU_SUBTITLE__")document.getElementById("uwuSubtitle").textContent=sub;
+if(code!=="__UWU_CODE__")document.querySelector(".code").textContent="Código: "+code;
+})();
+</script>
+</body>
+</html>

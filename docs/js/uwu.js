@@ -16,19 +16,19 @@
   ];
 
   var CATALOG = {
-    'hello-kitty':        { id:'UWU-HKIT',  name:'Hello Kitty Mágica',      emoji:'🎀', cat:'Sorprender',         tier:'prem', pen:'29.90', usd:'7.99',  page:'hello-kitty.html', grad:'linear-gradient(135deg,#e542a1,#3890dd,#c654ce)', pill:'Tocar para abrir 🎀', title:'Hello Kitty para ti', desc:'Hello Kitty se dibuja sola, luego tu mensaje aparece letra por letra con corazones flotantes.' },
+    'hello-kitty':        { id:'UWU-HKIT',  name:'Hello Kitty Mágica',      emoji:'🎀', cat:'Sorprender',         tier:'excl', pen:'49.90', usd:'12.99', page:'hello-kitty.html', grad:'linear-gradient(135deg,#e542a1,#3890dd,#c654ce)', pill:'Tocar para abrir 🎀', title:'Hello Kitty para ti', desc:'Hello Kitty se dibuja sola, luego tu mensaje aparece letra por letra con corazones flotantes.' },
     'carta-eterna':       { id:'UWU-CTRN',  name:'Carta Eterna',            emoji:'💌', cat:'Carta romántica',    tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(165deg,#4a1030,#8e2461)', pill:'Tocar para abrir 💝',       title:'Mi carta para ti',          desc:'Una carta que se abre con tu voz, tus palabras y la canción de los dos.' },
     'feliz-cumple':       { id:'UWU-FIIN',  name:'Fiesta Infinita',         emoji:'🎂', cat:'Cumpleaños',         tier:'free', pen:'0',     usd:'0',     grad:'linear-gradient(160deg,#F6A13C,#F0567B)', pill:'Soplar velitas 🎉',          title:'¡Feliz cumpleaños!',          desc:'Sopla las velitas, revienta los globos y descubre 25 razones para celebrarte.' },
-    'quieres-casarte':    { id:'UWU-LGPREG',name:'La Gran Pregunta',        emoji:'💍', cat:'Pedida de mano',     tier:'prem', pen:'35.90', usd:'9.99',  grad:'linear-gradient(165deg,#1C1420,#5b2a5e)', pill:'Ver nuestra historia ✨',    title:'¿Te casarías conmigo?',       desc:'Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.' },
+    'quieres-casarte':    { id:'UWU-LGPREG',name:'La Gran Pregunta',        emoji:'💍', cat:'Pedida de mano',     tier:'excl', pen:'49.90', usd:'12.99', page:'quieres-casarte.html', grad:'linear-gradient(165deg,#1C1420,#5b2a5e)', pill:'Ver nuestra historia ✨',    title:'¿Te casarías conmigo?',       desc:'Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.' },
     'nuestro-tiempo':     { id:'UWU-NUTI',  name:'Nuestro Tiempo',          emoji:'💕', cat:'Aniversario',        tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(160deg,#8e2461,#E8447A)', pill:'Ver cada momento ⏳',        title:'847 días juntos',           desc:'Un contador en vivo de cada segundo a tu lado, con la línea de tiempo de los dos.' },
     'mi-valentin':        { id:'UWU-JDROS', name:'Jardín de Rosas',         emoji:'🌹', cat:'San Valentín',       tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(160deg,#C21E4C,#F45C7F)', pill:'Abrir el jardín 🌹',         title:'Mi San Valentín',             desc:'Un jardín de rosas que florece mientras lee por qué la elegiste a ella.' },
     'perdoname':          { id:'UWU-LLFL',  name:'Lluvia de Flores',        emoji:'🌸', cat:'Perdón',             tier:'free', pen:'0',     usd:'0',     grad:'linear-gradient(165deg,#7899d4,#c6a9e8)', pill:'Leer mi disculpa 🌸',        title:'Perdóname',                   desc:'A veces las palabras cuestan. Esta página las dice bonito por ti, con lluvia de flores.' },
     'gracias-por-todo':   { id:'UWU-VOLAR', name:'Volar de Nuevo',          emoji:'💔', cat:'Cerrar ciclos',      tier:'prem', pen:'19.90', usd:'5.49',  grad:'linear-gradient(160deg,#5f72bd,#9b23ea)', pill:'Soltar con amor 🕊️',         title:'Gracias por todo',            desc:'Cerrar un ciclo también puede ser hermoso. Una despedida en paz, sin rencor.' },
     'para-mama':          { id:'UWU-RAIZ',  name:'Raíces',                  emoji:'👨‍👩‍👧', cat:'Familia',            tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(160deg,#E88A4A,#F2BC5C)', pill:'Abrir el álbum 📖',          title:'Para mamá',                   desc:'El álbum de la familia con las fotos de siempre y las palabras que nunca le dijiste.' },
     'firulais-forever':   { id:'UWU-MEAM',  name:'Mejor Amigo',             emoji:'🐶', cat:'Mascotas',           tier:'free', pen:'0',     usd:'0',     grad:'linear-gradient(160deg,#C98A4B,#E8B34B)', pill:'Ver sus travesuras 🐾',       title:'Firulais 4ever',              desc:'Porque también son familia: la página de tu mejor amigo de cuatro patas.' },
-    'netflix-del-amor':   { id:'UWU-NFLX',  name:'Netflix del Amor',        emoji:'🎬', cat:'Aniversario',        tier:'prem', pen:'29.90', usd:'7.99',  grad:'linear-gradient(150deg,#141414,#E50914)', pill:'Reproducir ❤️',              title:'Nuestra serie',               desc:'Tu historia en formato binge: capítulos, fotos y la banda sonora de los dos.' },
+    'netflix-del-amor':   { id:'UWU-NFLX',  name:'Netflix del Amor',        emoji:'🎬', cat:'Aniversario',        tier:'excl', pen:'45.90', usd:'11.99', page:'netflix-del-amor.html', grad:'linear-gradient(150deg,#141414,#E50914)', pill:'Reproducir ❤️',              title:'Nuestra serie',               desc:'Tu historia en formato binge: capítulos, fotos y la banda sonora de los dos.' },
     'nuestro-playlist':   { id:'UWU-PLAY',  name:'Nuestro Playlist',        emoji:'🎧', cat:'Amar',               tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#121212,#1DB954)', pill:'Escuchar juntos 🎵',         title:'Nuestra playlist',            desc:'Las canciones que marcaron cada momento, en una página que suena como ustedes.' },
-    'constelacion':       { id:'UWU-CONST', name:'Constelación',            emoji:'⭐', cat:'Enamorar',           tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#0f1030,#4b3f8e)', pill:'Ver las estrellas ✨',       title:'Nuestra constelación',        desc:'Un cielo estrellado con el mapa de los momentos que los unieron para siempre.' },
+    'constelacion':       { id:'UWU-CONST', name:'Constelación',            emoji:'⭐', cat:'Enamorar',           tier:'excl', pen:'45.90', usd:'11.99', page:'constelacion.html', grad:'linear-gradient(150deg,#0f1030,#4b3f8e)', pill:'Ver las estrellas ✨',       title:'Nuestra constelación',        desc:'Un cielo estrellado con el mapa de los momentos que los unieron para siempre.' },
     'cuenta-regresiva':   { id:'UWU-CUENT', name:'Cuenta Regresiva',        emoji:'⏳', cat:'Sorprender',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#B06AB3,#7873f5)', pill:'Iniciar cuenta ⏳',           title:'Faltan solo…',                desc:'La sorpresa perfecta: un contador que desemboca en el momento más esperado.' },
     'vhs-recuerdos':      { id:'UWU-VHS',   name:'VHS de Recuerdos',        emoji:'📼', cat:'Extrañar',           tier:'prem', pen:'19.90', usd:'5.49',  grad:'linear-gradient(150deg,#3a2d20,#8a6a3c)', pill:'Rebobinar 📼',               title:'Recuerdos en VHS',            desc:'Nostalgia en pantalla: fotos retro, música y la sensación de volver a empezar.' },
     'mapa-primer-beso':   { id:'UWU-MAPB',  name:'El Mapa del Primer Beso', emoji:'📍', cat:'Amar',               tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#134E5E,#71B280)', pill:'Ver el mapa 📍',             title:'Aquí empezó todo',            desc:'El lugar exacto donde el mundo cambió, marcado en un mapa hecho con amor.' },
@@ -43,13 +43,16 @@
     'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' }
   };
 
+  Object.keys(CATALOG).forEach(function (slug) {
+    if (!CATALOG[slug].page) CATALOG[slug].page = slug + '.html';
+  });
   var _baseCatalog = JSON.parse(JSON.stringify(CATALOG));
   var _baseOrder = CATALOG_ORDER.slice();
   var _baseShowcase = SHOWCASE.slice();
   var STORE_KEY = 'uwuCatalogAdmin';
 
   function emptyStore() {
-    return { catalog: {}, order: [], showcase: [], hidden: [], html: {} };
+    return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {} };
   }
 
   function loadCatalogStore() {
@@ -62,6 +65,8 @@
       if (!s.showcase) s.showcase = [];
       if (!s.hidden) s.hidden = [];
       if (!s.html) s.html = {};
+      if (!s.versions) s.versions = {};
+      if (!s.activeVersion) s.activeVersion = {};
       return s;
     } catch (e) {
       return emptyStore();
@@ -143,7 +148,82 @@
 
   function getStoredHtml(slug) {
     var store = loadCatalogStore();
+    if (store.activeVersion && store.activeVersion[slug] && store.versions && store.versions[slug]) {
+      var active = store.versions[slug].filter(function (v) { return v.id === store.activeVersion[slug]; })[0];
+      if (active && active.html) return active.html;
+    }
     return (store.html && store.html[slug]) || null;
+  }
+
+  function listTemplateVersions(slug) {
+    var store = loadCatalogStore();
+    return (store.versions && store.versions[slug]) ? store.versions[slug].slice() : [];
+  }
+
+  function setActiveTemplateVersion(slug, versionId) {
+    var store = loadCatalogStore();
+    if (!store.versions || !store.versions[slug]) return;
+    var v = store.versions[slug].filter(function (x) { return x.id === versionId; })[0];
+    if (!v) return;
+    store.activeVersion[slug] = versionId;
+    store.html[slug] = v.html;
+    saveCatalogStore(store);
+  }
+
+  function buildTemplateStub(slug) {
+    var t = _baseCatalog[slug] || CATALOG[slug];
+    if (!t) return '';
+    var grad = t.grad || 'linear-gradient(150deg,#EE7EB1,#E8447A)';
+    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8"/>\n<meta name="viewport" content="width=device-width,initial-scale=1"/>\n<meta name="robots" content="noindex"/>\n<title>' + esc(t.emoji + ' ' + t.name) + ' — UWU</title>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:system-ui,sans-serif;min-height:100svh;background:' + grad + ';color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}\n.wrap{max-width:400px;width:100%;text-align:center;background:rgba(0,0,0,.22);border-radius:28px;padding:32px 22px;border:1px solid rgba(255,255,255,.2)}\n.big{font-size:64px;margin-bottom:12px}\nh1{font-size:1.35rem;margin-bottom:8px}\n.pill{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:700;cursor:pointer}\n.msg{margin:18px 0;font-size:15px;line-height:1.7;font-style:italic;min-height:3em}\n.sub{font-size:12px;opacity:.85;margin-top:12px}\n.code{margin-top:16px;font-size:10px;opacity:.65;font-family:monospace}\n</style>\n</head>\n<body>\n<div class="wrap">\n<div class="big">' + t.emoji + '</div>\n<h1>' + esc(t.title || t.name) + '</h1>\n<p class="sub" id="uwuSubtitle">__UWU_SUBTITLE__</p>\n<p class="msg" id="uwuMsg">__UWU_MSG__</p>\n<button class="pill" type="button">' + esc(t.pill || 'Abrir 💝') + '</button>\n<div class="code">__UWU_CODE__</div>\n<p class="sub">Plantilla ' + esc(t.id) + ' · Edita este HTML en el panel admin</p>\n</div>\n<script>\n(function(){\nvar p=new URLSearchParams(location.search);\nvar msg=p.get("msg")||"__UWU_MSG__";\nvar sub=p.get("subtitle")||"__UWU_SUBTITLE__";\nvar code=p.get("code")||"__UWU_CODE__";\nif(msg!=="__UWU_MSG__")document.getElementById("uwuMsg").textContent=msg;\nif(sub!=="__UWU_SUBTITLE__")document.getElementById("uwuSubtitle").textContent=sub;\nif(code!=="__UWU_CODE__")document.querySelector(".code").textContent="Código: "+code;\n})();\n<\/script>\n</body>\n</html>';
+  }
+
+  function saveTemplateHtml(slug, html, opts) {
+    opts = opts || {};
+    var store = loadCatalogStore();
+    if (!store.versions) store.versions = {};
+    if (!store.activeVersion) store.activeVersion = {};
+    if (!store.versions[slug]) store.versions[slug] = [];
+    var versionId = opts.versionId;
+    if (opts.newVersion || !versionId) {
+      versionId = 'v' + Date.now();
+      store.versions[slug].push({
+        id: versionId,
+        name: opts.versionName || ('Versión ' + store.versions[slug].length + 1),
+        html: html,
+        at: new Date().toISOString()
+      });
+    } else {
+      var cur = store.versions[slug].filter(function (v) { return v.id === versionId; })[0];
+      if (cur) {
+        cur.html = html;
+        cur.at = new Date().toISOString();
+        if (opts.versionName) cur.name = opts.versionName;
+      } else {
+        versionId = 'v' + Date.now();
+        store.versions[slug].push({ id: versionId, name: opts.versionName || 'Versión', html: html, at: new Date().toISOString() });
+      }
+    }
+    store.activeVersion[slug] = versionId;
+    store.html[slug] = html;
+    if (!store.catalog[slug] && _baseCatalog[slug]) {
+      store.catalog[slug] = JSON.parse(JSON.stringify(_baseCatalog[slug]));
+    }
+    if (store.catalog[slug]) store.catalog[slug].page = slug + '.html';
+    saveCatalogStore(store);
+    return versionId;
+  }
+
+  function loadTemplateHtml(slug) {
+    var cached = getStoredHtml(slug);
+    if (cached) return Promise.resolve(cached);
+    var t = CATALOG[slug] || _baseCatalog[slug];
+    if (t && t.page) {
+      return fetch('d/' + t.page + '?v=' + Date.now()).then(function (r) {
+        if (r.ok) return r.text();
+        return buildTemplateStub(slug);
+      }).catch(function () { return buildTemplateStub(slug); });
+    }
+    return Promise.resolve(buildTemplateStub(slug));
   }
 
   function slugifyName(name) {
@@ -178,11 +258,15 @@
       store.showcase = store.showcase.filter(function (s) { return s !== slug; });
     }
     if (opts.html !== undefined) {
-      if (opts.html) store.html[slug] = opts.html;
-      else delete store.html[slug];
+      if (!opts.html) {
+        delete store.html[slug];
+        if (store.versions) delete store.versions[slug];
+        if (store.activeVersion) delete store.activeVersion[slug];
+      }
     }
     store.hidden = store.hidden.filter(function (s) { return s !== slug; });
     saveCatalogStore(store);
+    if (opts.html) saveTemplateHtml(slug, opts.html, { versionName: 'Subida manual' });
     return slug;
   }
 
@@ -253,10 +337,17 @@
 
   function getCur() { return localStorage.getItem('uwuCur') || 'pen'; }
 
+  function tierLabel(tier) {
+    if (tier === 'free') return 'Gratis';
+    if (tier === 'excl') return '💎 Exclusiva';
+    return 'Premium';
+  }
+
   function fmtPrice(t, cur) {
     cur = cur || getCur();
     if (t.tier === 'free' || t.pen === '0') return cur === 'pen' ? 'Gratis' : 'Free';
-    return cur === 'pen' ? 'S/ ' + t.pen : '$' + t.usd;
+    var prefix = t.tier === 'excl' ? '💎 ' : '';
+    return cur === 'pen' ? prefix + 'S/ ' + t.pen : prefix + '$' + t.usd;
   }
 
   function slugFromPath() {
@@ -739,6 +830,7 @@
     CATALOG: CATALOG,
     CATEGORIES: CATEGORIES,
     esc: esc,
+    tierLabel: tierLabel,
     getCur: getCur,
     fmtPrice: fmtPrice,
     slugFromPath: slugFromPath,
@@ -762,6 +854,11 @@
     loadCatalogStore: loadCatalogStore,
     saveCatalogStore: saveCatalogStore,
     getStoredHtml: getStoredHtml,
+    loadTemplateHtml: loadTemplateHtml,
+    saveTemplateHtml: saveTemplateHtml,
+    listTemplateVersions: listTemplateVersions,
+    setActiveTemplateVersion: setActiveTemplateVersion,
+    buildTemplateStub: buildTemplateStub,
     saveTemplate: saveTemplate,
     deleteTemplate: deleteTemplate,
     restoreTemplate: restoreTemplate,
