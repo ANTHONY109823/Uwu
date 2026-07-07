@@ -148,12 +148,24 @@
     @media(max-width:520px){.fc2{display:none}}
 
     /* ===== marquee ===== */
-    .marquee{overflow:hidden;padding:14px 0;border-top:var(--glass-b);background:rgba(255,255,255,.5);backdrop-filter:blur(10px);flex-shrink:0;width:100%}
+    .marquee{overflow:hidden;padding:16px 0 18px;border-top:var(--glass-b);background:rgba(255,255,255,.58);backdrop-filter:blur(10px);flex-shrink:0;width:100%;position:relative;z-index:3}
     .hero .marquee{margin-top:auto;border-bottom:none}
-    .marquee .track{display:flex;gap:36px;width:max-content;animation:scrollX 30s linear infinite;padding:4px 0}
+    .marquee .track{display:flex;gap:28px;width:max-content;animation:scrollX 80s linear infinite;padding:6px 0;align-items:center}
+    .marquee:hover .track{animation-play-state:paused}
     @keyframes scrollX{to{transform:translateX(-50%)}}
-    .marquee span{font-size:13px;font-weight:600;color:var(--rose-500);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(238,126,177,.22)}
-    .marquee .marquee-label{text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);padding:10px 20px 2px}
+    .marquee .cat-pill{font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--rose-500);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.82);border:1px solid rgba(238,126,177,.28);cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s,background .2s,border-color .2s;box-shadow:0 4px 14px rgba(238,126,177,.12);pointer-events:auto;flex-shrink:0}
+    .marquee .cat-pill:hover{transform:translateY(-2px) scale(1.04);background:#fff;border-color:rgba(232,68,122,.45);box-shadow:0 8px 22px rgba(238,126,177,.22)}
+    .marquee .cat-pill.active{background:var(--grad-hero);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(232,68,122,.35)}
+    .marquee .marquee-label{text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);padding:8px 20px 4px}
+    .cat-filter-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:22px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.72);border:var(--glass-b);box-shadow:var(--shadow)}
+    .cat-filter-active{font-family:'Sora',sans-serif;font-weight:700;font-size:14px;color:var(--rose-500)}
+    .cat-filter-count{font-size:12.5px;color:var(--muted);font-weight:600}
+    .cat-filter-clear{font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:#6b5560;background:rgba(255,255,255,.8);border:var(--glass-b);border-radius:999px;padding:7px 14px;cursor:pointer;transition:background .2s,color .2s}
+    .cat-filter-clear:hover{color:var(--rose-500);background:#fff}
+    .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
+    .cat-empty .big{font-size:42px;margin-bottom:12px}
+    .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
+    .cat-empty p{color:var(--muted);font-size:14px;line-height:1.6;max-width:420px;margin:0 auto 18px}
 
     /* ===== stats ===== */
     .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
@@ -448,11 +460,7 @@
     <!-- Cinta de categorías — pie del hero -->
     <div class="marquee" id="categorias">
       <div class="marquee-label">Categorías · una para cada latido</div>
-      <div class="track" id="marquee">
-        <span>❤️ Enamorar</span><span>💕 Amar</span><span>🥰 Sorprender</span><span>💍 Pedida de mano</span><span>🎂 Cumpleaños</span>
-        <span>🌹 San Valentín</span><span>💒 Aniversarios</span><span>🌸 Perdón</span><span>🤗 Extrañar</span><span>💔 Olvidar y soltar</span>
-        <span>👨‍👩‍👧 Familia</span><span>🐶 Mascotas</span><span>🎄 Fechas especiales</span><span>😢 Despedidas</span><span>💌 Agradecer</span>
-      </div>
+      <div class="track" id="marquee" aria-label="Categorías de dedicatorias"></div>
     </div>
   </header>
 
@@ -466,6 +474,7 @@
         <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
         <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
       </div>
+      <div class="cat-filter-bar rv d2" id="catFilterBar" hidden></div>
 
       <div class="show-grid" id="showGrid"></div>
     </div>
@@ -571,8 +580,8 @@
         u.style.animationDuration=(3.5+Math.random()*3)+'s';u.style.animationDelay=(Math.random()*4)+'s';cf.appendChild(u);}}
     })();
 
-    /* ---- marquee duplicate ---- */
-    (function(){var m=document.getElementById('marquee');window.__marqHalf=m.innerHTML;m.innerHTML+=m.innerHTML;})();
+    /* ---- marquee categorías ---- */
+    UWU.renderMarquee();
 
     /* ---- scroll reveal ---- */
     (function(){
@@ -644,7 +653,9 @@
     document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeDemo();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
 
-    UWU.buildCatalogUI({onDemo:openDemo,reveal:observeReveal});
+    window.__uwuCatalogOpts={onDemo:openDemo,reveal:observeReveal};
+    UWU.buildCatalogUI(window.__uwuCatalogOpts);
+    UWU.applyCategoryFromUrl();
 
     /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
     var ADM=sessionStorage.getItem('uwuAdm')==='1';

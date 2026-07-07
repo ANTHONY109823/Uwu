@@ -175,13 +175,139 @@
       '</div></div>';
   }
 
+  var CATEGORIES = [
+    { id:'enamorar',         label:'Enamorar',          emoji:'❤️', match:['Enamorar'] },
+    { id:'amar',             label:'Amar',              emoji:'💕', match:['Amar','Carta romántica'] },
+    { id:'sorprender',       label:'Sorprender',        emoji:'🥰', match:['Sorprender'] },
+    { id:'pedida-de-mano',   label:'Pedida de mano',    emoji:'💍', match:['Pedida de mano'] },
+    { id:'cumpleanos',       label:'Cumpleaños',        emoji:'🎂', match:['Cumpleaños'] },
+    { id:'san-valentin',     label:'San Valentín',      emoji:'🌹', match:['San Valentín'] },
+    { id:'aniversarios',     label:'Aniversarios',      emoji:'💒', match:['Aniversario'] },
+    { id:'perdon',           label:'Perdón',            emoji:'🌸', match:['Perdón'] },
+    { id:'extranar',         label:'Extrañar',          emoji:'🤗', match:['Extrañar'] },
+    { id:'olvidar-soltar',   label:'Olvidar y soltar',  emoji:'💔', match:['Cerrar ciclos'] },
+    { id:'familia',          label:'Familia',           emoji:'👨‍👩‍👧', match:['Familia'] },
+    { id:'mascotas',         label:'Mascotas',          emoji:'🐶', match:['Mascotas'] },
+    { id:'fechas-especiales',label:'Fechas especiales', emoji:'🎄', match:['Fechas especiales'] },
+    { id:'despedidas',       label:'Despedidas',        emoji:'😢', match:['Cerrar ciclos'] },
+    { id:'agradecer',        label:'Agradecer',         emoji:'💌', match:['Familia','Amar','Carta romántica'] }
+  ];
+
+  var activeCategory = null;
+
+  function getCategoryById(id) {
+    for (var i = 0; i < CATEGORIES.length; i++) {
+      if (CATEGORIES[i].id === id) return CATEGORIES[i];
+    }
+    return null;
+  }
+
+  function templateMatchesCategory(tpl, catId) {
+    var cat = getCategoryById(catId);
+    if (!cat || !tpl) return false;
+    return cat.match.indexOf(tpl.cat) !== -1;
+  }
+
+  function getSlugsForCategory(catId) {
+    if (!catId) return SHOWCASE.slice();
+    return CATALOG_ORDER.filter(function (slug) {
+      return templateMatchesCategory(CATALOG[slug], catId);
+    });
+  }
+
+  function setCategoryFilter(catId, opts) {
+    opts = opts || {};
+    activeCategory = catId || null;
+    if (activeCategory) {
+      try { sessionStorage.setItem('uwuCat', activeCategory); } catch (e) {}
+    } else {
+      try { sessionStorage.removeItem('uwuCat'); } catch (e) {}
+    }
+    document.querySelectorAll('.cat-pill').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.cat === activeCategory);
+    });
+    var bar = document.getElementById('catFilterBar');
+    var cat = activeCategory ? getCategoryById(activeCategory) : null;
+    if (bar) {
+      if (cat) {
+        bar.hidden = false;
+        bar.innerHTML =
+          '<span class="cat-filter-active">' + cat.emoji + ' ' + esc(cat.label) + '</span>' +
+          '<span class="cat-filter-count" id="catFilterCount"></span>' +
+          '<button type="button" class="cat-filter-clear" id="catFilterClear">✕ Ver todas</button>';
+        var clearBtn = document.getElementById('catFilterClear');
+        if (clearBtn) clearBtn.onclick = function () { setCategoryFilter(null, { scroll: false }); };
+      } else {
+        bar.hidden = true;
+        bar.innerHTML = '';
+      }
+    }
+    buildCatalogUI(Object.assign({}, global.__uwuCatalogOpts || {}, { reveal: opts.reveal }));
+    if (opts.scroll !== false && activeCategory) {
+      var sec = document.getElementById('plantillas');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    if (opts.updateUrl !== false) {
+      var url = new URL(location.href);
+      if (activeCategory) url.searchParams.set('cat', activeCategory);
+      else url.searchParams.delete('cat');
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  }
+
+  function applyCategoryFromUrl() {
+    var fromUrl = new URLSearchParams(location.search).get('cat');
+    var fromStore = null;
+    try { fromStore = sessionStorage.getItem('uwuCat'); } catch (e) {}
+    var id = fromUrl || fromStore;
+    if (id && getCategoryById(id)) {
+      setCategoryFilter(id, { scroll: !!fromUrl && location.hash === '#plantillas', updateUrl: true });
+    }
+  }
+
+  function renderMarquee() {
+    var track = document.getElementById('marquee');
+    if (!track) return;
+    track.innerHTML = CATEGORIES.map(function (cat) {
+      return '<button type="button" class="cat-pill" data-cat="' + cat.id + '" title="Ver plantillas de ' + esc(cat.label) + '">' +
+        cat.emoji + ' ' + esc(cat.label) + '</button>';
+    }).join('');
+    window.__marqHalf = track.innerHTML;
+    track.innerHTML += track.innerHTML;
+    track.querySelectorAll('.cat-pill').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setCategoryFilter(btn.dataset.cat);
+      });
+    });
+  }
+
   function buildCatalogUI(opts) {
     opts = opts || {};
     var cur = getCur();
     var onDemo = opts.onDemo || function () {};
+    var slugs = getSlugsForCategory(activeCategory);
     var grid = document.getElementById('showGrid');
+    var countEl = document.getElementById('catFilterCount');
+    if (countEl) {
+      countEl.textContent = slugs.length
+        ? slugs.length + ' plantilla' + (slugs.length === 1 ? '' : 's')
+        : 'Sin plantillas aún';
+    }
     if (grid) {
-      grid.innerHTML = SHOWCASE.map(function (slug, i) {
+      if (!slugs.length) {
+        var cat = activeCategory ? getCategoryById(activeCategory) : null;
+        grid.innerHTML =
+          '<div class="cat-empty rv on">' +
+          '<div class="big">' + (cat ? cat.emoji : '🔍') + '</div>' +
+          '<b>' + (cat ? 'Pronto habrá plantillas de ' + esc(cat.label) : 'Sin resultados') + '</b>' +
+          '<p>Estamos preparando más diseños para esta categoría. Mientras tanto, explora otras plantillas.</p>' +
+          '<button type="button" class="btn sm" id="catEmptyAll">Ver todas las plantillas</button>' +
+          '</div>';
+        var emptyBtn = document.getElementById('catEmptyAll');
+        if (emptyBtn) emptyBtn.onclick = function () { setCategoryFilter(null); };
+        return;
+      }
+      grid.innerHTML = slugs.map(function (slug, i) {
         var t = CATALOG[slug];
         if (!t) return '';
         var delay = i % 3 ? ' d' + (i % 3) : '';
@@ -361,6 +487,7 @@
     SHOWCASE: SHOWCASE,
     CATALOG_ORDER: CATALOG_ORDER,
     CATALOG: CATALOG,
+    CATEGORIES: CATEGORIES,
     esc: esc,
     getCur: getCur,
     fmtPrice: fmtPrice,
@@ -371,6 +498,9 @@
     downloadHTML: downloadHTML,
     renderDedicationPage: renderDedicationPage,
     buildCatalogUI: buildCatalogUI,
+    renderMarquee: renderMarquee,
+    setCategoryFilter: setCategoryFilter,
+    applyCategoryFromUrl: applyCategoryFromUrl,
     updatePrices: updatePrices,
     openCheckout: openCheckout,
     closeCheckout: closeCheckout,
