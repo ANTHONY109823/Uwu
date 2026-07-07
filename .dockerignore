@@ -1,0 +1,10 @@
+node_modules
+.git
+.github
+backend
+frontend
+blueprint
+docker
+*.md
+.env
+.env.*

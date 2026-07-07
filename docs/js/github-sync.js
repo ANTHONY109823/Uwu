@@ -65,7 +65,47 @@
     });
   }
 
-  function putFile(cfg, path, content, message) {
+  function isUnchangedError(status, j) {
+    if (status !== 422) return false;
+    var msg = (j && j.message) || '';
+    if (/identical|not changed|same/i.test(msg)) return true;
+    if (j && j.errors) {
+      return j.errors.some(function (e) {
+        return /not changed|identical|same/i.test(String(e.message || e.code || ''));
+      });
+    }
+    return false;
+  }
+
+  function putFileBinary(cfg, path, base64Content, message, retried) {
+    return getFileMeta(cfg, path).then(function (meta) {
+      var body = {
+        message: message,
+        content: base64Content,
+        branch: cfg.branch
+      };
+      if (meta && meta.sha) body.sha = meta.sha;
+      return fetch(apiUrl(cfg, path), {
+        method: 'PUT',
+        headers: headers(cfg),
+        body: JSON.stringify(body)
+      }).then(function (res) {
+        if (res.ok) return res.json();
+        return res.json().then(function (j) {
+          if (isUnchangedError(res.status, j)) {
+            return { unchanged: true, path: path };
+          }
+          if (res.status === 409 && !retried) {
+            return putFileBinary(cfg, path, base64Content, message, true);
+          }
+          var extra = (j && j.errors && j.errors.length) ? ' — ' + j.errors.map(function (e) { return e.message || e.code; }).join('; ') : '';
+          throw new Error(((j && j.message) || 'Error al guardar ' + path) + extra);
+        });
+      });
+    });
+  }
+
+  function putFile(cfg, path, content, message, retried) {
     return getFileMeta(cfg, path).then(function (meta) {
       var body = {
         message: message,
@@ -78,12 +118,17 @@
         headers: headers(cfg),
         body: JSON.stringify(body)
       }).then(function (res) {
-        if (!res.ok) {
-          return res.json().then(function (j) {
-            throw new Error((j && j.message) || 'Error al guardar ' + path);
-          });
-        }
-        return res.json();
+        if (res.ok) return res.json();
+        return res.json().then(function (j) {
+          if (isUnchangedError(res.status, j)) {
+            return { unchanged: true, path: path };
+          }
+          if (res.status === 409 && !retried) {
+            return putFile(cfg, path, content, message, true);
+          }
+          var extra = (j && j.errors && j.errors.length) ? ' — ' + j.errors.map(function (e) { return e.message || e.code; }).join('; ') : '';
+          throw new Error(((j && j.message) || 'Error al guardar ' + path) + extra);
+        });
       });
     });
   }
@@ -96,6 +141,15 @@
       }
       if (catalog[slug]) catalog[slug].page = slug + '.html';
     });
+    Object.keys(store.audio || {}).forEach(function (slug) {
+      if (!catalog[slug] && global.UWU && global.UWU.CATALOG[slug]) {
+        catalog[slug] = JSON.parse(JSON.stringify(global.UWU.CATALOG[slug]));
+      }
+      if (catalog[slug]) catalog[slug].audio = slug + '.mp3';
+    });
+    Object.keys(store.catalog || {}).forEach(function (slug) {
+      if (catalog[slug] && store.catalog[slug].audio) catalog[slug].audio = store.catalog[slug].audio;
+    });
     return {
       version: 1,
       updatedAt: new Date().toISOString(),
@@ -106,17 +160,26 @@
     };
   }
 
-  function syncCatalog(store) {
+  function syncCatalog(store, opts) {
+    opts = opts || {};
     var cfg = getConfig();
     if (!isReady()) {
       return Promise.reject(new Error('Configura tu token de GitHub para sincronizar.'));
     }
-    store = store || (global.UWU ? global.UWU.loadCatalogStore() : { catalog: {}, order: [], showcase: [], hidden: [], html: {} });
+    store = store || (global.UWU ? global.UWU.loadCatalogStore() : { catalog: {}, order: [], showcase: [], hidden: [], html: {}, audio: {} });
+    var htmlKeys = opts.onlySlug ? [opts.onlySlug] : Object.keys(store.html || {});
+    htmlKeys = htmlKeys.filter(function (slug) { return store.html && store.html[slug]; });
+    var audioKeys = opts.onlySlug ? [opts.onlySlug] : Object.keys(store.audio || {});
+    audioKeys = audioKeys.filter(function (slug) { return store.audio && store.audio[slug]; });
     var chain = Promise.resolve();
-    var htmlKeys = Object.keys(store.html || {});
     htmlKeys.forEach(function (slug) {
       chain = chain.then(function () {
         return putFile(cfg, 'docs/d/' + slug + '.html', store.html[slug], 'UWU: actualizar plantilla ' + slug);
+      });
+    });
+    audioKeys.forEach(function (slug) {
+      chain = chain.then(function () {
+        return putFileBinary(cfg, 'docs/d/audio/' + slug + '.mp3', store.audio[slug], 'UWU: actualizar audio ' + slug);
       });
     });
     return chain.then(function () {
@@ -133,6 +196,13 @@
             cleaned.catalog[slug].page = slug + '.html';
           }
         });
+        audioKeys.forEach(function (slug) {
+          delete cleaned.audio[slug];
+          if (!cleaned.catalog[slug] && global.UWU.CATALOG[slug]) {
+            cleaned.catalog[slug] = JSON.parse(JSON.stringify(global.UWU.CATALOG[slug]));
+          }
+          if (cleaned.catalog[slug]) cleaned.catalog[slug].audio = slug + '.mp3';
+        });
         global.UWU.saveCatalogStore(cleaned);
       }
       return { ok: true, at: new Date().toISOString() };
@@ -146,12 +216,26 @@
     }).catch(function () { return null; });
   }
 
+  function testConnection() {
+    var cfg = getConfig();
+    if (!isReady()) return Promise.reject(new Error('Falta el token o la configuración del repositorio.'));
+    return fetch('https://api.github.com/repos/' + encodeURIComponent(cfg.owner) + '/' + encodeURIComponent(cfg.repo), {
+      headers: headers(cfg)
+    }).then(function (res) {
+      return res.json().then(function (j) {
+        if (!res.ok) throw new Error(j.message || 'No se pudo acceder al repositorio');
+        return { ok: true, full_name: j.full_name, default_branch: j.default_branch };
+      });
+    });
+  }
+
   global.UWUGitHubSync = {
     getConfig: getConfig,
     saveConfig: saveConfig,
     isReady: isReady,
     syncCatalog: syncCatalog,
     pullCatalog: pullCatalog,
+    testConnection: testConnection,
     remoteToStore: function (remote) {
       if (!remote) return null;
       return {

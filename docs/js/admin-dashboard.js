@@ -42,6 +42,7 @@
     }
     var secHidden = Object.values(ops.sections || {}).filter(function (v) { return v === false; }).length;
     var ghReady = window.UWUGitHubSync && UWUGitHubSync.isReady();
+    var rwReady = window.UWURailwaySync && UWURailwaySync.isReady();
 
     var set = function (id, val) { var n = el(id); if (n) n.textContent = val; };
     set('mTotalTpl', active.length);
@@ -52,6 +53,7 @@
     set('mExcl', tiers.excl);
     set('mSiteEdits', siteChanges);
     set('mSecHidden', secHidden);
+    set('mRwStatus', rwReady ? 'Conectado' : 'Sin URL/token');
     set('mGhStatus', ghReady ? 'Conectado' : 'Sin token');
 
     var catList = el('dashCatList');

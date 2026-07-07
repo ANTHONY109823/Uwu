@@ -160,6 +160,7 @@
           <div class="stat"><b id="mOrders">0</b><span>Dedicatorias</span></div>
           <div class="stat"><b id="mHiddenTpl">0</b><span>Plantillas ocultas</span></div>
           <div class="stat"><b id="mSiteEdits">0</b><span>Textos editados</span></div>
+          <div class="stat"><b id="mRwStatus">—</b><span>Railway</span></div>
           <div class="stat"><b id="mGhStatus">—</b><span>GitHub</span></div>
         </div>
         <div class="dash-grid">
@@ -240,6 +241,10 @@
               <label>Texto pill<input id="fPill" /></label>
               <label>Descripción<textarea id="fDesc" rows="2"></textarea></label>
               <label>Versión HTML<select id="fVersion"></select></label>
+              <label class="full">Música de plantilla (MP3)</label>
+              <label class="file-btn full">🎵 Subir MP3<input type="file" id="fAudioUpload" accept="audio/mpeg,.mp3" /></label>
+              <div class="html-status" id="fAudioStatus">Sin música</div>
+              <button type="button" class="btn ghost sm" id="btnRemoveAudio">🗑 Quitar audio</button>
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px"><input type="checkbox" id="fShowcase" /> Destacar en showcase</label>
             </div>
             <div class="ws-html">
@@ -260,11 +265,24 @@
       <section class="admin-view" id="view-config">
         <div class="view-head">
           <h1>Configuración</h1>
-          <p>Sincronización con GitHub para publicar cambios</p>
+          <p>Publicación de plantillas y archivos</p>
         </div>
-        <div class="card panel" id="githubPanel">
-          <h2>Sincronización con GitHub</h2>
-          <p class="tpl-hint">Al guardar plantillas se suben <code>docs/data/catalog.json</code> y los HTML en <code>docs/d/</code>.</p>
+        <div class="card panel" id="railwayPanel">
+          <h2>☁️ Railway (recomendado)</h2>
+          <p class="tpl-hint">Sirve el sitio y guarda plantillas HTML, MP3 y <code>catalog.json</code> sin usar la API de GitHub.</p>
+          <div class="form-grid">
+            <label class="full">URL del sitio<input id="rwBaseUrl" placeholder="https://tu-app.up.railway.app" /></label>
+            <label class="full">Token admin<input id="rwToken" type="password" placeholder="mismo valor que ADMIN_TOKEN en Railway" autocomplete="off" /></label>
+          </div>
+          <div class="tpl-toolbar" style="margin-top:14px">
+            <button class="btn sm" id="btnSaveRw" type="button">💾 Guardar y probar</button>
+            <button class="btn ghost sm" id="btnSyncNow" type="button">☁️ Sincronizar ahora</button>
+          </div>
+          <div class="html-status" id="rwSyncStatus">Sin configurar</div>
+        </div>
+        <div class="card panel" id="githubPanel" style="margin-top:16px;opacity:.85">
+          <h2>GitHub (respaldo)</h2>
+          <p class="tpl-hint">Opcional. Solo si quieres seguir publicando al repo <code>docs/</code>.</p>
           <div class="form-grid">
             <div class="full"><label>Token<input id="ghToken" type="password" placeholder="github_pat_…" autocomplete="off" /></label></div>
             <label>Usuario<input id="ghOwner" placeholder="ANTHONY109823" /></label>
@@ -284,6 +302,7 @@
   <script src="js/uwu.js"></script>
   <script src="js/uwu-site.js"></script>
   <script src="js/github-sync.js"></script>
+  <script src="js/railway-sync.js"></script>
   <script src="js/admin-shell.js"></script>
   <script src="js/admin-dashboard.js"></script>
   <script src="js/admin-landing.js"></script>

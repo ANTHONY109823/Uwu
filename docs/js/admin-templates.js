@@ -19,45 +19,58 @@
   var activeCat = 'all';
   var editingSlug = null;
   var currentHtml = '';
+  var pendingAudio = undefined;
 
   function el(id) { return document.getElementById(id); }
 
   function setSyncStatus(msg, kind) {
-    var node = el('ghSyncStatus');
+    var node = el('rwSyncStatus') || el('ghSyncStatus');
     if (!node) return;
     node.textContent = msg;
     node.className = 'html-status' + (kind ? ' sync-' + kind : '');
   }
 
-  function syncNow(showAlert) {
-    if (typeof UWUGitHubSync === 'undefined' || !UWUGitHubSync.isReady()) {
-      if (showAlert) alert('Configura tu token de GitHub en Configuración.');
-      return Promise.reject(new Error('GitHub no configurado'));
+  function getSyncProvider() {
+    if (typeof UWURailwaySync !== 'undefined' && UWURailwaySync.isReady()) return UWURailwaySync;
+    if (typeof UWUGitHubSync !== 'undefined' && UWUGitHubSync.isReady()) return UWUGitHubSync;
+    return null;
+  }
+
+  function syncNow(showAlert, onlySlug, extraOpts) {
+    var provider = getSyncProvider();
+    if (!provider) {
+      if (showAlert) alert('Configura Railway en Configuración (recomendado) o GitHub como respaldo.');
+      return Promise.reject(new Error('Sin proveedor de sincronización'));
     }
-    setSyncStatus('Sincronizando con GitHub…', 'wait');
-    return UWUGitHubSync.syncCatalog().then(function (res) {
+    var label = provider === UWURailwaySync ? 'Railway' : 'GitHub';
+    setSyncStatus('Sincronizando con ' + label + '…', 'wait');
+    var opts = Object.assign({ onlySlug: onlySlug || null }, extraOpts || {});
+    return provider.syncCatalog(null, opts).then(function (res) {
       setSyncStatus('✓ Sincronizado — ' + new Date(res.at).toLocaleString(), 'ok');
-      if (showAlert) alert('¡Publicado! Los visitantes verán los cambios al recargar.');
+      if (showAlert) alert('¡Publicado en ' + label + '! Los visitantes verán los cambios al recargar.');
       if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
       return res;
     }).catch(function (err) {
       setSyncStatus('✗ ' + err.message, 'err');
-      if (showAlert) alert('Error: ' + err.message);
+      if (showAlert) alert('Error al sincronizar:\n\n' + err.message);
       throw err;
     });
   }
 
-  function afterCatalogChange(msg) {
+  function afterCatalogChange(msg, slug, extraOpts) {
     renderBrowser();
     if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
-    if (typeof UWUGitHubSync !== 'undefined' && UWUGitHubSync.isReady()) {
-      return syncNow(false).then(function () {
-        if (msg) alert(msg + ' Sincronizado con GitHub.');
-      }).catch(function () {
-        if (msg) alert(msg + ' Guardado localmente; falló GitHub.');
+    var provider = getSyncProvider();
+    if (provider) {
+      var label = provider === UWURailwaySync ? 'Railway' : 'GitHub';
+      return syncNow(false, slug, extraOpts).then(function () {
+        if (msg) alert(msg + ' Sincronizado con ' + label + '.');
+      }).catch(function (err) {
+        var detail = err && err.message ? err.message : 'Error desconocido';
+        if (msg) alert(msg + ' Guardado en este navegador.\n\n' + label + ' no pudo publicar:\n' + detail);
       });
     }
-    if (msg) alert(msg + ' Guardado. Configura GitHub para publicar a todos.');
+    if (msg) alert(msg + ' Guardado localmente.\n\nVe a Configuración → conecta Railway para publicar.');
     return Promise.resolve();
   }
 
@@ -100,7 +113,8 @@
           '<div class="tpl-card-body"><b>' + UWU.esc(t.name) + '</b>' +
           '<small>' + UWU.esc(t.id) + '</small>' +
           '<div class="tpl-badges">' + tierBadge(t.tier) +
-          (item.hasHtml ? '<span class="tpl-badge html">HTML</span>' : '') + '</div>' +
+          (item.hasHtml ? '<span class="tpl-badge html">HTML</span>' : '') +
+          (item.hasAudio ? '<span class="tpl-badge html">MP3</span>' : '') + '</div>' +
           '<span class="tpl-card-price">' + UWU.fmtPrice(t) + '</span></div></button>';
       }).join('');
       return '<section class="tpl-cat-block"><h3>' + UWU.esc(cat) + ' <span>(' + byCat[cat].length + ')</span></h3><div class="tpl-card-grid">' + cards + '</div></section>';
@@ -161,8 +175,32 @@
     };
   }
 
+  function updateAudioStatus() {
+    var node = el('fAudioStatus');
+    if (!node || !editingSlug) return;
+    if (pendingAudio === null) {
+      node.textContent = 'Se quitará el audio al guardar.';
+      return;
+    }
+    if (pendingAudio && pendingAudio.name) {
+      node.textContent = 'Listo para guardar: ' + pendingAudio.name + ' (' + Math.round(pendingAudio.size / 1024) + ' KB)';
+      return;
+    }
+    var store = UWU.loadCatalogStore();
+    if (store.audioMeta && store.audioMeta[editingSlug]) {
+      node.textContent = 'Audio actual: ' + store.audioMeta[editingSlug].name;
+      return;
+    }
+    if (UWU.hasTemplateAudio(editingSlug)) {
+      node.textContent = 'Audio publicado: audio/' + editingSlug + '.mp3';
+      return;
+    }
+    node.textContent = 'Sin música — sube un MP3 (máx. 8 MB)';
+  }
+
   function openWorkspace(slug) {
     editingSlug = slug;
+    pendingAudio = undefined;
     var t = UWU.CATALOG[slug];
     if (!t) return;
     el('tplWorkspace').classList.add('open');
@@ -189,11 +227,13 @@
       currentHtml = html;
       el('fHtmlEditor').value = html;
     });
+    updateAudioStatus();
     renderBrowser();
   }
 
   function closeWorkspace() {
     editingSlug = null;
+    pendingAudio = undefined;
     el('tplWorkspace').classList.remove('open');
     el('tplBrowser').style.display = '';
     el('tplFilters').style.display = '';
@@ -222,21 +262,70 @@
     var meta = readMeta();
     if (!meta.name) { alert('El nombre es obligatorio.'); return; }
     var html = el('fHtmlEditor').value;
-    UWU.saveTemplate(editingSlug, meta, { showcase: el('fShowcase').checked });
+    var slug = editingSlug;
+    UWU.saveTemplate(slug, meta, { showcase: el('fShowcase').checked });
     var versionId = el('fVersion').value;
-    UWU.saveTemplateHtml(editingSlug, html, {
+    UWU.saveTemplateHtml(slug, html, {
       newVersion: !!asNewVersion,
       versionId: asNewVersion ? null : versionId,
-      versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(editingSlug).length + 1)) : undefined
+      versionName: asNewVersion ? ('Versión ' + (UWU.listTemplateVersions(slug).length + 1)) : undefined
     });
-    fillVersionSelect(editingSlug);
-    afterCatalogChange('Plantilla guardada.');
+    var audioChain = Promise.resolve();
+    var syncOpts = {};
+    if (pendingAudio === null) {
+      UWU.removeTemplateAudio(slug);
+      syncOpts.removeAudio = [slug];
+    } else if (pendingAudio) {
+      audioChain = UWU.saveTemplateAudio(slug, pendingAudio);
+    }
+    audioChain.then(function () {
+      pendingAudio = undefined;
+      fillVersionSelect(slug);
+      updateAudioStatus();
+      afterCatalogChange('Plantilla guardada.', slug, syncOpts);
+    }).catch(function (err) {
+      alert('HTML guardado, pero falló el audio: ' + err.message);
+      afterCatalogChange('Plantilla guardada (sin audio).', slug);
+    });
   }
 
   function previewHtml() {
     var html = el('fHtmlEditor').value;
-    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    window.open(URL.createObjectURL(blob), '_blank');
+    if (!editingSlug) return;
+    function openOut(audioSrc) {
+      var out = UWU.finalizeTemplateHtml(
+        html,
+        editingSlug,
+        { audioSrc: pendingAudio === null ? null : audioSrc }
+      );
+      var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+      window.open(URL.createObjectURL(blob), '_blank');
+    }
+    if (pendingAudio) {
+      var reader = new FileReader();
+      reader.onload = function () { openOut(reader.result); };
+      reader.readAsDataURL(pendingAudio);
+      return;
+    }
+    if (pendingAudio === null) {
+      openOut(null);
+      return;
+    }
+    UWU.getAudioSrcForSlug(editingSlug, true).then(openOut);
+  }
+
+  function onAudioUpload(file) {
+    if (!file) return;
+    if (!/\.mp3$/i.test(file.name) && file.type && file.type.indexOf('audio') === -1) {
+      alert('Solo archivos MP3.');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      alert('El MP3 no puede superar 8 MB.');
+      return;
+    }
+    pendingAudio = file;
+    updateAudioStatus();
   }
 
   function onHtmlUpload(file) {
@@ -249,6 +338,43 @@
     reader.readAsText(file, 'UTF-8');
   }
 
+  function initSyncPanel() {
+    initRailwayPanel();
+    initGitHubPanel();
+  }
+
+  function initRailwayPanel() {
+    if (!el('rwBaseUrl') || typeof UWURailwaySync === 'undefined') return;
+    var cfg = UWURailwaySync.getConfig();
+    el('rwBaseUrl').value = cfg.baseUrl || '';
+    if (cfg.token) {
+      el('rwToken').value = cfg.token;
+      setSyncStatus('✓ Railway listo', 'ok');
+    }
+    el('btnSaveRw').onclick = function () {
+      UWURailwaySync.saveConfig({
+        baseUrl: el('rwBaseUrl').value.trim(),
+        token: el('rwToken').value.trim(),
+        enabled: true
+      });
+      if (!UWURailwaySync.isReady()) {
+        setSyncStatus('Falta URL o token', 'err');
+        alert('Pega la URL de tu app Railway y el token de admin.');
+        return;
+      }
+      setSyncStatus('Probando conexión…', 'wait');
+      UWURailwaySync.testConnection().then(function (info) {
+        setSyncStatus('✓ Conectado — ' + info.baseUrl, 'ok');
+        alert('Railway conectado. Al guardar plantillas se publican ahí.');
+        if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
+      }).catch(function (err) {
+        setSyncStatus('✗ ' + err.message, 'err');
+        alert('La prueba falló:\n\n' + err.message);
+      });
+    };
+    if (el('btnSyncNow')) el('btnSyncNow').onclick = function () { syncNow(true); };
+  }
+
   function initGitHubPanel() {
     if (!el('ghToken') || typeof UWUGitHubSync === 'undefined') return;
     var cfg = UWUGitHubSync.getConfig();
@@ -257,7 +383,11 @@
     el('ghBranch').value = cfg.branch || 'main';
     if (cfg.token) {
       el('ghToken').value = cfg.token;
-      setSyncStatus('✓ GitHub listo', 'ok');
+      var ghNode = el('ghSyncStatus');
+      if (ghNode) {
+        ghNode.textContent = '✓ Token guardado';
+        ghNode.className = 'html-status sync-ok';
+      }
     }
     el('btnSaveGh').onclick = function () {
       UWUGitHubSync.saveConfig({
@@ -267,9 +397,36 @@
         branch: el('ghBranch').value.trim() || 'main',
         enabled: true
       });
-      setSyncStatus(UWUGitHubSync.isReady() ? '✓ Token guardado' : 'Falta token', UWUGitHubSync.isReady() ? 'ok' : 'err');
+      if (!UWUGitHubSync.isReady()) {
+        var ghNode = el('ghSyncStatus');
+        if (ghNode) {
+          ghNode.textContent = 'Falta el token';
+          ghNode.className = 'html-status sync-err';
+        }
+        alert('Pega tu token de GitHub.');
+        return;
+      }
+      var ghWait = el('ghSyncStatus');
+      if (ghWait) {
+        ghWait.textContent = 'Probando conexión…';
+        ghWait.className = 'html-status sync-wait';
+      }
+      UWUGitHubSync.testConnection().then(function (info) {
+        var ghNode = el('ghSyncStatus');
+        if (ghNode) {
+          ghNode.textContent = '✓ Conectado a ' + info.full_name;
+          ghNode.className = 'html-status sync-ok';
+        }
+        alert('Token válido. GitHub queda como respaldo.');
+      }).catch(function (err) {
+        var ghNode = el('ghSyncStatus');
+        if (ghNode) {
+          ghNode.textContent = '✗ ' + err.message;
+          ghNode.className = 'html-status sync-err';
+        }
+        alert('La prueba falló:\n\n' + err.message);
+      });
     };
-    el('btnSyncNow').onclick = function () { syncNow(true); };
   }
 
   function bind() {
@@ -280,6 +437,8 @@
     if (el('btnSaveWsNew')) el('btnSaveWsNew').onclick = function () { saveWorkspace(true); };
     if (el('btnPreviewWs')) el('btnPreviewWs').onclick = previewHtml;
     if (el('fHtmlUpload')) el('fHtmlUpload').onchange = function () { onHtmlUpload(this.files[0]); this.value = ''; };
+    if (el('fAudioUpload')) el('fAudioUpload').onchange = function () { onAudioUpload(this.files[0]); this.value = ''; };
+    if (el('btnRemoveAudio')) el('btnRemoveAudio').onclick = function () { pendingAudio = null; updateAudioStatus(); };
     if (el('fTier')) el('fTier').onchange = function () {
       if (this.value === 'free') { el('fPen').value = '0'; el('fUsd').value = '0'; }
     };
@@ -295,7 +454,7 @@
     init: function () {
       var start = function () {
         bind();
-        initGitHubPanel();
+        initSyncPanel();
         renderBrowser();
       };
       if (UWU.bootstrap) UWU.bootstrap(start);

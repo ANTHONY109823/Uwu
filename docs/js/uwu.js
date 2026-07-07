@@ -52,7 +52,7 @@
   var STORE_KEY = 'uwuCatalogAdmin';
 
   function emptyStore() {
-    return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {} };
+    return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {}, audio: {}, audioMeta: {} };
   }
 
   function loadCatalogStore() {
@@ -67,6 +67,8 @@
       if (!s.html) s.html = {};
       if (!s.versions) s.versions = {};
       if (!s.activeVersion) s.activeVersion = {};
+      if (!s.audio) s.audio = {};
+      if (!s.audioMeta) s.audioMeta = {};
       return s;
     } catch (e) {
       return emptyStore();
@@ -170,11 +172,114 @@
     saveCatalogStore(store);
   }
 
+  function escAttr(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function hasTemplateAudio(slug) {
+    var store = loadCatalogStore();
+    if (store.audio && store.audio[slug]) return true;
+    if (store.catalog[slug] && store.catalog[slug].audio) return true;
+    var t = CATALOG[slug];
+    return !!(t && t.audio);
+  }
+
+  function getTemplateAudioPublicPath(slug) {
+    return 'audio/' + slug + '.mp3';
+  }
+
+  function getTemplateAudioFetchUrl(slug) {
+    return 'd/audio/' + slug + '.mp3';
+  }
+
+  function saveTemplateAudio(slug, file) {
+    return new Promise(function (resolve, reject) {
+      if (!file) { reject(new Error('Archivo inválido')); return; }
+      if (file.size > 8 * 1024 * 1024) {
+        reject(new Error('El MP3 no puede superar 8 MB'));
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var parts = String(reader.result).split(',');
+        var base64 = parts.length > 1 ? parts[1] : parts[0];
+        var store = loadCatalogStore();
+        store.audio[slug] = base64;
+        store.audioMeta[slug] = { name: file.name, size: file.size };
+        if (!store.catalog[slug] && _baseCatalog[slug]) {
+          store.catalog[slug] = JSON.parse(JSON.stringify(_baseCatalog[slug]));
+        }
+        if (store.catalog[slug]) store.catalog[slug].audio = slug + '.mp3';
+        saveCatalogStore(store);
+        resolve({ name: file.name, size: file.size });
+      };
+      reader.onerror = function () { reject(new Error('No se pudo leer el MP3')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removeTemplateAudio(slug) {
+    var store = loadCatalogStore();
+    delete store.audio[slug];
+    delete store.audioMeta[slug];
+    if (store.catalog[slug]) delete store.catalog[slug].audio;
+    saveCatalogStore(store);
+  }
+
+  function getAudioSrcForSlug(slug, forDownload) {
+    var store = loadCatalogStore();
+    if (store.audio && store.audio[slug]) {
+      return Promise.resolve('data:audio/mpeg;base64,' + store.audio[slug]);
+    }
+    if (!hasTemplateAudio(slug)) return Promise.resolve(null);
+    var url = getTemplateAudioFetchUrl(slug);
+    if (!forDownload) return Promise.resolve(getTemplateAudioPublicPath(slug));
+    return fetch(url + '?v=' + Date.now()).then(function (res) {
+      if (!res.ok) return null;
+      return res.blob().then(function (blob) {
+        return new Promise(function (resolve) {
+          var reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.readAsDataURL(blob);
+        });
+      });
+    }).catch(function () { return null; });
+  }
+
+  function audioPlayerSnippet(src) {
+    if (!src) return '';
+    return '<audio id="uwuBgm" loop preload="auto" playsinline src="' + escAttr(src) + '" style="display:none"></audio>' +
+      '<script>(function(){var a=document.getElementById("uwuBgm");if(!a||!a.src)return;var p=function(){a.play().catch(function(){});};document.addEventListener("click",p,{once:true});document.addEventListener("touchstart",p,{once:true});var b=document.getElementById("uwuPlayBtn");if(b)b.addEventListener("click",function(e){e.preventDefault();a.play().catch(function(){});});})();<\/script>';
+  }
+
+  function finalizeTemplateHtml(html, slug, opts) {
+    opts = opts || {};
+    if (!html) return html;
+    var src = opts.audioSrc;
+    if (!src && !hasTemplateAudio(slug)) return html;
+    if (html.indexOf('__UWU_AUDIO_SRC__') !== -1) {
+      html = html.replace(/__UWU_AUDIO_SRC__/g, src ? escAttr(src) : '');
+    }
+    if (html.indexOf('__UWU_AUDIO__') !== -1) {
+      html = html.replace(/__UWU_AUDIO__/g, audioPlayerSnippet(src));
+    } else if (src && html.indexOf('id="uwuBgm"') === -1) {
+      html = html.replace(/<\/body>/i, audioPlayerSnippet(src) + '\n</body>');
+    }
+    return html;
+  }
+
+  function prepareTemplateOutput(html, slug, data, forDownload) {
+    return getAudioSrcForSlug(slug, forDownload).then(function (audioSrc) {
+      var out = personalizeCustomPage(html, slug, data || {});
+      return finalizeTemplateHtml(out, slug, { audioSrc: audioSrc });
+    });
+  }
+
   function buildTemplateStub(slug) {
     var t = _baseCatalog[slug] || CATALOG[slug];
     if (!t) return '';
     var grad = t.grad || 'linear-gradient(150deg,#EE7EB1,#E8447A)';
-    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8"/>\n<meta name="viewport" content="width=device-width,initial-scale=1"/>\n<meta name="robots" content="noindex"/>\n<title>' + esc(t.emoji + ' ' + t.name) + ' — UWU</title>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:system-ui,sans-serif;min-height:100svh;background:' + grad + ';color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}\n.wrap{max-width:400px;width:100%;text-align:center;background:rgba(0,0,0,.22);border-radius:28px;padding:32px 22px;border:1px solid rgba(255,255,255,.2)}\n.big{font-size:64px;margin-bottom:12px}\nh1{font-size:1.35rem;margin-bottom:8px}\n.pill{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:700;cursor:pointer}\n.msg{margin:18px 0;font-size:15px;line-height:1.7;font-style:italic;min-height:3em}\n.sub{font-size:12px;opacity:.85;margin-top:12px}\n.code{margin-top:16px;font-size:10px;opacity:.65;font-family:monospace}\n</style>\n</head>\n<body>\n<div class="wrap">\n<div class="big">' + t.emoji + '</div>\n<h1>' + esc(t.title || t.name) + '</h1>\n<p class="sub" id="uwuSubtitle">__UWU_SUBTITLE__</p>\n<p class="msg" id="uwuMsg">__UWU_MSG__</p>\n<button class="pill" type="button">' + esc(t.pill || 'Abrir 💝') + '</button>\n<div class="code">__UWU_CODE__</div>\n<p class="sub">Plantilla ' + esc(t.id) + ' · Edita este HTML en el panel admin</p>\n</div>\n<script>\n(function(){\nvar p=new URLSearchParams(location.search);\nvar msg=p.get("msg")||"__UWU_MSG__";\nvar sub=p.get("subtitle")||"__UWU_SUBTITLE__";\nvar code=p.get("code")||"__UWU_CODE__";\nif(msg!=="__UWU_MSG__")document.getElementById("uwuMsg").textContent=msg;\nif(sub!=="__UWU_SUBTITLE__")document.getElementById("uwuSubtitle").textContent=sub;\nif(code!=="__UWU_CODE__")document.querySelector(".code").textContent="Código: "+code;\n})();\n<\/script>\n</body>\n</html>';
+    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8"/>\n<meta name="viewport" content="width=device-width,initial-scale=1"/>\n<meta name="robots" content="noindex"/>\n<title>' + esc(t.emoji + ' ' + t.name) + ' — UWU</title>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:system-ui,sans-serif;min-height:100svh;background:' + grad + ';color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}\n.wrap{max-width:400px;width:100%;text-align:center;background:rgba(0,0,0,.22);border-radius:28px;padding:32px 22px;border:1px solid rgba(255,255,255,.2)}\n.big{font-size:64px;margin-bottom:12px}\nh1{font-size:1.35rem;margin-bottom:8px}\n.pill{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:700;cursor:pointer}\n.msg{margin:18px 0;font-size:15px;line-height:1.7;font-style:italic;min-height:3em}\n.sub{font-size:12px;opacity:.85;margin-top:12px}\n.code{margin-top:16px;font-size:10px;opacity:.65;font-family:monospace}\n</style>\n</head>\n<body>\n<div class="wrap">\n<div class="big">' + t.emoji + '</div>\n<h1>' + esc(t.title || t.name) + '</h1>\n<p class="sub" id="uwuSubtitle">__UWU_SUBTITLE__</p>\n<p class="msg" id="uwuMsg">__UWU_MSG__</p>\n<button class="pill" type="button">' + esc(t.pill || 'Abrir 💝') + '</button>\n<button class="pill" type="button" id="uwuPlayBtn" style="margin-left:8px">🎵 Música</button>\n<div class="code">__UWU_CODE__</div>\n<p class="sub">Plantilla ' + esc(t.id) + ' · Edita este HTML en el panel admin</p>\n</div>\n__UWU_AUDIO__\n<script>\n(function(){\nvar p=new URLSearchParams(location.search);\nvar msg=p.get("msg")||"__UWU_MSG__";\nvar sub=p.get("subtitle")||"__UWU_SUBTITLE__";\nvar code=p.get("code")||"__UWU_CODE__";\nif(msg!=="__UWU_MSG__")document.getElementById("uwuMsg").textContent=msg;\nif(sub!=="__UWU_SUBTITLE__")document.getElementById("uwuSubtitle").textContent=sub;\nif(code!=="__UWU_CODE__")document.querySelector(".code").textContent="Código: "+code;\n})();\n<\/script>\n</body>\n</html>';
   }
 
   function saveTemplateHtml(slug, html, opts) {
@@ -235,13 +340,20 @@
   function openTemplatePreview(slug) {
     var t = CATALOG[slug];
     var html = getStoredHtml(slug);
+    var openBlob = function (content) {
+      prepareTemplateOutput(content, slug, {}, true).then(function (out) {
+        var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+        window.open(URL.createObjectURL(blob), '_blank');
+      });
+    };
     if (html) {
-      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      window.open(URL.createObjectURL(blob), '_blank');
+      openBlob(html);
       return true;
     }
     if (t && t.page) {
-      window.open('d/' + t.page, '_blank');
+      fetch('d/' + t.page).then(function (r) { return r.text(); }).then(function (fetched) {
+        openBlob(fetched);
+      }).catch(function () { window.open('d/' + t.page, '_blank'); });
       return true;
     }
     return false;
@@ -325,7 +437,8 @@
         tpl: Object.assign({}, t),
         hidden: store.hidden.indexOf(slug) !== -1,
         custom: !!(store.catalog[slug] || store.html[slug]),
-        hasHtml: !!(store.html[slug] || (t && t.page))
+        hasHtml: !!(store.html[slug] || (t && t.page)),
+        hasAudio: hasTemplateAudio(slug)
       };
     });
   }
@@ -418,38 +531,30 @@
 
   function downloadHTML(slug, data, filename) {
     var t = CATALOG[slug];
-    var stored = getStoredHtml(slug);
-    if (stored) {
-      var out = personalizeCustomPage(stored, slug, data);
-      var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
-      a.click();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
-      return;
-    }
-    if (t && t.page) {
-      fetch('d/' + t.page).then(function (r) { return r.text(); }).then(function (html) {
-        var out = personalizeCustomPage(html, slug, data);
+    data = data || {};
+    filename = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
+    function deliver(html) {
+      prepareTemplateOutput(html, slug, data, true).then(function (out) {
         var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
+        a.download = filename;
         a.click();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
-      }).catch(function () {
+      });
+    }
+    var stored = getStoredHtml(slug);
+    if (stored) {
+      deliver(stored);
+      return;
+    }
+    if (t && t.page) {
+      fetch('d/' + t.page).then(function (r) { return r.text(); }).then(deliver).catch(function () {
         alert('No se pudo descargar. Usa el enlace "Ver en línea" y guarda la página.');
       });
       return;
     }
-    var html = buildDedicationHTML(slug, data);
-    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    deliver(buildDedicationHTML(slug, data));
   }
 
   function renderDedicationPage(slug, container) {
@@ -469,9 +574,23 @@
     };
     var stored = getStoredHtml(slug);
     if (stored) {
-      document.open();
-      document.write(personalizeCustomPage(stored, slug, data));
-      document.close();
+      prepareTemplateOutput(stored, slug, data, false).then(function (out) {
+        document.open();
+        document.write(out);
+        document.close();
+      });
+      return;
+    }
+    if (t.page) {
+      fetch('d/' + t.page).then(function (r) { return r.text(); }).then(function (html) {
+        prepareTemplateOutput(html, slug, data, false).then(function (out) {
+          document.open();
+          document.write(out);
+          document.close();
+        });
+      }).catch(function () {
+        document.body.innerHTML = '<p style="padding:40px;text-align:center">No se pudo cargar la plantilla.</p>';
+      });
       return;
     }
     document.title = 'UWU — ' + t.name + ' para ' + data.para;
@@ -859,6 +978,13 @@
     listTemplateVersions: listTemplateVersions,
     setActiveTemplateVersion: setActiveTemplateVersion,
     buildTemplateStub: buildTemplateStub,
+    hasTemplateAudio: hasTemplateAudio,
+    saveTemplateAudio: saveTemplateAudio,
+    removeTemplateAudio: removeTemplateAudio,
+    getTemplateAudioFetchUrl: getTemplateAudioFetchUrl,
+    prepareTemplateOutput: prepareTemplateOutput,
+    finalizeTemplateHtml: finalizeTemplateHtml,
+    getAudioSrcForSlug: getAudioSrcForSlug,
     saveTemplate: saveTemplate,
     deleteTemplate: deleteTemplate,
     restoreTemplate: restoreTemplate,
