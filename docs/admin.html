@@ -82,6 +82,18 @@
     .sync-ok{color:#86efac}
     .sync-err{color:#ffb4c8}
     .sync-wait{color:#f6d28b}
+    .site-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+    .site-group{margin-bottom:12px;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:rgba(0,0,0,.15)}
+    .site-group summary{padding:14px 16px;cursor:pointer;font-family:Sora,sans-serif;font-size:13px;font-weight:700;color:#e8d4dc;list-style:none;display:flex;align-items:center;justify-content:space-between}
+    .site-group summary::after{content:'▾';color:#a58a99;font-size:12px}
+    .site-group[open] summary::after{transform:rotate(180deg)}
+    .site-fields{padding:0 16px 16px;display:grid;gap:12px}
+    .site-field span{display:block;font-size:11px;font-weight:600;color:#cbb3c0;margin-bottom:4px}
+    .site-field input,.site-field textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.3);color:#fff;font-size:13px;font-family:inherit}
+    .site-field textarea{min-height:64px;resize:vertical}
+    .site-preview{margin-top:14px;border-radius:16px;overflow:hidden;border:1px solid var(--border);background:#fff;height:min(420px,50svh)}
+    .site-preview iframe{width:100%;height:100%;border:0;transform:scale(.55);transform-origin:0 0;width:182%;height:182%;pointer-events:none}
+    .preview-wrap{height:min(420px,50svh);overflow:hidden;border-radius:16px;border:1px solid var(--border)}
   </style>
 </head>
 <body>
@@ -113,7 +125,6 @@
       </div>
       <div class="topbar">
         <a class="btn ghost" href="index.html" target="_blank">👁 Ver sitio</a>
-        <button class="btn" id="btnEdit" type="button">✏️ Editar landing</button>
         <button class="btn ghost" id="btnOut" type="button">🚪 Salir</button>
       </div>
     </div>
@@ -126,12 +137,15 @@
     </div>
 
     <div class="card panel">
-      <h2>Acciones rápidas</h2>
-      <div class="actions">
-        <button class="btn ghost block" id="btnEdit2" type="button">✏️ Editar textos en vivo</button>
-        <button class="btn ghost block" id="btnDl" type="button">⬇ Descargar index.html</button>
-        <button class="btn ghost block" id="btnReset" type="button">♻ Restaurar original</button>
+      <h2>Contenido de la landing</h2>
+      <p class="tpl-hint">Controla todos los textos de la página desde aquí: navegación, hero, demos, plantillas y footer. Guarda y recarga la web para publicar los cambios.</p>
+      <div class="site-toolbar">
+        <button class="btn sm" id="btnSaveSite" type="button">💾 Guardar cambios</button>
+        <button class="btn ghost sm" id="btnPreviewSite" type="button">👁 Vista previa</button>
+        <button class="btn ghost sm" id="btnResetSite" type="button">♻ Restaurar textos</button>
       </div>
+      <div class="html-status" id="siteSaveStatus"></div>
+      <div id="siteForm" style="margin-top:16px"></div>
     </div>
 
     <div class="card panel">
@@ -206,7 +220,9 @@
   </div>
 
   <script src="js/uwu.js"></script>
+  <script src="js/uwu-site.js"></script>
   <script src="js/github-sync.js"></script>
+  <script src="js/admin-landing.js"></script>
   <script src="js/admin-templates.js"></script>
   <script>
     var ADMIN_HASH = 'e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';
@@ -214,7 +230,8 @@
     var SECTIONS = [
       { id: 'hero', label: 'Hero principal', sel: '#inicio' },
       { id: 'marquee', label: 'Cinta de categorías', sel: '#categorias' },
-      { id: 'showcase', label: 'Showcase plantillas', sel: '#plantillas' }
+      { id: 'showcase', label: 'Showcase plantillas', sel: '#plantillas' },
+      { id: 'footer', label: 'Footer', sel: 'footer' }
     ];
 
     function getOps() {
@@ -229,6 +246,7 @@
       document.getElementById('dashView').classList.add('on');
       refreshStats();
       renderSections();
+      if (window.UWUAdminLanding) UWUAdminLanding.init();
       if (window.UWUAdminTemplates) UWUAdminTemplates.init();
     }
 
@@ -289,32 +307,11 @@
       });
     });
 
-    function goEdit() {
-      sessionStorage.setItem('uwuAdm', '1');
-      location.href = 'index.html';
-    }
-    document.getElementById('btnEdit').onclick = goEdit;
-    document.getElementById('btnEdit2').onclick = goEdit;
-
     document.getElementById('btnOut').onclick = function () {
       if (confirm('¿Cerrar sesión de administrador?')) {
         sessionStorage.removeItem('uwuAdm');
         location.reload();
       }
-    };
-
-    document.getElementById('btnReset').onclick = function () {
-      if (confirm('¿Restaurar la página original? Se pierden todos los cambios.')) {
-        localStorage.removeItem('uwuOps');
-        alert('Restaurado. Recarga la landing para ver los cambios.');
-        refreshStats();
-        renderSections();
-      }
-    };
-
-    document.getElementById('btnDl').onclick = function () {
-      alert('Para descargar el HTML editado:\n1. Clic en "Editar landing"\n2. Haz tus cambios\n3. Usa "Descargar HTML" en la barra inferior');
-      goEdit();
     };
   </script>
 </body>

@@ -356,20 +356,6 @@
     footer .bottom{border-top:1px solid rgba(255,255,255,.06);padding:18px 24px;text-align:center;font-size:11.5px;color:#7a6670;line-height:1.6}
     footer .bottom .script{font-family:'Dancing Script',cursive;color:var(--pink-500);font-size:15px}
 
-    /* ===== modo administrador (solo vía admin.html) ===== */
-    body.adm [data-ub]:hover{outline:1.5px dashed rgba(232,68,122,.55);outline-offset:3px}
-    body.adm [data-ut]{cursor:text}
-    body.adm [data-ut]:hover{outline:1px dashed rgba(238,126,177,.6);outline-offset:2px}
-    body.adm [data-ut]:focus{outline:2px solid var(--rose-500);outline-offset:2px;border-radius:4px}
-    .ghosted{opacity:.3;filter:grayscale(.5)}
-    .adm-ctl{position:fixed;z-index:200;display:none;gap:4px;background:#1C1420;border-radius:999px;padding:5px 7px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .adm-ctl button{border:none;background:#2A1E2E;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;transition:background .15s}
-    .adm-ctl button:hover{background:var(--rose-500)}
-    .adm-bar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:210;display:flex;align-items:center;gap:10px;background:#1C1420;color:#fff;border-radius:999px;padding:10px 16px;box-shadow:0 16px 44px rgba(0,0,0,.4);font-size:12.5px;flex-wrap:wrap;justify-content:center;max-width:94vw}
-    .adm-bar b{font-family:'Sora',sans-serif;font-size:12.5px}
-    .adm-bar span{color:#7ee2a0;font-size:11.5px}
-    .adm-bar button{border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:#2A1E2E;color:#fff;transition:background .15s}
-    .adm-bar button:hover{background:var(--rose-500)}
     .adm-entry{position:fixed;bottom:18px;right:18px;z-index:40;width:42px;height:42px;border-radius:50%;background:#1C1420;border:1px solid rgba(238,126,177,.35);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:.55;transition:opacity .2s,transform .2s}
     .adm-entry:hover{opacity:1;transform:scale(1.06)}
   </style>
@@ -533,8 +519,10 @@
   </div>
 
   <script src="js/uwu.js"></script>
+  <script src="js/uwu-site.js"></script>
   <script src="js/github-sync.js"></script>
   <script>
+    if (window.UWUSite) UWUSite.applySite();
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* ---- floating hearts (page) ---- */
@@ -567,7 +555,7 @@
     (function(){
       var ops=JSON.parse(localStorage.getItem('uwuOps')||'{}');
       var map={
-        hero:'#inicio',marquee:'#categorias',showcase:'#plantillas'
+        hero:'#inicio',marquee:'#categorias',showcase:'#plantillas',footer:'footer'
       };
       if(ops.sections){Object.keys(ops.sections).forEach(function(id){
         if(ops.sections[id]===false&&map[id]){var el=document.querySelector(map[id]);if(el)el.style.display='none';}
@@ -671,99 +659,6 @@
         });
       }
     });
-
-    /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
-    var ADM=sessionStorage.getItem('uwuAdm')==='1';
-    var OPS=JSON.parse(localStorage.getItem('uwuOps')||'{"text":{},"hidden":[],"deleted":[],"order":{}}');
-    function saveOps(){localStorage.setItem('uwuOps',JSON.stringify(OPS));var s=document.getElementById('admSaved');if(s){s.textContent='✓ Guardado ahora';clearTimeout(saveOps._t);saveOps._t=setTimeout(function(){s.textContent='✓ Autoguardado';},1400);}}
-
-    var SKIP='#hearts,.hearts-in,.confetti,.dhearts,.ov,.adm-ui,.adm-ctl,.eq,#showGrid,#car,.chk-ov';
-    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.qa,.step,.arrow,.float-chip,.demo-box,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
-    var TEXTS='h1,h2,h3,h4,h5,p,li,.kicker,.lead,.btn,.cta,.minf .nm,.minf .ct,.tg,.stat span,.cat b,.cat span,.step b,.qa button,.inf b,.inf span,.who b,.who span,nav .links a,footer a,.bottom,.t1,.t2,.pill,.mbar s,.scr .tag,.scr .name,.scr .msg,.lview .btag,.lview .bname,.lview .bmsg,.lview .bbtn,.float-chip,.stars';
-    (function(){
-      var b=0,t=0,p=0;
-      document.querySelectorAll(BLOCKS).forEach(function(el){if(el.closest(SKIP))return;el.dataset.ub='b'+(b++);});
-      document.querySelectorAll(TEXTS).forEach(function(el){if(el.closest(SKIP))return;el.dataset.ut='t'+(t++);});
-      document.querySelectorAll('[data-ub]').forEach(function(el){var par=el.parentElement;if(par&&!par.dataset.up)par.dataset.up='p'+(p++);});
-    })();
-
-    /* aplicar cambios guardados (para el admin en este navegador) */
-    (function(){
-      Object.keys(OPS.text).forEach(function(id){var el=document.querySelector('[data-ut="'+id+'"]');if(el)el.innerHTML=OPS.text[id];});
-      Object.keys(OPS.order).forEach(function(pid){var par=document.querySelector('[data-up="'+pid+'"]');if(!par)return;OPS.order[pid].forEach(function(cid){var c=par.querySelector(':scope>[data-ub="'+cid+'"]');if(c)par.appendChild(c);});});
-      OPS.deleted.forEach(function(id){var el=document.querySelector('[data-ub="'+id+'"]');if(el)el.style.display='none';});
-      OPS.hidden.forEach(function(id){var el=document.querySelector('[data-ub="'+id+'"]');if(!el)return;if(ADM)el.classList.add('ghosted');else el.style.display='none';});
-    })();
-
-    if(ADM){
-      document.body.classList.add('adm');
-      var admEntry=document.querySelector('.adm-entry');if(admEntry)admEntry.style.display='none';
-
-      var bar=document.createElement('div');bar.className='adm-ui adm-bar';
-      bar.innerHTML='<b>🔧 Modo admin</b><span id="admSaved">✓ Autoguardado</span><button id="admDl">⬇ Descargar HTML</button><button id="admReset">♻ Restaurar</button><button id="admOut">🚪 Salir</button>';
-      document.body.appendChild(bar);
-      document.getElementById('admOut').addEventListener('click',function(){
-        if(confirm('¿Salir del modo administrador?')){sessionStorage.removeItem('uwuAdm');location.href='admin.html';}
-      });
-
-      /* edición de textos: clic sobre cualquier texto */
-      document.querySelectorAll('[data-ut]').forEach(function(el){el.setAttribute('contenteditable','true');el.setAttribute('spellcheck','false');});
-      document.addEventListener('input',function(e){var el=e.target.closest&&e.target.closest('[data-ut]');if(!el)return;OPS.text[el.dataset.ut]=el.innerHTML;saveOps();});
-
-      /* en modo admin los enlaces/botones no navegan (para poder editarlos) */
-      document.addEventListener('click',function(e){
-        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,.cur-toggle,.buy-row,.chk-ov'))return;
-        if(e.target.closest('a,button,.mini,.env')){e.preventDefault();e.stopPropagation();}
-      },true);
-
-      /* controles flotantes por caja: ocultar · subir · bajar · eliminar */
-      var ctl=document.createElement('div');ctl.className='adm-ui adm-ctl';
-      ctl.innerHTML='<button data-a="hide" title="Ocultar / mostrar">👁</button><button data-a="up" title="Subir">↑</button><button data-a="down" title="Bajar">↓</button><button data-a="del" title="Eliminar">🗑</button>';
-      document.body.appendChild(ctl);
-      var cur=null;
-      function placeCtl(){if(!cur)return;var r=cur.getBoundingClientRect();ctl.style.display='flex';ctl.style.top=Math.max(6,r.top-16)+'px';ctl.style.left=Math.min(window.innerWidth-160,Math.max(6,r.right-160))+'px';}
-      document.addEventListener('mouseover',function(e){
-        if(e.target.closest('.adm-ctl,.adm-bar'))return;
-        var b=e.target.closest('[data-ub]');if(!b||b===cur){if(b)placeCtl();return;}
-        cur=b;placeCtl();
-      });
-      window.addEventListener('scroll',function(){ctl.style.display='none';},{passive:true});
-      ctl.addEventListener('click',function(e){
-        var a=e.target.dataset.a;if(!a||!cur)return;var id=cur.dataset.ub;
-        if(a==='hide'){var i=OPS.hidden.indexOf(id);if(i>-1){OPS.hidden.splice(i,1);cur.classList.remove('ghosted');}else{OPS.hidden.push(id);cur.classList.add('ghosted');}}
-        if(a==='del'){if(!confirm('¿Eliminar este elemento?\n(Podrás recuperarlo con ♻ Restaurar)'))return;OPS.deleted.push(id);cur.style.display='none';ctl.style.display='none';}
-        if(a==='up'||a==='down'){
-          var sib=a==='up'?cur.previousElementSibling:cur.nextElementSibling;
-          while(sib&&!sib.dataset.ub)sib=a==='up'?sib.previousElementSibling:sib.nextElementSibling;
-          if(sib){if(a==='up')cur.parentElement.insertBefore(cur,sib);else cur.parentElement.insertBefore(sib,cur);
-            var par=cur.parentElement,pid=par.dataset.up;
-            if(pid)OPS.order[pid]=Array.from(par.children).filter(function(c){return c.dataset.ub;}).map(function(c){return c.dataset.ub;});
-            placeCtl();}}
-        saveOps();
-      });
-
-      /* restaurar original */
-      document.getElementById('admReset').addEventListener('click',function(){
-        if(confirm('¿Restaurar la página original?\nSe pierden todos los cambios guardados en este navegador.')){localStorage.removeItem('uwuOps');location.reload();}
-      });
-
-      /* descargar index.html con los cambios aplicados (para publicarlos en GitHub) */
-      document.getElementById('admDl').addEventListener('click',function(){
-        var doc=document.documentElement.cloneNode(true);
-        doc.querySelectorAll('.adm-ui,.adm-ctl').forEach(function(n){n.remove();});
-        OPS.deleted.forEach(function(id){var n=doc.querySelector('[data-ub="'+id+'"]');if(n)n.remove();});
-        OPS.hidden.forEach(function(id){var n=doc.querySelector('[data-ub="'+id+'"]');if(n){n.classList.remove('ghosted');n.setAttribute('hidden','');n.style.display='none';}});
-        doc.querySelectorAll('[contenteditable]').forEach(function(n){n.removeAttribute('contenteditable');n.removeAttribute('spellcheck');});
-        var bd=doc.querySelector('body');bd.classList.remove('adm');bd.style.overflow='';
-        ['#hearts','#phoneHearts','#confetti','#dhearts','#car','#showGrid'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
-        var m=doc.querySelector('#marquee');if(m&&window.__marqHalf)m.innerHTML=window.__marqHalf;
-        doc.querySelectorAll('[data-ub],[data-ut],[data-up]').forEach(function(n){n.removeAttribute('data-ub');n.removeAttribute('data-ut');n.removeAttribute('data-up');});
-        doc.querySelectorAll('.rv').forEach(function(n){n.classList.remove('on');});
-        var blob=new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'});
-        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();
-        alert('📄 index.html descargado con tus cambios.\n\nPara publicarlos para todos los visitantes, reemplaza el archivo docs/index.html en tu repositorio de GitHub (o pídele a Claude que lo haga).');
-      });
-    }
 
     /* moneda por defecto (selector solo en checkout) */
     UWU.setCurrency(localStorage.getItem('uwuCur')||'pen');
