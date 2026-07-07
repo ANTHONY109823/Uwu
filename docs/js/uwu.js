@@ -98,7 +98,6 @@
 
   function hasRemoteData(remote) {
     if (!remote) return false;
-    if (remote.updatedAt) return true;
     return !!(Object.keys(remote.catalog || {}).length ||
       (remote.order || []).length ||
       (remote.showcase || []).length ||
@@ -731,6 +730,8 @@
     });
     updatePrices(c);
   }
+
+  initCatalog();
 
   global.UWU = {
     SHOWCASE: SHOWCASE,

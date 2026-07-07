@@ -574,13 +574,24 @@
       });}
     })();
 
-    /* ---- catálogo: showcase ---- */
+    /* ---- scroll reveal (hero + secciones estáticas al cargar) ---- */
+    var revealIO;
     function observeReveal(){
-      var io=new IntersectionObserver(function(es){
-        es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}});
-      },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-      document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+      if(reduced){
+        document.querySelectorAll('.rv').forEach(function(el){el.classList.add('on');});
+        return;
+      }
+      if(!revealIO){
+        revealIO=new IntersectionObserver(function(es){
+          es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');revealIO.unobserve(x.target);}});
+        },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+      }
+      document.querySelectorAll('.rv:not([data-reveal])').forEach(function(el){
+        el.dataset.reveal='1';
+        revealIO.observe(el);
+      });
     }
+    observeReveal();
 
     /* ---- catálogo: showcase ---- */
     var typerTimer=null,tickTimer=null;
@@ -652,8 +663,12 @@
       UWU.renderMarquee();
       UWU.buildCatalogUI(window.__uwuCatalogOpts);
       UWU.applyCategoryFromUrl();
+      observeReveal();
       if(location.hash==='#plantillas'||new URLSearchParams(location.search).get('cat')){
-        requestAnimationFrame(function(){scrollToPlantillas(false);});
+        requestAnimationFrame(function(){
+          scrollToPlantillas(false);
+          observeReveal();
+        });
       }
     });
 
