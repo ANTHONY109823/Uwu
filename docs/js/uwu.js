@@ -290,7 +290,6 @@
   function renderMarquee() {
     bindCategoryPills();
     fillMarqueeTrack(document.getElementById('marquee'), true);
-    fillMarqueeTrack(document.getElementById('marqueePlantillas'), false);
   }
 
   function buildCatalogUI(opts) {

@@ -75,8 +75,7 @@
     .btn.sm{padding:11px 22px;font-size:13.5px}
 
     /* ============ HERO ============ */
-    .hero{min-height:100svh;display:flex;flex-direction:column;padding:88px 0 0;position:relative;overflow:hidden}
-    .hero-main{flex:1;display:flex;align-items:center;padding:16px 0 20px}
+    .hero{min-height:100svh;display:flex;align-items:center;padding:88px 0 48px;position:relative;overflow:hidden}
     .hero .wrap{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;width:100%}
     @media(min-width:960px){.hero .wrap{grid-template-columns:1.05fr .95fr;gap:20px}}
     .hero h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(2.3rem,6.2vw,4rem);line-height:1.06;letter-spacing:-.03em}
@@ -148,8 +147,7 @@
     @media(max-width:520px){.fc2{display:none}}
 
     /* ===== marquee ===== */
-    .marquee{overflow:hidden;padding:16px 0 18px;border-top:var(--glass-b);background:rgba(255,255,255,.58);backdrop-filter:blur(10px);flex-shrink:0;width:100%;position:relative;z-index:3}
-    .hero .marquee{margin-top:auto;border-bottom:none}
+    .marquee{overflow:hidden;padding:16px 0 18px;border-top:var(--glass-b);border-bottom:var(--glass-b);background:rgba(255,255,255,.62);backdrop-filter:blur(12px);width:100%;position:sticky;top:64px;z-index:45}
     .marquee .track{display:flex;gap:28px;width:max-content;animation:scrollX 80s linear infinite;padding:6px 0;align-items:center}
     .marquee:hover .track{animation-play-state:paused}
     @keyframes scrollX{to{transform:translateX(-50%)}}
@@ -165,8 +163,6 @@
     .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
-    .marquee-plantillas{margin:24px 0 6px;border-radius:20px;border:var(--glass-b);box-shadow:var(--shadow)}
-    .marquee-plantillas .marquee-label{padding-top:12px;font-size:11px}
     #plantillas .show-grid{margin-top:24px}
     #plantillas .cur-toggle{margin-top:18px}
 
@@ -384,7 +380,6 @@
     <div class="bar">
       <a class="logo" href="#">Uwu <span style="font-size:18px">🧸</span></a>
       <div class="links">
-        <a href="#categorias">Categorías</a>
         <a href="#plantillas">Plantillas</a>
       </div>
       <a class="cta" href="#plantillas"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
@@ -395,8 +390,7 @@
   <header class="hero">
     <div class="blob" style="width:520px;height:520px;background:#F4A7CB;top:-140px;left:-160px"></div>
     <div class="blob" style="width:460px;height:460px;background:#E8447A;bottom:-120px;right:-140px;animation-delay:3s;opacity:.3"></div>
-    <div class="hero-main">
-      <div class="wrap">
+    <div class="wrap">
         <div>
           <div class="hero-badge rv"><span class="dot"></span> Más de 1,200 corazones conquistados este mes</div>
           <h1 class="rv d1">Regálale algo que<br /><span class="grad">nunca va a olvidar</span> <span class="script">💝</span></h1>
@@ -458,14 +452,13 @@
           <div class="float-chip fc3">📱 Compartida por WhatsApp</div>
         </div>
       </div>
-    </div>
-
-    <!-- Cinta de categorías — pie del hero -->
-    <div class="marquee" id="categorias">
-      <div class="marquee-label">Categorías · una para cada latido</div>
-      <div class="track" id="marquee" aria-label="Categorías de dedicatorias"></div>
-    </div>
   </header>
+
+  <!-- Cinta de categorías (única — sticky bajo el nav en plantillas) -->
+  <div class="marquee" id="categorias">
+    <div class="marquee-label">Categorías · una para cada latido</div>
+    <div class="track" id="marquee" aria-label="Categorías de dedicatorias"></div>
+  </div>
 
   <!-- ============ SHOWCASE ============ -->
   <section id="plantillas" style="padding-top:32px">
@@ -473,11 +466,6 @@
       <span class="kicker rv">Showcase</span>
       <h2 class="rv">Cada plantilla es <span class="grad">una experiencia completa</span></h2>
       <p class="lead rv d1">No son tarjetas. Son páginas web reales con música, animaciones y su propia personalidad. Cada una tiene su precio y código único.</p>
-
-      <div class="marquee marquee-plantillas rv d1" id="categorias-plantillas">
-        <div class="marquee-label">Categorías · elige y filtra</div>
-        <div class="track" id="marqueePlantillas" aria-label="Filtrar plantillas por categoría"></div>
-      </div>
 
       <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
         <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
@@ -518,7 +506,6 @@
         <h5>Producto</h5>
         <ul>
           <li><a href="#plantillas">Plantillas</a></li>
-          <li><a href="#categorias">Categorías</a></li>
         </ul>
       </div>
       <div>
@@ -751,7 +738,6 @@
         var bd=doc.querySelector('body');bd.classList.remove('adm');bd.style.overflow='';
         ['#hearts','#phoneHearts','#confetti','#dhearts','#car','#showGrid'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
         var m=doc.querySelector('#marquee');if(m&&window.__marqHalf)m.innerHTML=window.__marqHalf;
-        var mp=doc.querySelector('#marqueePlantillas');if(mp&&window.__marqHalf)mp.innerHTML=window.__marqHalf;
         doc.querySelectorAll('[data-ub],[data-ut],[data-up]').forEach(function(n){n.removeAttribute('data-ub');n.removeAttribute('data-ut');n.removeAttribute('data-up');});
         doc.querySelectorAll('.rv').forEach(function(n){n.classList.remove('on');});
         var blob=new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'});
