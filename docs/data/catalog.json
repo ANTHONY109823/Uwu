@@ -1,8 +1,25 @@
 {
   "version": 1,
-  "updatedAt": null,
-  "catalog": {},
-  "order": [],
+  "updatedAt": "2026-07-07T21:34:29.406Z",
+  "catalog": {
+    "nuestro-playlist": {
+      "id": "UWU-PLAY",
+      "name": "Nuestro Playlist",
+      "emoji": "🎧",
+      "cat": "Amar",
+      "tier": "prem",
+      "pen": "25.90",
+      "usd": "6.99",
+      "grad": "linear-gradient(150deg,#121212,#1DB954)",
+      "title": "Nuestra playlist",
+      "pill": "Escuchar juntos 🎵",
+      "desc": "Las canciones que marcaron cada momento, en una página que suena como ustedes.",
+      "page": "nuestro-playlist.html"
+    }
+  },
+  "order": [
+    "nuestro-playlist"
+  ],
   "showcase": [],
   "hidden": []
 }
