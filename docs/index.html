@@ -352,10 +352,13 @@
     .adm-bar span{color:#7ee2a0;font-size:11.5px}
     .adm-bar button{border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:#2A1E2E;color:#fff;transition:background .15s}
     .adm-bar button:hover{background:var(--rose-500)}
+    .adm-entry{position:fixed;bottom:18px;right:18px;z-index:40;width:42px;height:42px;border-radius:50%;background:#1C1420;border:1px solid rgba(238,126,177,.35);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:.55;transition:opacity .2s,transform .2s}
+    .adm-entry:hover{opacity:1;transform:scale(1.06)}
   </style>
 </head>
 <body>
   <div id="hearts"></div>
+  <a class="adm-entry" href="admin.html" title="Panel administrador" aria-label="Panel administrador">🔧</a>
 
   <!-- ============ NAV ============ -->
   <nav>
@@ -364,7 +367,6 @@
       <div class="links">
         <a href="#plantillas">Plantillas</a>
         <a href="#categorias">Categorías</a>
-        <a href="#como">Cómo funciona</a>
         <a href="#faq">FAQ</a>
       </div>
       <a class="cta" href="#plantillas"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
@@ -381,7 +383,7 @@
         <h1 class="rv d1">Regálale algo que<br /><span class="grad">nunca va a olvidar</span> <span class="script">💝</span></h1>
         <p class="sub rv d2">Crea una <strong>página web romántica</strong> con sus fotos, su canción y tu carta — lista en menos de 5 minutos. Pagas, recibes tu enlace y lo compartes por WhatsApp. Así de mágico.</p>
         <div class="ctas rv d3">
-          <a class="btn" href="#demo">✨ Ver una dedicatoria real</a>
+          <a class="btn" href="#plantillas">Crear mi dedicatoria 💝</a>
           <a class="btn ghost" href="#plantillas">Explorar plantillas</a>
         </div>
         <div class="proof rv d4">
@@ -449,23 +451,6 @@
     </div>
   </div>
 
-  <!-- ============ STATS ============ -->
-  <section>
-    <div class="wrap">
-      <span class="kicker rv">La plataforma</span>
-      <h2 class="rv">Pequeños detalles, <span class="grad">números enormes</span></h2>
-      <div class="stats">
-        <div class="stat rv"><b data-count="50" data-suffix="+">0</b><span>Plantillas únicas</span></div>
-        <div class="stat rv d1"><b data-count="15">0</b><span>Categorías de emociones</span></div>
-        <div class="stat rv d2"><b data-count="100" data-suffix="%">0</b><span>Responsive · móvil primero</span></div>
-        <div class="stat rv d3"><b>&lt;1s</b><span>Carga instantánea global</span></div>
-      </div>
-      <div class="share-chips rv d2">
-        <i>💬 WhatsApp</i><i>🎧 Spotify</i><i>▶️ YouTube</i><i>🎬 TikTok</i><i>🔗 QR</i><i>🌐 Dominio personalizado</i><i>📸 Instagram</i>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ SHOWCASE ============ -->
   <section id="plantillas" style="padding-top:40px">
     <div class="wrap">
@@ -478,42 +463,6 @@
       </div>
 
       <div class="show-grid" id="showGrid"></div>
-    </div>
-  </section>
-
-  <!-- ============ CAROUSEL ============ -->
-  <section style="padding-top:30px">
-    <div class="wrap">
-      <div class="carousel-head rv">
-        <div>
-          <span class="kicker" style="text-align:left">Catálogo</span>
-          <h2 style="text-align:left">Más de 50 plantillas <span class="grad">y creciendo</span></h2>
-        </div>
-        <div class="car-nav"><button onclick="slide(-1)" aria-label="Anterior">←</button><button onclick="slide(1)" aria-label="Siguiente">→</button></div>
-      </div>
-    </div>
-    <div class="wrap" style="max-width:1240px">
-      <div class="carousel rv d1" id="car"></div>
-    </div>
-  </section>
-
-  <!-- ============ HOW ============ -->
-  <section id="como">
-    <div class="blob" style="width:420px;height:420px;background:#F4A7CB;top:60px;right:-160px;opacity:.35"></div>
-    <div class="wrap">
-      <span class="kicker rv">Así de fácil</span>
-      <h2 class="rv">De tu corazón a su pantalla <span class="grad">en 5 pasos</span></h2>
-      <div class="steps">
-        <div class="step rv"><span class="n">1</span><div class="ico">🎨</div><b>Elige tu plantilla</b><p>50+ experiencias distintas para cada ocasión.</p></div>
-        <div class="arrow rv">↓</div>
-        <div class="step rv d1"><span class="n">2</span><div class="ico">✍️</div><b>Personalízala</b><p>Sus fotos, tu carta, su canción. Sin saber nada de tecnología.</p></div>
-        <div class="arrow rv">↓</div>
-        <div class="step rv d2"><span class="n">3</span><div class="ico">📱</div><b>Vista previa en vivo</b><p>Ve exactamente lo que recibirá, mientras escribes.</p></div>
-        <div class="arrow rv">↓</div>
-        <div class="step rv d3"><span class="n">4</span><div class="ico">💳</div><b>Paga seguro</b><p>Tarjeta, Yape o MercadoPago. Cada plantilla tiene su precio en el catálogo.</p></div>
-        <div class="arrow rv">↓</div>
-        <div class="step rv d4"><span class="n">5</span><div class="ico">🚀</div><b>Comparte la magia</b><p>Enlace y QR al instante. WhatsApp, Instagram o impreso.</p></div>
-      </div>
     </div>
   </section>
 
@@ -542,21 +491,8 @@
     </div>
   </section>
 
-  <!-- ============ DEMO ============ -->
-  <section id="demo" class="demo-sec" style="padding-top:30px">
-    <div class="wrap">
-      <span class="kicker rv">Pruébalo tú</span>
-      <h2 class="rv">Explora una <span class="grad">dedicatoria real</span></h2>
-      <div class="demo-box rv d1">
-        <span class="env" onclick="openDemo()">💌</span>
-        <p>Alguien te dejó una carta. Ábrela y vive exactamente lo que sentirá esa persona especial cuando reciba la tuya.</p>
-        <button class="btn" onclick="openDemo()">Abrir mi sorpresa 💝</button>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ TESTIMONIALS ============ -->
-  <section>
+  <section id="testimonios">
     <div class="wrap">
       <span class="kicker rv">Historias reales</span>
       <h2 class="rv">Ellos ya hicieron llorar <span class="grad">(de felicidad)</span></h2>
@@ -598,13 +534,13 @@
   </section>
 
   <!-- ============ FINAL CTA ============ -->
-  <section style="padding-top:20px">
+  <section id="cta-final" style="padding-top:20px">
     <div class="wrap">
       <div class="final rv">
         <div class="glowc"></div>
         <h2>Hoy es un buen día para<br /><span class="script">hacerle saber que la amas</span></h2>
         <p>No esperes al 14 de febrero. Las mejores dedicatorias son las que llegan un martes cualquiera, sin motivo.</p>
-        <a class="btn" href="#demo">Crear mi dedicatoria ahora 💝</a>
+        <a class="btn" href="#plantillas">Crear mi dedicatoria ahora 💝</a>
       </div>
     </div>
   </section>
@@ -627,15 +563,12 @@
         <ul>
           <li><a href="#plantillas">Plantillas</a></li>
           <li><a href="#categorias">Categorías</a></li>
-          <li><a href="#demo">Demo interactiva</a></li>
         </ul>
       </div>
       <div>
         <h5>Recursos</h5>
         <ul>
-          <li><a href="#como">Cómo funciona</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
-          <li><a href="#demo">Demo interactiva</a></li>
         </ul>
       </div>
       <div>
@@ -648,7 +581,7 @@
         </ul>
       </div>
     </div>
-    <div class="bottom">© 2026 UWU · Detalles Románticos — <span class="script">hecho con 🧸 y mucho amor</span></div>
+    <div class="bottom">© 2026 UWU · Detalles Románticos — <span class="script">hecho con 🧸 y mucho amor</span> · <a href="admin.html" style="color:#6a5560;text-decoration:none;font-size:11px;margin-left:8px" title="Panel administrador">🔧 Admin</a></div>
   </footer>
 
   <!-- ============ DEMO MODAL ============ -->
@@ -717,25 +650,21 @@
       document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
     })();
 
-    /* ---- counters ---- */
+    /* ---- counters (removed stats section) ---- */
+
+    /* ---- aplicar visibilidad de secciones (admin) ---- */
     (function(){
-      var done=false;
-      var io=new IntersectionObserver(function(es){
-        es.forEach(function(x){
-          if(!x.isIntersecting||done)return;done=true;
-          document.querySelectorAll('[data-count]').forEach(function(el){
-            var end=+el.dataset.count,suf=el.dataset.suffix||'',t0=null;
-            function step(t){if(!t0)t0=t;var p=Math.min((t-t0)/1400,1);
-              el.textContent=Math.round(end*(1-Math.pow(1-p,3)))+suf;
-              if(p<1)requestAnimationFrame(step);}
-            requestAnimationFrame(step);
-          });
-        });
-      },{threshold:.4});
-      var s=document.querySelector('.stats');if(s)io.observe(s);
+      var ops=JSON.parse(localStorage.getItem('uwuOps')||'{}');
+      var map={
+        hero:'header.hero',marquee:'.marquee',showcase:'#plantillas',categorias:'#categorias',
+        testimonios:'#testimonios',faq:'#faq','cta-final':'#cta-final'
+      };
+      if(ops.sections){Object.keys(ops.sections).forEach(function(id){
+        if(ops.sections[id]===false&&map[id]){var el=document.querySelector(map[id]);if(el)el.style.display='none';}
+      });}
     })();
 
-    /* ---- catálogo: showcase + carousel ---- */
+    /* ---- catálogo: showcase ---- */
     function observeReveal(){
       var io=new IntersectionObserver(function(es){
         es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}});
@@ -794,7 +723,6 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
 
     UWU.buildCatalogUI({onDemo:openDemo,reveal:observeReveal});
-    window.slide=function(dir){document.getElementById('car').scrollBy({left:dir*440,behavior:'smooth'});};
 
     /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
     var ADM=sessionStorage.getItem('uwuAdm')==='1';
@@ -821,6 +749,7 @@
 
     if(ADM){
       document.body.classList.add('adm');
+      var admEntry=document.querySelector('.adm-entry');if(admEntry)admEntry.style.display='none';
 
       var bar=document.createElement('div');bar.className='adm-ui adm-bar';
       bar.innerHTML='<b>🔧 Modo admin</b><span id="admSaved">✓ Autoguardado</span><button id="admDl">⬇ Descargar HTML</button><button id="admReset">♻ Restaurar</button><button id="admOut">🚪 Salir</button>';
