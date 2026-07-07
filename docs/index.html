@@ -36,7 +36,7 @@
     h2 .grad{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent}
     .kicker{display:block;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);margin-bottom:12px}
     .lead{text-align:center;color:var(--muted);font-size:clamp(.95rem,2.2vw,1.08rem);max-width:620px;margin:14px auto 0;line-height:1.65}
-    section{padding:84px 0;position:relative}
+    section{padding:56px 0;position:relative}
 
     /* ===== reveal (Framer-like) ===== */
     .rv{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
@@ -201,20 +201,6 @@
     .tcard .inf span{font-size:10.5px;color:var(--muted)}
     .tcard .inf .tg{float:right;font-size:9px;padding:4px 9px;margin-top:2px}
 
-    /* ===== devices ===== */
-    .devices{display:flex;align-items:flex-end;justify-content:center;gap:26px;margin-top:54px;flex-wrap:wrap}
-    .dev{border-radius:18px;background:#1b1320;padding:8px;box-shadow:0 24px 60px rgba(122,50,90,.3);transition:transform .35s var(--ease)}
-    .dev:hover{transform:translateY(-8px)}
-    .dev .dscr{border-radius:12px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:12px;position:relative}
-    .dev .dl{font-family:'Dancing Script',cursive;font-size:22px}
-    .dev .ds{font-size:8.5px;opacity:.85;letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
-    .dev-phone .dscr{width:120px;height:230px;background:linear-gradient(165deg,#5c1638,#a02458)}
-    .dev-tab .dscr{width:210px;height:270px;background:linear-gradient(165deg,#2d1030,#7b2c66)}
-    .dev-lap{border-radius:14px 14px 4px 4px}
-    .dev-lap .dscr{width:330px;height:200px;background:linear-gradient(160deg,#FFE0EE,#FFD6E8);color:#C2418F}
-    .dev-desk .dscr{width:380px;height:230px;background:linear-gradient(160deg,#1C1420,#3d1f3c)}
-    .dev-label{text-align:center;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:10px}
-
     /* ===== how ===== */
     .steps{display:grid;grid-template-columns:1fr;gap:0;margin-top:48px;max-width:520px;margin-left:auto;margin-right:auto}
     @media(min-width:900px){.steps{max-width:none;grid-template-columns:repeat(5,1fr);gap:0}}
@@ -237,14 +223,6 @@
     .cat .e{font-size:30px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.2))}
     .cat b{display:block;font-family:'Sora',sans-serif;font-size:13.5px;margin-top:8px;text-shadow:0 1px 8px rgba(0,0,0,.22)}
     .cat span{font-size:10px;opacity:.9;display:block;margin-top:3px}
-
-    /* ===== features ===== */
-    .feats{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:48px}
-    @media(min-width:640px){.feats{grid-template-columns:repeat(4,1fr)}}
-    .feat{background:var(--glass);backdrop-filter:blur(14px);border:var(--glass-b);border-radius:20px;padding:24px 12px;text-align:center;box-shadow:0 5px 18px rgba(238,126,177,.1);transition:transform .3s var(--ease),box-shadow .3s}
-    .feat:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(238,126,177,.24)}
-    .feat .e{font-size:38px;display:block}
-    .feat b{display:block;font-size:12.5px;font-family:'Sora',sans-serif;margin-top:10px}
 
     /* ===== demo section ===== */
     .demo-sec{text-align:center}
@@ -282,51 +260,6 @@
     #d2 .brand{margin-top:auto;padding-top:16px;font-size:9.5px;opacity:.6}
     .dhearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
     .dhearts s{position:absolute;bottom:-20px;text-decoration:none;animation:floatUp linear infinite;opacity:0}
-
-    /* ===== panels ===== */
-    .panel-grid{display:grid;grid-template-columns:1fr;gap:40px;margin-top:48px;align-items:center}
-    @media(min-width:960px){.panel-grid{grid-template-columns:1fr 1.2fr}.panel-grid.flip .txt{order:2}}
-    .panel-grid .txt h3{font-family:'Sora',sans-serif;font-size:clamp(1.3rem,3vw,1.7rem);letter-spacing:-.02em;line-height:1.2}
-    .panel-grid .txt p{color:var(--muted);font-size:14.5px;line-height:1.7;margin-top:12px}
-    .panel-grid .txt ul{list-style:none;margin-top:18px;display:grid;gap:10px}
-    .panel-grid .txt li{font-size:13.5px;font-weight:500;display:flex;gap:10px;align-items:center}
-    .panel-grid .txt li i{font-style:normal;width:26px;height:26px;border-radius:8px;background:var(--pink-100);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-    .browser{border-radius:18px;overflow:hidden;box-shadow:0 30px 70px rgba(122,50,90,.28);border:1px solid rgba(238,126,177,.2);transition:transform .4s var(--ease)}
-    .browser:hover{transform:translateY(-6px) scale(1.01)}
-    .browser .bbar{display:flex;gap:6px;align-items:center;padding:10px 14px;background:#fdf4f8;border-bottom:1px solid #f7e3ee}
-    .browser .bbar u{width:9px;height:9px;border-radius:50%;text-decoration:none}
-    .browser .bbar u:nth-child(1){background:#fda4af}.browser .bbar u:nth-child(2){background:#fcd34d}.browser .bbar u:nth-child(3){background:#86efac}
-    .browser .bbar s{text-decoration:none;margin-left:10px;font-size:10px;color:#c9a2b6;background:#fff;border:1px solid #f3dce8;border-radius:999px;padding:3px 14px;flex:1;text-align:center;font-family:monospace}
-    .cpanel{background:#FFF9FB;padding:18px;display:grid;grid-template-columns:1fr;gap:12px}
-    .cpanel .row{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #f7e3ee;border-radius:14px;padding:12px;box-shadow:0 3px 12px rgba(238,126,177,.08)}
-    .cpanel .thumb{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
-    .cpanel .ri b{font-size:12px;font-family:'Sora',sans-serif;display:block}
-    .cpanel .ri span{font-size:10px;color:var(--muted)}
-    .cpanel .st{margin-left:auto;text-align:right;font-size:10px;color:var(--muted)}
-    .cpanel .st b{color:var(--rose-500);font-size:12px;font-family:'Sora',sans-serif;display:block}
-    .cpanel .acts{display:flex;gap:6px;margin-left:8px}
-    .cpanel .acts i{font-style:normal;width:26px;height:26px;border-radius:8px;background:#FBE4EF;display:flex;align-items:center;justify-content:center;font-size:11px}
-    .spark{display:flex;align-items:flex-end;gap:3px;height:34px;padding:0 2px}
-    .spark i{flex:1;background:linear-gradient(180deg,#EE7EB1,#E8447A);border-radius:3px 3px 0 0;min-width:5px}
-    .cpanel .statrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    .cpanel .mini-stat{background:#fff;border:1px solid #f7e3ee;border-radius:14px;padding:12px;text-align:center}
-    .cpanel .mini-stat b{font-family:'Sora',sans-serif;font-size:16px;color:var(--rose-500);display:block}
-    .cpanel .mini-stat span{font-size:9.5px;color:var(--muted)}
-
-    .apanel{background:#191221;padding:16px;display:grid;gap:12px;color:#e9dbe4}
-    .apanel .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .apanel .kpi{background:#221930;border:1px solid #37263f;border-radius:12px;padding:12px}
-    .apanel .kpi span{font-size:9px;color:#9d8aa5;text-transform:uppercase;letter-spacing:.08em}
-    .apanel .kpi b{font-family:'Sora',sans-serif;font-size:16px;display:block;margin-top:3px;color:#fff}
-    .apanel .kpi small{font-size:9px;color:#4ade80}
-    .apanel .chart{background:#221930;border:1px solid #37263f;border-radius:12px;padding:14px}
-    .apanel .chart span{font-size:10px;color:#9d8aa5}
-    .abars{display:flex;align-items:flex-end;gap:5px;height:64px;margin-top:10px}
-    .abars i{flex:1;background:linear-gradient(180deg,#EE7EB1,#7e2b56);border-radius:3px 3px 0 0;opacity:.9}
-    .apanel .tbl{background:#221930;border:1px solid #37263f;border-radius:12px;padding:12px;font-size:10px}
-    .apanel .tbl .tr{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid #2e2138}
-    .apanel .tbl .tr:last-child{border:none}
-    .apanel .ok{color:#4ade80}.apanel .pnd{color:#facc15}
 
     /* ===== testimonials ===== */
     .tests{display:grid;grid-template-columns:1fr;gap:18px;margin-top:48px}
@@ -391,6 +324,23 @@
     footer ul a:hover{color:var(--pink-300)}
     footer .bottom{border-top:1px solid #2A1E2E;padding:22px 24px;text-align:center;font-size:12px;color:#8a7080}
     footer .bottom .script{font-family:'Dancing Script',cursive;color:var(--pink-500);font-size:16px}
+
+    /* ===== modo administrador ===== */
+    .adm-login{margin-left:2px;width:34px;height:34px;flex-shrink:0;border-radius:50%;border:var(--glass-b);background:rgba(255,255,255,.6);cursor:pointer;font-size:14px;opacity:.45;transition:opacity .2s,transform .2s var(--ease)}
+    .adm-login:hover{opacity:1;transform:scale(1.1)}
+    body.adm [data-ub]:hover{outline:1.5px dashed rgba(232,68,122,.55);outline-offset:3px}
+    body.adm [data-ut]{cursor:text}
+    body.adm [data-ut]:hover{outline:1px dashed rgba(238,126,177,.6);outline-offset:2px}
+    body.adm [data-ut]:focus{outline:2px solid var(--rose-500);outline-offset:2px;border-radius:4px}
+    .ghosted{opacity:.3;filter:grayscale(.5)}
+    .adm-ctl{position:fixed;z-index:200;display:none;gap:4px;background:#1C1420;border-radius:999px;padding:5px 7px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .adm-ctl button{border:none;background:#2A1E2E;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;transition:background .15s}
+    .adm-ctl button:hover{background:var(--rose-500)}
+    .adm-bar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:210;display:flex;align-items:center;gap:10px;background:#1C1420;color:#fff;border-radius:999px;padding:10px 16px;box-shadow:0 16px 44px rgba(0,0,0,.4);font-size:12.5px;flex-wrap:wrap;justify-content:center;max-width:94vw}
+    .adm-bar b{font-family:'Sora',sans-serif;font-size:12.5px}
+    .adm-bar span{color:#7ee2a0;font-size:11.5px}
+    .adm-bar button{border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:#2A1E2E;color:#fff;transition:background .15s}
+    .adm-bar button:hover{background:var(--rose-500)}
   </style>
 </head>
 <body>
@@ -408,6 +358,7 @@
         <a href="#faq">FAQ</a>
       </div>
       <a class="cta" href="#demo"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
+      <button class="adm-login" id="admLogin" title="Ingresar · solo administrador" aria-label="Ingresar administrador">🔑</button>
     </div>
   </nav>
 
@@ -677,33 +628,6 @@
     </div>
   </section>
 
-  <!-- ============ FEATURES ============ -->
-  <section style="padding-top:30px">
-    <div class="wrap">
-      <span class="kicker rv">Multimedia</span>
-      <h2 class="rv">Todo lo que puedes <span class="grad">agregar</span></h2>
-      <p class="lead rv d1">Tu dedicatoria, tus reglas. Combina lo que quieras — todo está incluido en el editor.</p>
-      <div class="feats">
-        <div class="feat rv"><span class="e">📷</span><b>Fotos</b></div>
-        <div class="feat rv"><span class="e">🎬</span><b>Videos</b></div>
-        <div class="feat rv"><span class="e">🎧</span><b>Spotify</b></div>
-        <div class="feat rv"><span class="e">▶️</span><b>YouTube</b></div>
-        <div class="feat rv d1"><span class="e">🎵</span><b>TikTok</b></div>
-        <div class="feat rv d1"><span class="e">📍</span><b>Google Maps</b></div>
-        <div class="feat rv d1"><span class="e">⏳</span><b>Cuenta regresiva</b></div>
-        <div class="feat rv d1"><span class="e">🎊</span><b>Confeti</b></div>
-        <div class="feat rv d2"><span class="e">🔗</span><b>QR personalizado</b></div>
-        <div class="feat rv d2"><span class="e">🎼</span><b>Tu propia música</b></div>
-        <div class="feat rv d2"><span class="e">💌</span><b>Cartas</b></div>
-        <div class="feat rv d2"><span class="e">📜</span><b>Poemas</b></div>
-        <div class="feat rv d3"><span class="e">✨</span><b>GIFs</b></div>
-        <div class="feat rv d3"><span class="e">🔒</span><b>Contraseña secreta</b></div>
-        <div class="feat rv d3"><span class="e">🌙</span><b>Modo oscuro</b></div>
-        <div class="feat rv d3"><span class="e">💗</span><b>Lluvia de corazones</b></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ DEMO ============ -->
   <section id="demo" class="demo-sec" style="padding-top:30px">
     <div class="wrap">
@@ -713,102 +637,6 @@
         <span class="env" onclick="openDemo()">💌</span>
         <p>Alguien te dejó una carta. Ábrela y vive exactamente lo que sentirá esa persona especial cuando reciba la tuya.</p>
         <button class="btn" onclick="openDemo()">Abrir mi sorpresa 💝</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CLIENT PANEL ============ -->
-  <section>
-    <div class="wrap">
-      <span class="kicker rv">Tu espacio</span>
-      <h2 class="rv">Tus dedicatorias, <span class="grad">bajo control</span></h2>
-      <div class="panel-grid">
-        <div class="txt rv">
-          <h3>Un panel tan bonito como lo que creas</h3>
-          <p>Cada dedicatoria queda guardada en tu cuenta. Edítala aunque ya la hayas enviado, mira cuántas veces la abrió y descarga su QR para imprimirlo donde quieras.</p>
-          <ul>
-            <li><i>✏️</i> Edita en cualquier momento — el enlace se actualiza solo</li>
-            <li><i>📊</i> Estadísticas: vistas, tiempo y compartidos en tiempo real</li>
-            <li><i>💞</i> Duplica para la próxima ocasión en un click</li>
-            <li><i>🔗</i> QR en alta calidad, listo para imprimir</li>
-            <li><i>💌</i> Notificación cuando la abre por primera vez</li>
-          </ul>
-        </div>
-        <div class="browser rv d1">
-          <div class="bbar"><u></u><u></u><u></u><s>uwu.app/panel</s></div>
-          <div class="cpanel">
-            <div class="statrow">
-              <div class="mini-stat"><b>3</b><span>Dedicatorias</span></div>
-              <div class="mini-stat"><b>412</b><span>Vistas totales</span></div>
-              <div class="mini-stat"><b>1:42</b><span>Tiempo promedio</span></div>
-            </div>
-            <div class="row">
-              <div class="thumb" style="background:linear-gradient(135deg,#8e2461,#E8447A)">💕</div>
-              <div class="ri"><b>Para Mariana 💝</b><span>Nuestro Tiempo · Publicada</span></div>
-              <div class="st"><b>214 vistas</b>💌 abierta hoy</div>
-              <div class="acts"><i>✏️</i><i>🔗</i><i>📊</i></div>
-            </div>
-            <div class="row">
-              <div class="thumb" style="background:linear-gradient(135deg,#F6A13C,#F0567B)">🎂</div>
-              <div class="ri"><b>Cumple de Vale</b><span>Fiesta Infinita · Publicada</span></div>
-              <div class="st"><b>187 vistas</b>compartida 23×</div>
-              <div class="acts"><i>✏️</i><i>🔗</i><i>📊</i></div>
-            </div>
-            <div class="row">
-              <div class="thumb" style="background:linear-gradient(135deg,#7899d4,#c6a9e8)">🌸</div>
-              <div class="ri"><b>Borrador secreto…</b><span>Lluvia de Flores · Sin publicar</span></div>
-              <div class="st"><b>—</b>continuar ✍️</div>
-              <div class="acts"><i>✏️</i><i>🗑️</i></div>
-            </div>
-            <div class="row" style="flex-direction:column;align-items:stretch;gap:6px">
-              <span style="font-size:10px;color:var(--muted)">Vistas de los últimos 14 días</span>
-              <div class="spark">
-                <i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:75%"></i><i style="height:64%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:95%"></i><i style="height:82%"></i><i style="height:100%"></i><i style="height:90%"></i><i style="height:97%"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ ADMIN PANEL ============ -->
-  <section style="padding-top:20px">
-    <div class="wrap">
-      <div class="panel-grid flip">
-        <div class="txt rv">
-          <span class="kicker" style="text-align:left">Detrás de escena</span>
-          <h3>Un negocio que se maneja solo</h3>
-          <p>UWU no es solo bonito por fuera: por dentro hay un panel de administración de nivel enterprise. Ventas, usuarios, plantillas, cupones, SEO y analytics — todo automático, sin tocar una línea de código.</p>
-          <ul>
-            <li><i>💰</i> Ventas y pagos conciliados en tiempo real</li>
-            <li><i>👥</i> Gestión de usuarios, roles y permisos</li>
-            <li><i>🎨</i> Catálogo de plantillas con métricas de conversión</li>
-            <li><i>🎟️</i> Cupones, promociones y programa de afiliados</li>
-            <li><i>📈</i> SEO, analytics y logs de auditoría</li>
-          </ul>
-        </div>
-        <div class="browser rv d1">
-          <div class="bbar"><u></u><u></u><u></u><s>uwu.app/admin</s></div>
-          <div class="apanel">
-            <div class="kpis">
-              <div class="kpi"><span>Ingresos hoy</span><b>$1,240</b><small>▲ 18% vs ayer</small></div>
-              <div class="kpi"><span>Pedidos</span><b>318</b><small>▲ 12%</small></div>
-              <div class="kpi"><span>Conversión</span><b>4.2%</b><small>▲ 0.6 pts</small></div>
-            </div>
-            <div class="chart">
-              <span>Ingresos · últimos 14 días</span>
-              <div class="abars">
-                <i style="height:32%"></i><i style="height:48%"></i><i style="height:40%"></i><i style="height:58%"></i><i style="height:50%"></i><i style="height:66%"></i><i style="height:74%"></i><i style="height:60%"></i><i style="height:82%"></i><i style="height:72%"></i><i style="height:90%"></i><i style="height:84%"></i><i style="height:96%"></i><i style="height:100%"></i>
-              </div>
-            </div>
-            <div class="tbl">
-              <div class="tr"><span>💕 Nuestro Tiempo × Plan Llama</span><span class="ok">Pagado · $6.99</span></div>
-              <div class="tr"><span>💍 La Gran Pregunta × Premium</span><span class="ok">Pagado · $4.99</span></div>
-              <div class="tr"><span>🎂 Fiesta Infinita × Plan Chispa</span><span class="pnd">Procesando…</span></div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -945,8 +773,8 @@
         <ul>
           <li><a href="#como">Cómo funciona</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
-          <li><a href="https://github.com/ANTHONY109823/Uwu/blob/main/docs/README.md">Documentación del proyecto</a></li>
-          <li><a href="https://github.com/ANTHONY109823/Uwu">GitHub</a></li>
+          <li><a href="#demo">Demo interactiva</a></li>
+          <li><a href="#precios">Precios</a></li>
         </ul>
       </div>
       <div>
@@ -1017,7 +845,7 @@
     })();
 
     /* ---- marquee duplicate ---- */
-    (function(){var m=document.getElementById('marquee');m.innerHTML+=m.innerHTML;})();
+    (function(){var m=document.getElementById('marquee');window.__marqHalf=m.innerHTML;m.innerHTML+=m.innerHTML;})();
 
     /* ---- scroll reveal ---- */
     (function(){
@@ -1094,6 +922,7 @@
     /* ---- demo modal ---- */
     var typerTimer=null,tickTimer=null;
     function openDemo(){
+      if(document.body.classList.contains('adm'))return;
       document.getElementById('ov').classList.add('open');
       document.body.style.overflow='hidden';
       document.getElementById('d1').classList.remove('hide');
@@ -1130,6 +959,108 @@
     }
     document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeDemo();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
+
+    /* ================= MODO ADMINISTRADOR ================= */
+    /* Contraseña: hash SHA-256. Para cambiarla ejecuta en la consola: uwuHash('tu-nueva-contraseña') y pega el resultado aquí. */
+    var ADMIN_HASH='e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';
+    window.uwuHash=function(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')});};
+    var ADM=sessionStorage.getItem('uwuAdm')==='1';
+    var OPS=JSON.parse(localStorage.getItem('uwuOps')||'{"text":{},"hidden":[],"deleted":[],"order":{}}');
+    function saveOps(){localStorage.setItem('uwuOps',JSON.stringify(OPS));var s=document.getElementById('admSaved');if(s){s.textContent='✓ Guardado ahora';clearTimeout(saveOps._t);saveOps._t=setTimeout(function(){s.textContent='✓ Autoguardado';},1400);}}
+
+    /* ids deterministas (se excluye todo contenido generado al azar) */
+    var SKIP='#hearts,.hearts-in,.confetti,.dhearts,.ov,.adm-ui,.adm-ctl,.eq';
+    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.price,.qa,.step,.arrow,.float-chip,.demo-box,.final,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
+    var TEXTS='h1,h2,h3,h4,h5,p,li,.kicker,.lead,.btn,.cta,.tag2,.minf .nm,.minf .ct,.tg,.stat span,.cat b,.cat span,.step b,.qa button,.inf b,.inf span,.who b,.who span,.amt,.desc,nav .links a,footer a,.bottom,.t1,.t2,.pill,.mbar s,.scr .tag,.scr .name,.scr .msg,.lview .btag,.lview .bname,.lview .bmsg,.lview .bbtn,.float-chip,.stars';
+    (function(){
+      var b=0,t=0,p=0;
+      document.querySelectorAll(BLOCKS).forEach(function(el){if(el.closest(SKIP))return;el.dataset.ub='b'+(b++);});
+      document.querySelectorAll(TEXTS).forEach(function(el){if(el.closest(SKIP)||el.id==='admLogin')return;el.dataset.ut='t'+(t++);});
+      document.querySelectorAll('[data-ub]').forEach(function(el){var par=el.parentElement;if(par&&!par.dataset.up)par.dataset.up='p'+(p++);});
+    })();
+
+    /* aplicar cambios guardados (para el admin en este navegador) */
+    (function(){
+      Object.keys(OPS.text).forEach(function(id){var el=document.querySelector('[data-ut="'+id+'"]');if(el)el.innerHTML=OPS.text[id];});
+      Object.keys(OPS.order).forEach(function(pid){var par=document.querySelector('[data-up="'+pid+'"]');if(!par)return;OPS.order[pid].forEach(function(cid){var c=par.querySelector(':scope>[data-ub="'+cid+'"]');if(c)par.appendChild(c);});});
+      OPS.deleted.forEach(function(id){var el=document.querySelector('[data-ub="'+id+'"]');if(el)el.style.display='none';});
+      OPS.hidden.forEach(function(id){var el=document.querySelector('[data-ub="'+id+'"]');if(!el)return;if(ADM)el.classList.add('ghosted');else el.style.display='none';});
+    })();
+
+    /* login / logout */
+    document.getElementById('admLogin').addEventListener('click',function(){
+      if(ADM){if(confirm('¿Salir del modo administrador?')){sessionStorage.removeItem('uwuAdm');location.reload();}return;}
+      var pw=prompt('🔑 Contraseña de administrador:');if(pw===null||pw==='')return;
+      uwuHash(pw).then(function(h){if(h===ADMIN_HASH){sessionStorage.setItem('uwuAdm','1');location.reload();}else{alert('Contraseña incorrecta 🙈');}});
+    });
+
+    if(ADM){
+      document.body.classList.add('adm');
+      var lg=document.getElementById('admLogin');lg.textContent='🚪';lg.title='Salir del modo administrador';lg.style.opacity='1';
+
+      /* barra de herramientas */
+      var bar=document.createElement('div');bar.className='adm-ui adm-bar';
+      bar.innerHTML='<b>🔧 Modo admin</b><span id="admSaved">✓ Autoguardado</span><button id="admDl">⬇ Descargar HTML</button><button id="admReset">♻ Restaurar</button>';
+      document.body.appendChild(bar);
+
+      /* edición de textos: clic sobre cualquier texto */
+      document.querySelectorAll('[data-ut]').forEach(function(el){el.setAttribute('contenteditable','true');el.setAttribute('spellcheck','false');});
+      document.addEventListener('input',function(e){var el=e.target.closest&&e.target.closest('[data-ut]');if(!el)return;OPS.text[el.dataset.ut]=el.innerHTML;saveOps();});
+
+      /* en modo admin los enlaces/botones no navegan (para poder editarlos) */
+      document.addEventListener('click',function(e){
+        if(e.target.closest('.adm-ui,.adm-ctl,.car-nav,#admLogin'))return;
+        if(e.target.closest('a,button,.mini,.env')){e.preventDefault();e.stopPropagation();}
+      },true);
+
+      /* controles flotantes por caja: ocultar · subir · bajar · eliminar */
+      var ctl=document.createElement('div');ctl.className='adm-ui adm-ctl';
+      ctl.innerHTML='<button data-a="hide" title="Ocultar / mostrar">👁</button><button data-a="up" title="Subir">↑</button><button data-a="down" title="Bajar">↓</button><button data-a="del" title="Eliminar">🗑</button>';
+      document.body.appendChild(ctl);
+      var cur=null;
+      function placeCtl(){if(!cur)return;var r=cur.getBoundingClientRect();ctl.style.display='flex';ctl.style.top=Math.max(6,r.top-16)+'px';ctl.style.left=Math.min(window.innerWidth-160,Math.max(6,r.right-160))+'px';}
+      document.addEventListener('mouseover',function(e){
+        if(e.target.closest('.adm-ctl,.adm-bar'))return;
+        var b=e.target.closest('[data-ub]');if(!b||b===cur){if(b)placeCtl();return;}
+        cur=b;placeCtl();
+      });
+      window.addEventListener('scroll',function(){ctl.style.display='none';},{passive:true});
+      ctl.addEventListener('click',function(e){
+        var a=e.target.dataset.a;if(!a||!cur)return;var id=cur.dataset.ub;
+        if(a==='hide'){var i=OPS.hidden.indexOf(id);if(i>-1){OPS.hidden.splice(i,1);cur.classList.remove('ghosted');}else{OPS.hidden.push(id);cur.classList.add('ghosted');}}
+        if(a==='del'){if(!confirm('¿Eliminar este elemento?\n(Podrás recuperarlo con ♻ Restaurar)'))return;OPS.deleted.push(id);cur.style.display='none';ctl.style.display='none';}
+        if(a==='up'||a==='down'){
+          var sib=a==='up'?cur.previousElementSibling:cur.nextElementSibling;
+          while(sib&&!sib.dataset.ub)sib=a==='up'?sib.previousElementSibling:sib.nextElementSibling;
+          if(sib){if(a==='up')cur.parentElement.insertBefore(cur,sib);else cur.parentElement.insertBefore(sib,cur);
+            var par=cur.parentElement,pid=par.dataset.up;
+            if(pid)OPS.order[pid]=Array.from(par.children).filter(function(c){return c.dataset.ub;}).map(function(c){return c.dataset.ub;});
+            placeCtl();}}
+        saveOps();
+      });
+
+      /* restaurar original */
+      document.getElementById('admReset').addEventListener('click',function(){
+        if(confirm('¿Restaurar la página original?\nSe pierden todos los cambios guardados en este navegador.')){localStorage.removeItem('uwuOps');location.reload();}
+      });
+
+      /* descargar index.html con los cambios aplicados (para publicarlos en GitHub) */
+      document.getElementById('admDl').addEventListener('click',function(){
+        var doc=document.documentElement.cloneNode(true);
+        doc.querySelectorAll('.adm-ui,.adm-ctl').forEach(function(n){n.remove();});
+        OPS.deleted.forEach(function(id){var n=doc.querySelector('[data-ub="'+id+'"]');if(n)n.remove();});
+        OPS.hidden.forEach(function(id){var n=doc.querySelector('[data-ub="'+id+'"]');if(n){n.classList.remove('ghosted');n.setAttribute('hidden','');n.style.display='none';}});
+        doc.querySelectorAll('[contenteditable]').forEach(function(n){n.removeAttribute('contenteditable');n.removeAttribute('spellcheck');});
+        var bd=doc.querySelector('body');bd.classList.remove('adm');bd.style.overflow='';
+        ['#hearts','#phoneHearts','#confetti','#dhearts','#car'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
+        var m=doc.querySelector('#marquee');if(m&&window.__marqHalf)m.innerHTML=window.__marqHalf;
+        doc.querySelectorAll('[data-ub],[data-ut],[data-up]').forEach(function(n){n.removeAttribute('data-ub');n.removeAttribute('data-ut');n.removeAttribute('data-up');});
+        doc.querySelectorAll('.rv').forEach(function(n){n.classList.remove('on');});
+        var blob=new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'});
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();
+        alert('📄 index.html descargado con tus cambios.\n\nPara publicarlos para todos los visitantes, reemplaza el archivo docs/index.html en tu repositorio de GitHub (o pídele a Claude que lo haga).');
+      });
+    }
   </script>
 </body>
 </html>
