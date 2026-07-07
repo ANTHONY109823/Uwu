@@ -165,7 +165,10 @@
     .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
-    .cat-empty p{color:var(--muted);font-size:14px;line-height:1.6;max-width:420px;margin:0 auto 18px}
+    .marquee-plantillas{margin:24px 0 6px;border-radius:20px;border:var(--glass-b);box-shadow:var(--shadow)}
+    .marquee-plantillas .marquee-label{padding-top:12px;font-size:11px}
+    #plantillas .show-grid{margin-top:24px}
+    #plantillas .cur-toggle{margin-top:18px}
 
     /* ===== stats ===== */
     .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
@@ -465,11 +468,17 @@
   </header>
 
   <!-- ============ SHOWCASE ============ -->
-  <section id="plantillas" style="padding-top:40px">
+  <section id="plantillas" style="padding-top:32px">
     <div class="wrap">
       <span class="kicker rv">Showcase</span>
       <h2 class="rv">Cada plantilla es <span class="grad">una experiencia completa</span></h2>
       <p class="lead rv d1">No son tarjetas. Son páginas web reales con música, animaciones y su propia personalidad. Cada una tiene su precio y código único.</p>
+
+      <div class="marquee marquee-plantillas rv d1" id="categorias-plantillas">
+        <div class="marquee-label">Categorías · elige y filtra</div>
+        <div class="track" id="marqueePlantillas" aria-label="Filtrar plantillas por categoría"></div>
+      </div>
+
       <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
         <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
         <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
@@ -742,6 +751,7 @@
         var bd=doc.querySelector('body');bd.classList.remove('adm');bd.style.overflow='';
         ['#hearts','#phoneHearts','#confetti','#dhearts','#car','#showGrid'].forEach(function(s){var n=doc.querySelector(s);if(n)n.innerHTML='';});
         var m=doc.querySelector('#marquee');if(m&&window.__marqHalf)m.innerHTML=window.__marqHalf;
+        var mp=doc.querySelector('#marqueePlantillas');if(mp&&window.__marqHalf)mp.innerHTML=window.__marqHalf;
         doc.querySelectorAll('[data-ub],[data-ut],[data-up]').forEach(function(n){n.removeAttribute('data-ub');n.removeAttribute('data-ut');n.removeAttribute('data-up');});
         doc.querySelectorAll('.rv').forEach(function(n){n.classList.remove('on');});
         var blob=new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'});

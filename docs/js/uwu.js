@@ -209,9 +209,19 @@
   }
 
   function getSlugsForCategory(catId) {
-    if (!catId) return SHOWCASE.slice();
+    if (!catId) return CATALOG_ORDER.slice();
     return CATALOG_ORDER.filter(function (slug) {
       return templateMatchesCategory(CATALOG[slug], catId);
+    });
+  }
+
+  function bindCategoryPills() {
+    if (global.__catPillsBound) return;
+    global.__catPillsBound = true;
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('.cat-pill');
+      if (!btn || !btn.dataset.cat) return;
+      setCategoryFilter(btn.dataset.cat);
     });
   }
 
@@ -242,7 +252,9 @@
         bar.innerHTML = '';
       }
     }
-    buildCatalogUI(Object.assign({}, global.__uwuCatalogOpts || {}, { reveal: opts.reveal }));
+    var catalogOpts = Object.assign({}, global.__uwuCatalogOpts || {});
+    if (opts.reveal) catalogOpts.reveal = opts.reveal;
+    buildCatalogUI(catalogOpts);
     if (opts.scroll !== false && activeCategory) {
       var sec = document.getElementById('plantillas');
       if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -265,20 +277,20 @@
     }
   }
 
-  function renderMarquee() {
-    var track = document.getElementById('marquee');
+  function fillMarqueeTrack(track, saveHalf) {
     if (!track) return;
-    track.innerHTML = CATEGORIES.map(function (cat) {
+    var html = CATEGORIES.map(function (cat) {
       return '<button type="button" class="cat-pill" data-cat="' + cat.id + '" title="Ver plantillas de ' + esc(cat.label) + '">' +
         cat.emoji + ' ' + esc(cat.label) + '</button>';
     }).join('');
-    window.__marqHalf = track.innerHTML;
-    track.innerHTML += track.innerHTML;
-    track.querySelectorAll('.cat-pill').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        setCategoryFilter(btn.dataset.cat);
-      });
-    });
+    if (saveHalf) global.__marqHalf = html;
+    track.innerHTML = html + html;
+  }
+
+  function renderMarquee() {
+    bindCategoryPills();
+    fillMarqueeTrack(document.getElementById('marquee'), true);
+    fillMarqueeTrack(document.getElementById('marqueePlantillas'), false);
   }
 
   function buildCatalogUI(opts) {
@@ -338,6 +350,9 @@
       grid.querySelectorAll('[data-buy]').forEach(function (btn) {
         btn.addEventListener('click', function (e) { e.stopPropagation(); openCheckout(btn.dataset.buy); });
       });
+      if (activeCategory) {
+        grid.querySelectorAll('.rv').forEach(function (el) { el.classList.add('on'); });
+      }
     }
     var car = document.getElementById('car');
     if (car) {
