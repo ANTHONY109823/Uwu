@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="robots" content="noindex">
+    <title>UWU — Hello Kitty Mágica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .romantic-text {
+                font-size: 4rem !important;
+                line-height: 1.2 !important;
+                text-align: center !important;
+                padding: 20px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+            .typing-text {
+                white-space: normal !important;
+                text-align: center !important;
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .romantic-text {
+                font-size: 3.8rem !important;
+                line-height: 1.2 !important;
+                padding: 30px 15px !important;
+            }
+        }
+        @media (max-width: 360px) {
+            .romantic-text {
+                font-size: 3.5rem !important;
+                line-height: 1.2 !important;
+                padding: 25px 10px !important;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e542a1 0%, #f44780 25%, #3890dd 50%, #c654ce 75%, #e542a1 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            max-width: 90vw;
+            width: 100%;
+        }
+
+        .drawing-area {
+            position: relative;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hello-kitty-svg {
+            width: min(400px, 85vw);
+            height: min(400px, 85vw);
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .hello-kitty-svg path {
+            stroke-dasharray: 0;
+            stroke-dashoffset: 0;
+            fill-opacity: 0;
+            stroke-opacity: 0;
+        }
+
+        .hello-kitty-svg .main-outline {
+            stroke: #000;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+            animation: drawOutline 3s ease-in-out 0.5s forwards;
+        }
+
+        .hello-kitty-svg .face {
+            fill: #ffffff;
+            stroke: #000;
+            stroke-width: 2;
+            stroke-dasharray: 1200;
+            stroke-dashoffset: 1200;
+            fill-opacity: 0;
+            animation: drawAndFill 2s ease-in-out 3.5s forwards;
+        }
+
+        .hello-kitty-svg .bow {
+            fill: #cc2229;
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            fill-opacity: 0;
+            animation: drawAndFill 1.5s ease-in-out 5.5s forwards;
+        }
+
+        .hello-kitty-svg .bow-detail {
+            fill: #cc2229;
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            fill-opacity: 0;
+            animation: drawAndFill 1s ease-in-out 6.2s forwards;
+        }
+
+        .hello-kitty-svg .bow-center {
+            fill: #cc2229;
+            animation: fadeIn 0.5s ease-in-out 7s forwards;
+        }
+
+        .hello-kitty-svg .eye-left,
+        .hello-kitty-svg .eye-right {
+            fill: #000;
+            animation: fadeIn 0.8s ease-in-out 7.5s forwards;
+        }
+
+        .hello-kitty-svg .nose {
+            fill: #000;
+            animation: fadeIn 0.5s ease-in-out 8s forwards;
+        }
+
+        .hello-kitty-svg .nose-inner {
+            fill: #f2c831;
+            animation: fadeIn 0.3s ease-in-out 8.3s forwards;
+        }
+
+        .hello-kitty-svg .whisker-left-1,
+        .hello-kitty-svg .whisker-left-2,
+        .hello-kitty-svg .whisker-left-3,
+        .hello-kitty-svg .whisker-right-1,
+        .hello-kitty-svg .whisker-right-2,
+        .hello-kitty-svg .whisker-right-3 {
+            stroke: #000;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: drawWhisker 0.8s ease-in-out forwards;
+        }
+
+        .hello-kitty-svg .whisker-left-1 { animation-delay: 8.5s; }
+        .hello-kitty-svg .whisker-left-2 { animation-delay: 8.7s; }
+        .hello-kitty-svg .whisker-left-3 { animation-delay: 8.9s; }
+        .hello-kitty-svg .whisker-right-1 { animation-delay: 9.1s; }
+        .hello-kitty-svg .whisker-right-2 { animation-delay: 9.3s; }
+        .hello-kitty-svg .whisker-right-3 { animation-delay: 9.5s; }
+
+        @keyframes drawOutline {
+            0% {
+                stroke-dashoffset: 1500;
+                stroke-opacity: 0;
+            }
+            10% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                stroke-opacity: 1;
+            }
+        }
+
+        @keyframes drawAndFill {
+            0% {
+                stroke-dashoffset: 1200;
+                stroke-opacity: 0;
+                fill-opacity: 0;
+            }
+            10% {
+                stroke-opacity: 1;
+            }
+            70% {
+                stroke-dashoffset: 0;
+                stroke-opacity: 1;
+                fill-opacity: 0;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                stroke-opacity: 1;
+                fill-opacity: 1;
+            }
+        }
+
+        @keyframes drawWhisker {
+            0% {
+                stroke-dashoffset: 50;
+                stroke-opacity: 0;
+            }
+            20% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                stroke-opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                fill-opacity: 0;
+            }
+            100% {
+                fill-opacity: 1;
+            }
+        }
+
+        .continue-btn {
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: rgb(0, 234, 255);
+            color: #000000;
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 50px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            letter-spacing: 0.5px;
+        }
+
+        .continue-btn:hover {
+            background: rgb(255, 255, 255);
+            border-color: rgba(0, 0, 0, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #00aeff;
+        }
+
+        .continue-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes showButton {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            opacity: 0;
+            animation: containerFadeIn 1s ease-out forwards;
+        }
+
+        @keyframes containerFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .drawing-area::before {
+            display: none;
+        }
+
+        .romantic-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff0f5 25%, #f0f8ff 50%, #f5f0ff 75%, #fff5ee 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px;
+        }
+
+        .romantic-message.show {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .romantic-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: min(3rem, 6vw);
+            font-weight: 600;
+            color: #8b5a83;
+            text-align: center;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(139, 90, 131, 0.1);
+            max-width: 90%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            display: block;
+            padding: 0 20px;
+        }
+
+        .typing-text {
+            display: block;
+            max-width: 95%;
+            margin: 0 auto;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            line-height: 1.3;
+            min-height: 100px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #8b5a83;
+            margin-left: 4px;
+            animation: blink-caret 0.75s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink-caret {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .hearts-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+            animation: showHearts 1s ease-out 8s forwards;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #e91e63;
+            transform: rotate(45deg);
+            animation: floatUp 6s ease-out infinite;
+        }
+
+        .heart::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #e91e63;
+            border-radius: 50%;
+            top: -10px;
+            left: 0;
+        }
+
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #e91e63;
+            border-radius: 50%;
+            top: 0;
+            left: -10px;
+        }
+
+        .heart:nth-child(1) {
+            left: 15%;
+            animation-delay: 0s;
+            background: #e91e63;
+            --size: 18px;
+        }
+
+        .heart:nth-child(1)::before,
+        .heart:nth-child(1)::after {
+            background: #e91e63;
+        }
+
+        .heart:nth-child(2) {
+            left: 25%;
+            animation-delay: 0.8s;
+            background: #f06292;
+            --size: 16px;
+        }
+
+        .heart:nth-child(2)::before,
+        .heart:nth-child(2)::after {
+            background: #f06292;
+        }
+
+        .heart:nth-child(3) {
+            left: 35%;
+            animation-delay: 1.6s;
+            background: #e91e63;
+            --size: 20px;
+        }
+
+        .heart:nth-child(3)::before,
+        .heart:nth-child(3)::after {
+            background: #e91e63;
+        }
+
+        .heart:nth-child(4) {
+            left: 45%;
+            animation-delay: 2.4s;
+            background: #f8bbd9;
+            --size: 14px;
+        }
+
+        .heart:nth-child(4)::before,
+        .heart:nth-child(4)::after {
+            background: #f8bbd9;
+        }
+
+        .heart:nth-child(5) {
+            left: 55%;
+            animation-delay: 3.2s;
+            background: #e91e63;
+            --size: 18px;
+        }
+
+        .heart:nth-child(5)::before,
+        .heart:nth-child(5)::after {
+            background: #e91e63;
+        }
+
+        .heart:nth-child(6) {
+            left: 65%;
+            animation-delay: 4s;
+            background: #f06292;
+            --size: 16px;
+        }
+
+        .heart:nth-child(6)::before,
+        .heart:nth-child(6)::after {
+            background: #f06292;
+        }
+
+        .heart:nth-child(7) {
+            left: 75%;
+            animation-delay: 4.8s;
+            background: #e91e63;
+            --size: 20px;
+        }
+
+        .heart:nth-child(7)::before,
+        .heart:nth-child(7)::after {
+            background: #e91e63;
+        }
+
+        .heart:nth-child(8) {
+            left: 85%;
+            animation-delay: 5.6s;
+            background: #f8bbd9;
+            --size: 14px;
+        }
+
+        .heart:nth-child(8)::before,
+        .heart:nth-child(8)::after {
+            background: #f8bbd9;
+        }
+
+        @keyframes floatUp {
+            0% {
+                bottom: -30px;
+                opacity: 0;
+                transform: rotate(45deg) scale(0.3);
+            }
+            15% {
+                opacity: 1;
+                transform: rotate(45deg) scale(1);
+            }
+            85% {
+                opacity: 1;
+                transform: rotate(45deg) scale(0.8) translateX(var(--drift, 0px));
+            }
+            100% {
+                bottom: 250px;
+                opacity: 0;
+                transform: rotate(45deg) scale(0.2) translateX(var(--drift, 0px));
+            }
+        }
+
+        @keyframes showHearts {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .romantic-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: min(1.2rem, 4vw);
+            font-weight: 300;
+            color: #a67ca0;
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInSubtitle 1s ease-out 3.5s forwards;
+        }
+
+        @keyframes fadeInSubtitle {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-message {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #8b5a83;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .close-message:hover {
+            opacity: 1;
+        }
+
+        .code-badge {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            color: #8b5a83;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .hello-kitty-svg {
+                width: min(380px, 90vw);
+                height: min(380px, 90vw);
+            }
+
+            .continue-btn {
+                padding: 12px 24px;
+                font-size: 16px;
+                margin-top: 25px;
+            }
+
+            .romantic-text {
+                font-size: 2.5rem !important;
+                line-height: 1.3 !important;
+                max-width: 95%;
+                padding: 20px 15px;
+                min-height: 150px;
+                text-align: center;
+            }
+
+            .typing-text {
+                max-width: 95%;
+                text-align: center;
+                font-size: 2.5rem !important;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            .typing-cursor {
+                height: 2rem;
+            }
+
+            .romantic-subtitle {
+                font-size: min(1rem, 4vw);
+                padding: 0 15px;
+                margin-top: 10px;
+            }
+
+            .close-message {
+                top: 20px;
+                right: 20px;
+                font-size: 20px;
+            }
+
+            .hearts-container {
+                height: 150px;
+            }
+
+            .heart {
+                width: 16px;
+                height: 16px;
+            }
+
+            .heart::before,
+            .heart::after {
+                width: 16px;
+                height: 16px;
+            }
+
+            .heart::before {
+                top: -8px;
+            }
+
+            .heart::after {
+                left: -8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hello-kitty-svg {
+                width: min(350px, 95vw);
+                height: min(350px, 95vw);
+            }
+
+            .continue-btn {
+                padding: 10px 20px;
+                font-size: 15px;
+                margin-top: 20px;
+            }
+
+            .romantic-message {
+                padding: 30px 10px;
+            }
+
+            .romantic-text {
+                font-size: 2rem !important;
+                line-height: 1.3 !important;
+                max-width: 95%;
+                padding: 20px 10px;
+                min-height: 120px;
+                text-align: center;
+            }
+
+            .typing-text {
+                max-width: 95%;
+                text-align: center;
+                font-size: 2rem !important;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            .typing-cursor {
+                height: 1.5rem;
+            }
+
+            .romantic-subtitle {
+                font-size: min(0.9rem, 4.5vw);
+                padding: 0 10px;
+                margin-top: 15px;
+            }
+
+            .hearts-container {
+                height: 120px;
+            }
+
+            .heart {
+                width: 14px;
+                height: 14px;
+            }
+
+            .heart::before,
+            .heart::after {
+                width: 14px;
+                height: 14px;
+            }
+
+            .heart::before {
+                top: -7px;
+            }
+
+            .heart::after {
+                left: -7px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .romantic-text {
+                font-size: 3rem !important;
+                line-height: 1.1 !important;
+                padding: 50px 8px;
+                min-height: 140px;
+            }
+
+            .romantic-subtitle {
+                font-size: min(1rem, 6vw);
+                padding: 0 8px;
+                margin-top: 20px;
+            }
+
+            .heart {
+                width: 12px;
+                height: 12px;
+            }
+
+            .heart::before,
+            .heart::after {
+                width: 12px;
+                height: 12px;
+            }
+
+            .heart::before {
+                top: -6px;
+            }
+
+            .heart::after {
+                left: -6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="d-back" href="../index.html" style="position:fixed;top:16px;left:16px;z-index:2000;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.85);color:#8b5a83;text-decoration:none;font-size:12px;font-weight:600;font-family:Poppins,sans-serif">← Volver a UWU</a>
+
+    <div class="container">
+        <div class="drawing-area">
+            <svg class="hello-kitty-svg" viewBox="0 0 192.756 192.756" xmlns="http://www.w3.org/2000/svg">
+                <path class="main-outline" d="M106.252 10.438c10.022-2.704 16.052 4.681 18.728 8.027.67 1.338 1.336.668 3.346 0 6.688-3.346 20.064-6.689 25.416-4.682 4.686 2.673 8.027 14.046 8.027 21.404 0 1.338 0 2.006 1.34 3.346 2.674 2.008 6.688 10.036.67 20.737-.67.67-1.342 1.34-.67 2.676 2.006 3.346 4.012 12.711 4.682 16.055 0 2.678.67 2.008 2.008 2.008 2.006 0 8.693.669 11.369.669 2.676.668 5.352 4.014 0 4.014h-10.033c-2.01 0-3.344 0-3.344 2.006 0 1.338-.67 6.691-.67 7.359 0 1.338.67 2.006 2.678 2.676 2.006 0 7.357 1.338 8.693 2.006.67 0 2.01 2.007 0 2.678-2.006.669-6.688 0-10.031-.671-2.012 0-2.678.671-3.346 2.007 0 .668-2.006 5.352-2.678 6.689-.668 1.339-.668 1.339.672 2.009 1.334.668 6.016 3.344 8.695 4.681 4.012 2.01 2.676 5.354-.67 4.016-2.011-.668-7.355-2.677-9.365-4.016-2.006-.667-2.676-.667-4.013.001-4.017 6.021-10.508 10.407-16.726 13.382-12.895 6.174-49.505 13.771-87.62-1.34-5.314-2.105-10.038-5.352-14.049-8.695-.669-.668-1.339-.668-2.675 0-2.011 1.338-7.361 4.014-10.703 6.02-2.009 2.009-4.681 0-2.675-2.675 2.005-2.007 8.697-6.022 10.032-6.69 1.335 0 2.01-.668.67-2.006-1.341-1.338-3.347-4.684-4.012-6.689-.674-1.338-1.34-1.338-3.346-1.338-2.008.67-4.014.67-6.69 1.338s-2.676-2.677 0-3.344c1.339-.673 4.011-2.008 5.351-2.008 1.339-.669 2.006-.669 1.339-2.009-.669-1.338-2.008-6.687-2.008-8.695-.67-1.338-.67-1.338-2.005-1.338-1.337 0-9.367.67-11.372.67-3.347 1.335-4.012-2.678 0-3.346 2.005-1.339 7.355-1.339 10.035-2.008 1.337 0 2.672 0 2.672-.668C23.31 73.99 26.654 64.622 30 58.603c1.336-3.344 1.336-2.676.665-5.352-2.674-8.027-3.344-20.069 2.006-30.772 2.681-3.345 4.686-6.022 10.702-6.022 5.352.671 17.781 5.568 21.796 7.574 2.313 1.799 4.626.257 6.939-.258 2.314-.514 14.65-1.799 21.077-1.542 1.286-1.285 5.569-9.772 13.067-11.793z" fill="#000" stroke="#000" stroke-width="3"/>
+
+                <path class="face" d="M96.218 53.251c4.011 2.008 9.362 2.676 15.382.667 3.346-1.335 4.012-2.005 5.353 0 1.34 3.346 7.356 6.692 10.702 6.692 2.005 0 2.005.668 2.675 2.006 1.34 2.005 5.353 8.697 12.709 10.033 4.015 0 8.694-1.335 13.377-5.351 1.34-.668 2.011-2.006 3.347 0 1.34 2.678 2.674 9.368 2.674 11.374 0 1.338-.668 2.008-.668 2.008-2.006.668-5.353.668-6.688 1.338-2.677.668-2.677 3.344-1.341 4.012 2.011.669 4.017 0 6.021-.668 2.006 0 2.674 0 2.674 1.338 0 2.006 0 6.02-.668 7.359 0 1.338-.666 1.338-1.336 1.338h-3.346c-1.336.668-2.006 1.338-1.336 2.676 1.336 1.339 2.676 1.338 4.012 1.338 1.34.668-2.006 6.689-2.676 8.027-.67 2.006-2.006 1.338-3.346 1.338-1.336 0-3.342-.67-4.012.668-.67 1.339-.67 1.339.67 2.677.666.67 2.676.67 2.006 2.008-1.34 2.006-7.357 8.027-18.729 12.041-15.383 5.351-38.127 6.69-60.868 2.007-13.381-2.677-22.744-6.688-28.094-11.374-1.341-.668 0-1.336.665-2.005 1.34 0 2.679-.669 2.679-2.007.666-.67 0-2.008-2.005-2.008-.674 0-3.345.67-4.687 1.338-1.339.67-1.339 0-2.675-.668-2.005-2.009-3.341-5.353-4.016-6.021-.665-1.337 0-1.337 1.341-2.01 1.339 0 3.344-.667 4.011-1.335.67-.669-.667-2.676-2.671-2.009h-4.016c-.671 0-.67-.667-1.335-1.338C31.336 96.734 30 92.051 30 90.715c0-1.34.665-.67 2.006-.67h6.017c1.339-.67 1.339-2.676.669-3.346-.669-.669-4.681-1.338-7.356-1.338-2.677 0-2.01-.668-2.01-4.014 0-7.357 3.345-18.061 8.031-26.088 1.335-2.008 3.342-4.013 3.342-5.352 0-2.008-2.006-3.346-3.342-2.008-1.339.669-1.339 1.338-2.005 0-4.015-10.706 1.604-22.354 4.677-24.753 3.808-2.972 19.497 4.228 25.656 7.309 1.027.514 4.682-.515 6.425-1.028 3.277-.964 18.507-1.8 18.507-1.8s.386.258-.386 2.378c-.772 2.121-5.375 15.647 5.987 23.246z" fill="#ffffff" stroke="#000" stroke-width="2"/>
+
+                <path class="bow" d="M94.208 41.21c1.34 7.359 6.021 10.036 14.717 8.697 2.006-.67 4.012-1.338 4.682-2.008s.67-2.008.67-2.676c-.67-.67-6.688-2.006-6.02-8.698.668-6.02 6.02-7.357 7.355-7.357 4.016-.67 6.689 2.006 7.359 2.675.668.668 2.006-.669 2.006-2.007-.668-3.344-4.01-8.028-6.021-10.703-1.336-1.338-4.683-5.35-10.032-4.015-8.027 2.677-14.716 17.394-14.716 26.092z" fill="#cc2229" stroke="#000" stroke-width="1.5"/>
+
+                <path class="bow-detail" d="M139.026 46.562c-.67 4.684-3.346 7.357-5.352 8.697-6.691 3.344-16.053-2.008-14.717-10.705.67-4.012 2.676-7.36 6.689-8.028 8.701-3.344 14.714 4.016 13.38 10.036z" fill="#cc2229" stroke="#000" stroke-width="1.5"/>
+
+                <path class="bow-center" d="M143.709 55.259c-1.336 0-3.349 0-2.679-.67.673-1.338 2.009-3.343 2.009-4.682.67-.67 1.338 0 2.008 1.338.668 1.338 0 3.344-1.338 4.014z" fill="#cc2229"/>
+
+                <path class="eye-left" d="M54.158 95.498c0 2.676 1.334 5.351 4.681 5.351 4.011 0 5.352-3.343 5.352-6.019s-.671-7.359-5.352-7.359c-4.011 0-4.681 4.683-4.681 8.027z" fill="#000"/>
+
+                <path class="eye-right" d="M124.772 93.391c0 4.01 2.01 6.687 6.021 6.687 2.674 0 4.684-2.677 4.684-6.019 0-4.684-2.01-6.69-5.35-6.69-4.017 0-5.355 4.014-5.355 6.022z" fill="#000"/>
+
+                <path class="nose" d="M87.77 104.762c0 4.683 4.011 6.69 8.696 6.69 5.348 0 8.021-3.346 8.021-6.021s-3.346-6.02-8.021-6.02c-6.026 0-8.696 2.676-8.696 5.351z" fill="#000"/>
+
+                <path class="nose-inner" d="M91.781 105.431c0 2.008 2.005 2.676 4.685 2.676 2.672 0 4.012-.668 4.012-2.676 0-2.009-2.006-2.676-4.687-2.676-2.005 0-4.01.667-4.01 2.676z" fill="#f2c831"/>
+
+                <path class="whisker-left-1" d="M30 85c15 2 25 5 30 8" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                <path class="whisker-left-2" d="M25 95c15 0 25 2 35 3" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                <path class="whisker-left-3" d="M30 105c15 -2 25 -5 30 -3" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+
+                <path class="whisker-right-1" d="M132 85c15 2 25 5 30 8" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                <path class="whisker-right-2" d="M137 95c15 0 25 2 30 3" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                <path class="whisker-right-3" d="M132 105c15 -2 25 -5 30 -3" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <button id="continueBtn" class="continue-btn hidden">TOCA AQUÍ</button>
+    </div>
+
+    <div id="romanticMessage" class="romantic-message">
+        <button class="close-message" onclick="closeMessage()">&times;</button>
+        <div class="romantic-text typing-text" id="typingText">Eres el sueño que nunca quiero despertar 🌙</div>
+        <div class="romantic-subtitle" id="romanticSubtitle">TE AMO MUCHO ✨</div>
+        <div class="hearts-container" id="heartsContainer">
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+        </div>
+    </div>
+
+    <div id="codeBadge" class="code-badge hidden">__UWU_CODE__</div>
+
+    <script>
+function applyPersonalization() {
+    var params = new URLSearchParams(location.search);
+    var typingText = document.getElementById('typingText');
+    var subtitleEl = document.getElementById('romanticSubtitle');
+    var codeBadge = document.getElementById('codeBadge');
+
+    var msg = typingText.textContent.trim();
+    var subtitle = subtitleEl.textContent.trim();
+    var code = codeBadge.textContent.trim();
+
+    if (params.get('msg')) {
+        msg = params.get('msg');
+    } else if (msg === '__UWU_MSG__') {
+        msg = 'Eres el sueño que nunca quiero despertar 🌙';
+    }
+
+    if (params.get('de') || params.get('para')) {
+        var para = params.get('para') || '';
+        var de = params.get('de') || '';
+        subtitle = 'TE AMO MUCHO, ' + para + ' — ' + de + ' ✨';
+    } else if (subtitle === '__UWU_SUBTITLE__') {
+        subtitle = 'TE AMO MUCHO ✨';
+    }
+
+    if (params.get('code')) {
+        code = params.get('code');
+    }
+
+    typingText.textContent = msg;
+    subtitleEl.textContent = subtitle;
+
+    if (code && code !== '__UWU_CODE__') {
+        codeBadge.textContent = code;
+        codeBadge.classList.remove('hidden');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    applyPersonalization();
+
+    var continueBtn = document.getElementById('continueBtn');
+    var svg = document.querySelector('.hello-kitty-svg');
+    var romanticMessage = document.getElementById('romanticMessage');
+    var typingText = document.getElementById('typingText');
+
+    setTimeout(function() {
+        continueBtn.classList.remove('hidden');
+        continueBtn.style.opacity = '1';
+        continueBtn.style.transform = 'translateY(0)';
+        continueBtn.style.transition = 'all 0.8s ease-out';
+    }, 10000);
+
+    continueBtn.addEventListener('click', function() {
+        continueBtn.style.transform = 'scale(0.95)';
+        continueBtn.style.transition = 'transform 0.1s ease';
+
+        setTimeout(function() {
+            continueBtn.style.transform = 'scale(1)';
+            showRomanticMessage();
+        }, 100);
+    });
+
+    function showRomanticMessage() {
+        romanticMessage.classList.add('show');
+        var fullText = typingText.textContent;
+        typingText.textContent = '';
+        var cursor = document.createElement('span');
+        cursor.className = 'typing-cursor';
+        typingText.appendChild(cursor);
+        var charIndex = 0;
+        var typingSpeed = 80;
+
+        function typeWriter() {
+            if (charIndex < fullText.length) {
+                var textNode = document.createTextNode(fullText.charAt(charIndex));
+                typingText.insertBefore(textNode, cursor);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            } else {
+                setTimeout(function() {
+                    addDriftToHearts();
+                }, 2000);
+            }
+        }
+
+        setTimeout(function() {
+            typeWriter();
+        }, 300);
+    }
+
+    function addDriftToHearts() {
+        var hearts = document.querySelectorAll('.heart');
+        hearts.forEach(function(heart) {
+            var drift = (Math.random() - 0.5) * 40;
+            heart.style.setProperty('--drift', drift + 'px');
+        });
+    }
+
+    svg.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.02)';
+        this.style.transition = 'transform 0.3s ease';
+    });
+
+    svg.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+    });
+
+    setTimeout(function() {
+        document.body.classList.add('animation-complete');
+    }, 10000);
+});
+
+function closeMessage() {
+    var romanticMessage = document.getElementById('romanticMessage');
+    romanticMessage.classList.remove('show');
+}
+    </script>
+</body>
+</html>

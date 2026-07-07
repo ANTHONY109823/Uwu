@@ -31,7 +31,7 @@ Elegir plantilla → Personalizar → Pagar → Código + enlace + HTML descarga
 
 ## Catálogo
 
-24 plantillas con códigos únicos. Precios en Soles (PEN) o Dólares (USD).
+25 plantillas con códigos únicos. Precios en Soles (PEN) o Dólares (USD).
 
 | Tipo | Ejemplos | Precio |
 |---|---|---|

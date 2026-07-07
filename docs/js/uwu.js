@@ -3,12 +3,12 @@
   'use strict';
 
   var SHOWCASE = [
-    'carta-eterna', 'feliz-cumple', 'quieres-casarte', 'nuestro-tiempo', 'mi-valentin',
+    'hello-kitty', 'carta-eterna', 'feliz-cumple', 'quieres-casarte', 'nuestro-tiempo', 'mi-valentin',
     'perdoname', 'gracias-por-todo', 'para-mama', 'firulais-forever'
   ];
 
   var CATALOG_ORDER = [
-    'carta-eterna', 'feliz-cumple', 'quieres-casarte', 'nuestro-tiempo', 'mi-valentin',
+    'hello-kitty', 'carta-eterna', 'feliz-cumple', 'quieres-casarte', 'nuestro-tiempo', 'mi-valentin',
     'perdoname', 'netflix-del-amor', 'nuestro-playlist', 'constelacion', 'cuenta-regresiva',
     'vhs-recuerdos', 'mapa-primer-beso', 'latidos', 'gracias-por-todo', 'para-mama',
     'firulais-forever', 'navidad-juntos', 'amor-distancia', 'nuestra-historia', 'buenas-noches',
@@ -16,6 +16,7 @@
   ];
 
   var CATALOG = {
+    'hello-kitty':        { id:'UWU-HKIT',  name:'Hello Kitty Mágica',      emoji:'🎀', cat:'Sorprender',         tier:'prem', pen:'29.90', usd:'7.99',  page:'hello-kitty.html', grad:'linear-gradient(135deg,#e542a1,#3890dd,#c654ce)', pill:'Tocar para abrir 🎀', title:'Hello Kitty para ti', desc:'Hello Kitty se dibuja sola, luego tu mensaje aparece letra por letra con corazones flotantes.' },
     'carta-eterna':       { id:'UWU-CTRN',  name:'Carta Eterna',            emoji:'💌', cat:'Carta romántica',    tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(165deg,#4a1030,#8e2461)', pill:'Tocar para abrir 💝',       title:'Mi carta para ti',          desc:'Una carta que se abre con tu voz, tus palabras y la canción de los dos.' },
     'feliz-cumple':       { id:'UWU-FIIN',  name:'Fiesta Infinita',         emoji:'🎂', cat:'Cumpleaños',         tier:'free', pen:'0',     usd:'0',     grad:'linear-gradient(160deg,#F6A13C,#F0567B)', pill:'Soplar velitas 🎉',          title:'¡Feliz cumpleaños!',          desc:'Sopla las velitas, revienta los globos y descubre 25 razones para celebrarte.' },
     'quieres-casarte':    { id:'UWU-LGPREG',name:'La Gran Pregunta',        emoji:'💍', cat:'Pedida de mano',     tier:'prem', pen:'35.90', usd:'9.99',  grad:'linear-gradient(165deg,#1C1420,#5b2a5e)', pill:'Ver nuestra historia ✨',    title:'¿Te casarías conmigo?',       desc:'Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.' },
@@ -63,14 +64,28 @@
   }
 
   function dedicationViewUrl(slug, order) {
+    var t = CATALOG[slug];
     var q = new URLSearchParams();
-    q.set('slug', slug);
-    if (order.accessCode) q.set('code', order.accessCode);
     if (order.para) q.set('para', order.para);
     if (order.de) q.set('de', order.de);
     if (order.mensaje) q.set('msg', order.mensaje);
+    if (order.accessCode) q.set('code', order.accessCode);
     if (order.cancion) q.set('song', order.cancion);
+    if (t && t.page) return 'd/' + t.page + '?' + q.toString();
+    q.set('slug', slug);
     return 'd/view.html?' + q.toString();
+  }
+
+  function personalizeCustomPage(html, slug, data) {
+    var para = data.para || 'Mariana';
+    var de = data.de || 'Diego';
+    var msg = data.mensaje || 'Eres el sueño que nunca quiero despertar 🌙';
+    var code = data.accessCode || '';
+    var subtitle = 'TE AMO MUCHO, ' + para + ' — ' + de + ' ✨';
+    return html
+      .replace(/__UWU_MSG__/g, esc(msg))
+      .replace(/__UWU_SUBTITLE__/g, esc(subtitle))
+      .replace(/__UWU_CODE__/g, esc(code));
   }
 
   function genAccessCode() {
@@ -104,6 +119,21 @@
   }
 
   function downloadHTML(slug, data, filename) {
+    var t = CATALOG[slug];
+    if (t && t.page) {
+      fetch('d/' + t.page).then(function (r) { return r.text(); }).then(function (html) {
+        var out = personalizeCustomPage(html, slug, data);
+        var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      }).catch(function () {
+        alert('No se pudo descargar. Usa el enlace "Ver en línea" y guarda la página.');
+      });
+      return;
+    }
     var html = buildDedicationHTML(slug, data);
     var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     var a = document.createElement('a');
@@ -166,12 +196,18 @@
           '<span class="tg code">' + esc(t.id) + '</span>' +
           '<span class="price-tag tpl-price" data-slug="' + slug + '">' + fmtPrice(t, cur) + '</span>' +
           '<div class="buy-row">' +
-          '<button class="btn sm ghost" type="button" data-demo="1">👁 Demo</button>' +
+          '<button class="btn sm ghost" type="button" data-demo="1" data-demo-slug="' + slug + '">👁 Demo</button>' +
           '<button class="btn sm" type="button" data-buy="' + slug + '">💳 Comprar</button>' +
           '</div></div></div>';
       }).join('');
       grid.querySelectorAll('[data-demo]').forEach(function (btn) {
-        btn.addEventListener('click', function (e) { e.stopPropagation(); onDemo(); });
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var slug = btn.dataset.demoSlug;
+          var tpl = slug && CATALOG[slug];
+          if (tpl && tpl.page) window.open('d/' + tpl.page, '_blank');
+          else onDemo();
+        });
       });
       grid.querySelectorAll('[data-buy]').forEach(function (btn) {
         btn.addEventListener('click', function (e) { e.stopPropagation(); openCheckout(btn.dataset.buy); });
@@ -271,7 +307,7 @@
     document.getElementById('chkPrice').textContent = fmtPrice(t);
     document.getElementById('chkPara').value = '';
     document.getElementById('chkDe').value = '';
-    document.getElementById('chkMsg').value = '';
+    document.getElementById('chkMsg').value = slug === 'hello-kitty' ? 'Eres el sueño que nunca quiero despertar 🌙' : '';
     document.getElementById('chkSong').value = 'Ed Sheeran — Perfect';
     document.getElementById('chkStep1').hidden = false;
     document.getElementById('chkStep2').hidden = true;
