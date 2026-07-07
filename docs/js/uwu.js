@@ -256,8 +256,11 @@
     if (opts.reveal) catalogOpts.reveal = opts.reveal;
     buildCatalogUI(catalogOpts);
     if (opts.scroll !== false && activeCategory) {
-      var sec = document.getElementById('plantillas');
-      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (global.__scrollToPlantillas) global.__scrollToPlantillas(opts.smooth !== false);
+      else {
+        var sec = document.getElementById('plantillas');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
     if (opts.updateUrl !== false) {
       var url = new URL(location.href);

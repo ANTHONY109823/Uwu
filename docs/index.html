@@ -172,7 +172,7 @@
     .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
-    #plantillas{scroll-margin-top:calc(var(--nav-h) + var(--marquee-h));padding:16px 0 40px}
+    #plantillas{scroll-margin-top:0;padding:12px 0 40px}
     #plantillas .show-grid{margin-top:16px}
     #plantillas .cur-toggle{margin-top:12px}
     #plantillas .kicker{margin-bottom:8px}
@@ -664,6 +664,34 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
 
     window.__uwuCatalogOpts={onDemo:openDemo,reveal:observeReveal};
+
+    /* scroll plantillas: oculta inicio, cinta arriba */
+    function getPlantillasScrollY(){
+      var hero=document.getElementById('inicio');
+      return hero?hero.offsetHeight:0;
+    }
+    function scrollToPlantillas(smooth){
+      window.scrollTo({top:getPlantillasScrollY(),behavior:smooth?'smooth':'auto'});
+    }
+    window.__scrollToPlantillas=scrollToPlantillas;
+    document.querySelectorAll('a[href="#plantillas"]').forEach(function(a){
+      a.addEventListener('click',function(e){
+        e.preventDefault();
+        history.pushState(null,'','#plantillas');
+        scrollToPlantillas(true);
+      });
+    });
+    document.querySelectorAll('a[href="#inicio"]').forEach(function(a){
+      a.addEventListener('click',function(e){
+        e.preventDefault();
+        history.pushState(null,'','#inicio');
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    });
+    if(location.hash==='#plantillas'||new URLSearchParams(location.search).get('cat')){
+      requestAnimationFrame(function(){scrollToPlantillas(false);});
+    }
+
     UWU.buildCatalogUI(window.__uwuCatalogOpts);
     UWU.applyCategoryFromUrl();
 
