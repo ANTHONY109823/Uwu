@@ -8,6 +8,8 @@ dist/
 build/
 out/
 .turbo/
+*.db
+*.db-journal
 
 # Entorno y secretos
 .env

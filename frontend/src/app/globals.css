@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  --pink-50: #fdf2f7;
+  --pink-100: #fbe4ef;
+  --pink-300: #f4a7cb;
+  --pink-500: #ee7eb1;
+  --rose-500: #e8447a;
+  --cream: #fff9f5;
+  --night: #1c1420;
+  --ink: #241722;
+  --muted: #8a6f7c;
+  --grad-hero: linear-gradient(135deg, #ee7eb1 0%, #e8447a 60%, #c2418f 100%);
+}
+
+@theme inline {
+  --color-pink-50: var(--pink-50);
+  --color-pink-100: var(--pink-100);
+  --color-pink-300: var(--pink-300);
+  --color-pink-500: var(--pink-500);
+  --color-rose-500: var(--rose-500);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-sora);
+  --font-script: var(--font-dancing);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(180deg, var(--pink-50) 0%, var(--cream) 40%, var(--pink-100) 100%);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  min-height: 100svh;
+}
+
+::selection {
+  background: var(--pink-300);
+  color: #fff;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 999px;
+  background: var(--grad-hero);
+  color: #fff;
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 12px 34px rgba(232, 68, 122, 0.4);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 18px 46px rgba(232, 68, 122, 0.55);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--rose-500);
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: 1px solid rgba(238, 126, 177, 0.28);
+  cursor: pointer;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(238, 126, 177, 0.28);
+}
+
+.kicker {
+  display: block;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rose-500);
+  margin-bottom: 0.75rem;
+}

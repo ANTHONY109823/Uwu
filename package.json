@@ -1,0 +1,24 @@
+{
+  "name": "uwu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UWU — Detalles Románticos · Plataforma SaaS de dedicatorias web",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run start:dev --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "db:up": "docker compose -f docker/docker-compose.yml up -d postgres",
+    "db:migrate": "npm run prisma:migrate --prefix backend",
+    "db:seed": "npm run prisma:seed --prefix backend",
+    "db:studio": "npm run prisma:studio --prefix backend",
+    "setup": "npm run db:up && timeout /t 5 && npm run db:migrate && npm run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.3"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
