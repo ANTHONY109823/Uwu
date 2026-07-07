@@ -402,6 +402,10 @@
       '<label>Tu nombre (firma)<input id="chkDe" placeholder="Ej: Diego"/></label>' +
       '<label>Tu mensaje<textarea id="chkMsg" rows="3" placeholder="Escribe tu carta…"></textarea></label>' +
       '<label>Canción<input id="chkSong" placeholder="Artista — Canción" value="Ed Sheeran — Perfect"/></label>' +
+      '<div class="cur-toggle" role="group" aria-label="Elegir moneda">' +
+      '<button type="button" data-c="pen">🇵🇪 Soles S/</button>' +
+      '<button type="button" data-c="usd">🇺🇸 Dólares $</button>' +
+      '</div>' +
       '<div class="chk-price">Total: <strong id="chkPrice">S/ 25.90</strong></div>' +
       '<button class="chk-pay btn" id="chkPayBtn" type="button">💳 Pagar y obtener mi dedicatoria</button>' +
       '<button class="chk-free btn ghost" id="chkFreeBtn" type="button" style="display:none">✨ Obtener gratis</button>' +
@@ -432,6 +436,10 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeCheckout();
     });
+    ov.querySelectorAll('.cur-toggle button').forEach(function (b) {
+      b.addEventListener('click', function () { setCurrency(b.dataset.c); });
+    });
+    setCurrency(getCur());
   }
 
   var __chkSlug = null;

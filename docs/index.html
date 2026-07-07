@@ -173,11 +173,10 @@
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
     #plantillas{padding:8px 0 40px}
-    #plantillas > .wrap{padding-top:28px}
-    #plantillas .show-grid{margin-top:16px}
-    #plantillas .cur-toggle{margin-top:12px}
-    #plantillas .kicker{margin-bottom:8px}
-    #plantillas .lead{margin-top:8px}
+    #plantillas > .wrap{padding-top:12px}
+    #plantillas .show-grid{margin-top:8px}
+    #plantillas .kicker{margin-bottom:6px}
+    #catFilterBar[hidden]{display:none!important}
 
     /* ===== stats ===== */
     .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
@@ -321,7 +320,8 @@
     .chk-code.big{font-size:18px;text-align:center;font-weight:700;color:var(--rose-500);padding:16px;letter-spacing:.1em}
     .chk-box label{display:block;font-size:12px;font-weight:600;color:#6b5560;margin-bottom:14px}
     .chk-box input,.chk-box textarea{width:100%;margin-top:6px;padding:12px 14px;border-radius:12px;border:1px solid #f0d9e6;font-family:Inter,sans-serif;font-size:14px}
-    .chk-price{text-align:center;font-size:15px;margin:18px 0;padding:14px;background:#fdf4f8;border-radius:14px}
+    .chk-price{text-align:center;font-size:15px;margin:12px 0;padding:14px;background:#fdf4f8;border-radius:14px}
+    .chk-box .cur-toggle{margin:2px 0 12px}
     .chk-price strong{font-family:'Sora',sans-serif;font-size:22px;color:var(--rose-500)}
     .chk-pay,.chk-free{width:100%;justify-content:center}
     .chk-success{font-family:'Sora',sans-serif;font-weight:800;font-size:18px;text-align:center;margin-bottom:12px;color:var(--rose-500)}
@@ -479,13 +479,8 @@
     <div class="wrap">
       <span class="kicker rv">Showcase</span>
       <h2 class="rv">Cada plantilla es <span class="grad">una experiencia completa</span></h2>
-      <p class="lead rv d1">No son tarjetas. Son páginas web reales con música, animaciones y su propia personalidad. Cada una tiene su precio y código único.</p>
 
-      <div class="cur-toggle rv d2" role="group" aria-label="Elegir moneda">
-        <button data-c="pen" onclick="setCur('pen')">🇵🇪 Soles S/</button>
-        <button data-c="usd" onclick="setCur('usd')">🇺🇸 Dólares $</button>
-      </div>
-      <div class="cat-filter-bar rv d2" id="catFilterBar" hidden></div>
+      <div class="cat-filter-bar rv d1" id="catFilterBar" hidden></div>
 
       <div class="show-grid" id="showGrid"></div>
     </div>
@@ -789,9 +784,8 @@
       });
     }
 
-    /* ================= MONEDA (Soles / Dólares) ================= */
-    window.setCur=function(c){UWU.setCurrency(c);};
-    setCur(localStorage.getItem('uwuCur')||'pen');
+    /* moneda por defecto (selector solo en checkout) */
+    UWU.setCurrency(localStorage.getItem('uwuCur')||'pen');
   </script>
 </body>
 </html>
