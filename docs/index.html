@@ -510,7 +510,7 @@
         <div class="arrow rv">↓</div>
         <div class="step rv d2"><span class="n">3</span><div class="ico">📱</div><b>Vista previa en vivo</b><p>Ve exactamente lo que recibirá, mientras escribes.</p></div>
         <div class="arrow rv">↓</div>
-        <div class="step rv d3"><span class="n">4</span><div class="ico">💳</div><b>Paga seguro</b><p>Tarjeta, Yape o MercadoPago. Desde <span class="money" data-usd="$3.99" data-pen="S/ 14.90">S/ 14.90</span>.</p></div>
+        <div class="step rv d3"><span class="n">4</span><div class="ico">💳</div><b>Paga seguro</b><p>Tarjeta, Yape o MercadoPago. Cada plantilla tiene su precio en el catálogo.</p></div>
         <div class="arrow rv">↓</div>
         <div class="step rv d4"><span class="n">5</span><div class="ico">🚀</div><b>Comparte la magia</b><p>Enlace y QR al instante. WhatsApp, Instagram o impreso.</p></div>
       </div>
@@ -736,44 +736,12 @@
     })();
 
     /* ---- catálogo: showcase + carousel ---- */
-    var SHOWCASE=['carta-eterna','feliz-cumple','quieres-casarte','nuestro-tiempo','mi-valentin','perdoname','gracias-por-todo','para-mama','firulais-forever'];
-    function buildCatalogUI(){
-      var cur=UWU.getCur();
-      var grid=document.getElementById('showGrid');
-      if(grid){
-        grid.innerHTML=SHOWCASE.map(function(slug,i){
-          var t=UWU.CATALOG[slug];if(!t)return '';
-          var delay=i%3?' d'+(i%3):'';
-          return '<div class="mini rv'+delay+'" data-slug="'+slug+'">'+
-            '<div class="mbar"><u></u><u></u><u></u><s>uwu.app/d/'+slug+'</s></div>'+
-            '<div class="mview" style="background:'+t.grad+'">'+
-            '<div class="shimmer"></div><div class="big">'+t.emoji+'</div>'+
-            '<div class="t1">'+(t.title||t.name)+'</div>'+
-            '<div class="t2">'+(t.desc||t.cat)+'</div>'+
-            '<div class="pill">'+t.pill+'</div></div>'+
-            '<div class="minf"><div><div class="nm">'+t.name+'</div><div class="ct">'+t.emoji+' '+t.cat+'</div></div>'+
-            '<span class="tg code">'+t.id+'</span>'+
-            '<span class="price-tag tpl-price" data-slug="'+slug+'">'+UWU.fmtPrice(t,cur)+'</span>'+
-            '<div class="buy-row">'+
-            '<button class="btn sm ghost" type="button" onclick="openDemo()">👁 Demo</button>'+
-            '<button class="btn sm" type="button" onclick="openCheckout(\''+slug+'\')">💳 Comprar</button>'+
-            '</div></div></div>';
-        }).join('');
-      }
-      var car=document.getElementById('car');
-      if(car){
-        car.innerHTML=Object.keys(UWU.CATALOG).map(function(slug){
-          var t=UWU.CATALOG[slug];
-          return '<div class="tcard" data-slug="'+slug+'" onclick="openCheckout(\''+slug+'\')" style="cursor:pointer">'+
-            '<div class="art" style="background:'+t.grad+'">'+t.emoji+'<small>Comprar</small></div>'+
-            '<div class="inf"><span class="tg code">'+t.id+'</span>'+
-            '<b>'+t.name+'</b><span>'+t.cat+'</span>'+
-            '<span class="price tpl-price" data-slug="'+slug+'">'+UWU.fmtPrice(t,cur)+'</span></div></div>';
-        }).join('');
-      }
+    function observeReveal(){
+      var io=new IntersectionObserver(function(es){
+        es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}});
+      },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+      document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
     }
-    buildCatalogUI();
-    window.slide=function(dir){document.getElementById('car').scrollBy({left:dir*440,behavior:'smooth'});};
 
     /* ---- FAQ ---- */
     document.querySelectorAll('.qa button').forEach(function(b){
@@ -824,6 +792,9 @@
     }
     document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeDemo();});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDemo();});
+
+    UWU.buildCatalogUI({onDemo:openDemo,reveal:observeReveal});
+    window.slide=function(dir){document.getElementById('car').scrollBy({left:dir*440,behavior:'smooth'});};
 
     /* ================= MODO ADMINISTRADOR (solo vía admin.html) ================= */
     var ADM=sessionStorage.getItem('uwuAdm')==='1';
@@ -918,15 +889,7 @@
     }
 
     /* ================= MONEDA (Soles / Dólares) ================= */
-    window.setCur=function(c){
-      localStorage.setItem('uwuCur',c);
-      document.querySelectorAll('.money').forEach(function(el){if(el.dataset[c])el.textContent=el.dataset[c];});
-      document.querySelectorAll('.tpl-price').forEach(function(el){
-        var t=UWU.CATALOG[el.dataset.slug];if(t)el.textContent=UWU.fmtPrice(t,c);
-      });
-      document.querySelectorAll('.cur-toggle button').forEach(function(b){b.classList.toggle('on',b.dataset.c===c);});
-      var cp=document.getElementById('chkPrice');if(cp&&window.__chkSlug){var t=UWU.CATALOG[window.__chkSlug];if(t)cp.textContent=UWU.fmtPrice(t,c);}
-    };
+    window.setCur=function(c){UWU.setCurrency(c);};
     setCur(localStorage.getItem('uwuCur')||'pen');
   </script>
 </body>
