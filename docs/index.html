@@ -75,25 +75,27 @@
     .btn.sm{padding:11px 22px;font-size:13.5px}
 
     /* ============ HERO ============ */
-    .hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 60px;position:relative;overflow:hidden}
-    .hero .wrap{display:grid;grid-template-columns:1fr;gap:48px;align-items:center;width:100%}
-    @media(min-width:960px){.hero .wrap{grid-template-columns:1.05fr .95fr;gap:24px}}
+    .hero{min-height:100svh;display:flex;flex-direction:column;padding:88px 0 0;position:relative;overflow:hidden}
+    .hero-main{flex:1;display:flex;align-items:center;padding:16px 0 20px}
+    .hero .wrap{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;width:100%}
+    @media(min-width:960px){.hero .wrap{grid-template-columns:1.05fr .95fr;gap:20px}}
     .hero h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(2.3rem,6.2vw,4rem);line-height:1.06;letter-spacing:-.03em}
     .hero h1 .grad{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;color:transparent}
     .hero h1 .script{font-family:'Dancing Script',cursive;font-weight:700;color:var(--pink-500);font-size:1.15em}
-    .hero .sub{margin-top:20px;max-width:520px;color:#6b5560;font-size:clamp(1rem,2.3vw,1.14rem);line-height:1.7}
-    .hero .ctas{margin-top:32px;display:flex;flex-wrap:wrap;gap:14px}
-    .hero .proof{margin-top:30px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+    .hero .sub{margin-top:16px;max-width:520px;color:#6b5560;font-size:clamp(1rem,2.3vw,1.14rem);line-height:1.7}
+    .hero .ctas{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px}
+    .hero .proof{margin-top:20px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
     .hero .faces{display:flex}
     .hero .faces span{width:32px;height:32px;border-radius:50%;border:2px solid #fff;margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--pink-100)}
     .hero .faces span:first-child{margin-left:0}
     .hero .stars{color:#F59E0B;letter-spacing:1px}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:var(--glass-b);font-size:12.5px;font-weight:600;color:var(--rose-500);margin-bottom:22px;box-shadow:var(--shadow)}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border:var(--glass-b);font-size:12px;font-weight:600;color:var(--rose-500);margin-bottom:14px;box-shadow:var(--shadow)}
     .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 4px rgba(34,197,94,.18);animation:blink 2s infinite}
     @keyframes blink{50%{opacity:.4}}
 
     /* device composition */
-    .stage{position:relative;display:flex;justify-content:center;align-items:center;min-height:480px}
+    .stage{position:relative;display:flex;justify-content:center;align-items:center;min-height:380px}
+    @media(min-width:960px){.stage{min-height:440px}}
     .stage .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(238,126,177,.4),transparent 65%);filter:blur(30px)}
 
     .phone{position:relative;width:250px;border-radius:38px;background:#1b1320;padding:10px;box-shadow:0 30px 80px rgba(122,50,90,.4),0 0 0 1px rgba(255,255,255,.15) inset;z-index:3;animation:hoverY 6s var(--ease) infinite alternate}
@@ -146,11 +148,12 @@
     @media(max-width:520px){.fc2{display:none}}
 
     /* ===== marquee ===== */
-    .marquee{overflow:hidden;padding:22px 0;border-top:var(--glass-b);border-bottom:var(--glass-b);background:rgba(255,255,255,.4);backdrop-filter:blur(8px)}
-    .marquee .track{display:flex;gap:44px;width:max-content;animation:scrollX 30s linear infinite}
+    .marquee{overflow:hidden;padding:14px 0;border-top:var(--glass-b);background:rgba(255,255,255,.5);backdrop-filter:blur(10px);flex-shrink:0;width:100%}
+    .hero .marquee{margin-top:auto;border-bottom:none}
+    .marquee .track{display:flex;gap:36px;width:max-content;animation:scrollX 30s linear infinite;padding:4px 0}
     @keyframes scrollX{to{transform:translateX(-50%)}}
-    .marquee span{font-size:13.5px;font-weight:600;color:var(--rose-500);white-space:nowrap;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.65);border:1px solid rgba(238,126,177,.22)}
-    .marquee .marquee-label{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);margin-bottom:12px}
+    .marquee span{font-size:13px;font-weight:600;color:var(--rose-500);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(238,126,177,.22)}
+    .marquee .marquee-label{text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);padding:10px 20px 2px}
 
     /* ===== stats ===== */
     .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
@@ -377,81 +380,81 @@
   <header class="hero">
     <div class="blob" style="width:520px;height:520px;background:#F4A7CB;top:-140px;left:-160px"></div>
     <div class="blob" style="width:460px;height:460px;background:#E8447A;bottom:-120px;right:-140px;animation-delay:3s;opacity:.3"></div>
-    <div class="wrap">
-      <div>
-        <div class="hero-badge rv"><span class="dot"></span> Más de 1,200 corazones conquistados este mes</div>
-        <h1 class="rv d1">Regálale algo que<br /><span class="grad">nunca va a olvidar</span> <span class="script">💝</span></h1>
-        <p class="sub rv d2">Crea una <strong>página web romántica</strong> con sus fotos, su canción y tu carta — lista en menos de 5 minutos. Pagas, recibes tu enlace y lo compartes por WhatsApp. Así de mágico.</p>
-        <div class="ctas rv d3">
-          <a class="btn" href="#plantillas">Crear mi dedicatoria 💝</a>
-          <a class="btn ghost" href="#plantillas">Explorar plantillas</a>
+    <div class="hero-main">
+      <div class="wrap">
+        <div>
+          <div class="hero-badge rv"><span class="dot"></span> Más de 1,200 corazones conquistados este mes</div>
+          <h1 class="rv d1">Regálale algo que<br /><span class="grad">nunca va a olvidar</span> <span class="script">💝</span></h1>
+          <p class="sub rv d2">Crea una <strong>página web romántica</strong> con sus fotos, su canción y tu carta — lista en menos de 5 minutos. Pagas, recibes tu enlace y lo compartes por WhatsApp. Así de mágico.</p>
+          <div class="ctas rv d3">
+            <a class="btn" href="#plantillas">Crear mi dedicatoria 💝</a>
+            <a class="btn ghost" href="#plantillas">Explorar plantillas</a>
+          </div>
+          <div class="proof rv d4">
+            <div class="faces"><span>🥰</span><span>😍</span><span>🥹</span><span>💘</span></div>
+            <div><span class="stars">★★★★★</span><br />"Lloró de felicidad" — la reseña más repetida</div>
+          </div>
         </div>
-        <div class="proof rv d4">
-          <div class="faces"><span>🥰</span><span>😍</span><span>🥹</span><span>💘</span></div>
-          <div><span class="stars">★★★★★</span><br />"Lloró de felicidad" — la reseña más repetida</div>
+
+        <div class="stage rv d2">
+          <div class="glow"></div>
+
+          <!-- phone: aniversario -->
+          <div class="phone">
+            <div class="notch"></div>
+            <div class="scr">
+              <div class="hearts-in" id="phoneHearts"></div>
+              <div class="inner">
+                <div class="tag">Para el amor de mi vida</div>
+                <div class="name">Mariana</div>
+                <div class="msg">"Desde el día en que llegaste,<br />mi mundo tiene más color…"</div>
+                <div class="pics"><i>📸</i><i>💑</i><i>🌅</i></div>
+                <div class="count">
+                  <b>2<small>AÑOS</small></b>
+                  <b>4<small>MESES</small></b>
+                  <b>17<small>DÍAS</small></b>
+                </div>
+                <div class="player">
+                  <div class="cd">🎵</div>
+                  <div class="t"><b>Nuestra canción</b>Ed Sheeran — Perfect</div>
+                  <div class="eq"><i></i><i></i><i></i><i></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- laptop: cumpleaños -->
+          <div class="laptop">
+            <div class="lscr">
+              <div class="lview">
+                <div class="confetti" id="confetti"></div>
+                <div class="btag">Hoy es tu día</div>
+                <div class="bname">¡Feliz cumple, Vale!</div>
+                <div class="cake">🎂</div>
+                <div class="bmsg">25 razones por las que eres la persona favorita de todos…</div>
+                <div class="bbtn">Soplar las velitas 🎉</div>
+              </div>
+            </div>
+            <div class="base"></div>
+          </div>
+
+          <div class="float-chip fc1">💌 Vista por primera vez <b style="color:#E8447A">hace 2 min</b></div>
+          <div class="float-chip fc2">🎵 Con su canción favorita</div>
+          <div class="float-chip fc3">📱 Compartida por WhatsApp</div>
         </div>
       </div>
+    </div>
 
-      <div class="stage rv d2">
-        <div class="glow"></div>
-
-        <!-- phone: aniversario -->
-        <div class="phone">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="hearts-in" id="phoneHearts"></div>
-            <div class="inner">
-              <div class="tag">Para el amor de mi vida</div>
-              <div class="name">Mariana</div>
-              <div class="msg">"Desde el día en que llegaste,<br />mi mundo tiene más color…"</div>
-              <div class="pics"><i>📸</i><i>💑</i><i>🌅</i></div>
-              <div class="count">
-                <b>2<small>AÑOS</small></b>
-                <b>4<small>MESES</small></b>
-                <b>17<small>DÍAS</small></b>
-              </div>
-              <div class="player">
-                <div class="cd">🎵</div>
-                <div class="t"><b>Nuestra canción</b>Ed Sheeran — Perfect</div>
-                <div class="eq"><i></i><i></i><i></i><i></i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- laptop: cumpleaños -->
-        <div class="laptop">
-          <div class="lscr">
-            <div class="lview">
-              <div class="confetti" id="confetti"></div>
-              <div class="btag">Hoy es tu día</div>
-              <div class="bname">¡Feliz cumple, Vale!</div>
-              <div class="cake">🎂</div>
-              <div class="bmsg">25 razones por las que eres la persona favorita de todos…</div>
-              <div class="bbtn">Soplar las velitas 🎉</div>
-            </div>
-          </div>
-          <div class="base"></div>
-        </div>
-
-        <div class="float-chip fc1">💌 Vista por primera vez <b style="color:#E8447A">hace 2 min</b></div>
-        <div class="float-chip fc2">🎵 Con su canción favorita</div>
-        <div class="float-chip fc3">📱 Compartida por WhatsApp</div>
+    <!-- Cinta de categorías — pie del hero -->
+    <div class="marquee" id="categorias">
+      <div class="marquee-label">Categorías · una para cada latido</div>
+      <div class="track" id="marquee">
+        <span>❤️ Enamorar</span><span>💕 Amar</span><span>🥰 Sorprender</span><span>💍 Pedida de mano</span><span>🎂 Cumpleaños</span>
+        <span>🌹 San Valentín</span><span>💒 Aniversarios</span><span>🌸 Perdón</span><span>🤗 Extrañar</span><span>💔 Olvidar y soltar</span>
+        <span>👨‍👩‍👧 Familia</span><span>🐶 Mascotas</span><span>🎄 Fechas especiales</span><span>😢 Despedidas</span><span>💌 Agradecer</span>
       </div>
     </div>
   </header>
-
-  <!-- ============ MARQUEE — Categorías ============ -->
-  <div class="marquee" id="categorias">
-    <div class="wrap" style="padding-bottom:0">
-      <div class="marquee-label">Categorías · una para cada latido</div>
-    </div>
-    <div class="track" id="marquee">
-      <span>❤️ Enamorar</span><span>💕 Amar</span><span>🥰 Sorprender</span><span>💍 Pedida de mano</span><span>🎂 Cumpleaños</span>
-      <span>🌹 San Valentín</span><span>💒 Aniversarios</span><span>🌸 Perdón</span><span>🤗 Extrañar</span><span>💔 Olvidar y soltar</span>
-      <span>👨‍👩‍👧 Familia</span><span>🐶 Mascotas</span><span>🎄 Fechas especiales</span><span>😢 Despedidas</span><span>💌 Agradecer</span>
-    </div>
-  </div>
 
   <!-- ============ SHOWCASE ============ -->
   <section id="plantillas" style="padding-top:40px">
