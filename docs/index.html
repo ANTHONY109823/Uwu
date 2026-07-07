@@ -170,7 +170,7 @@
     .cat-empty{grid-column:1/-1;text-align:center;padding:48px 24px;border-radius:24px;background:var(--glass);border:var(--glass-b);box-shadow:var(--shadow)}
     .cat-empty .big{font-size:42px;margin-bottom:12px}
     .cat-empty b{display:block;font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:8px}
-    #plantillas{padding:8px 0 40px}
+    #plantillas{padding:8px 0 56px}
     #plantillas > .wrap{padding-top:40px}
     #plantillas .show-grid{margin-top:8px}
     #plantillas .kicker{margin-bottom:6px}
@@ -340,18 +340,8 @@
     .qa .a{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
     .qa .a p{padding:0 22px 20px;font-size:13.5px;color:var(--muted);line-height:1.7}
 
-    /* ===== final cta ===== */
-    #cta-final{padding:48px 0 0}
-    .final{margin:0 auto;max-width:960px;border-radius:28px;background:linear-gradient(145deg,#1C1420 0%,#4a1535 50%,#8e2461 100%);color:#fff;text-align:center;padding:52px 28px 56px;position:relative;overflow:hidden;box-shadow:0 24px 64px rgba(28,20,32,.35);border:1px solid rgba(255,255,255,.08)}
-    .final::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(244,167,203,.18),transparent 70%);pointer-events:none}
-    .final h2{color:#fff;font-size:clamp(1.5rem,3.8vw,2.1rem);line-height:1.25;position:relative;z-index:1}
-    .final .script{font-family:'Dancing Script',cursive;font-size:1.25em;color:#F4A7CB;display:block;margin-top:6px}
-    .final-tag{display:block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:18px;position:relative;z-index:1}
-    .final p{opacity:.82;font-size:14.5px;margin:18px auto 0;max-width:480px;line-height:1.75;position:relative;z-index:1}
-    .final .glowc{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(238,126,177,.25),transparent 65%);bottom:-120px;left:-80px;filter:blur(24px)}
-
     /* ===== footer ===== */
-    footer{margin-top:56px;background:linear-gradient(180deg,#1C1420 0%,#140f16 100%);color:#cbb3c0;position:relative;z-index:2;border-top:1px solid rgba(238,126,177,.12)}
+    footer{margin-top:64px;background:linear-gradient(180deg,#1C1420 0%,#140f16 100%);color:#cbb3c0;position:relative;z-index:2;border-top:1px solid rgba(238,126,177,.12)}
     footer .top{max-width:1120px;margin:0 auto;padding:48px 24px 36px;display:grid;grid-template-columns:1fr;gap:32px}
     @media(min-width:820px){footer .top{grid-template-columns:1.6fr 1fr 1fr;gap:48px;align-items:start}}
     footer .brand .lg{font-family:'Dancing Script',cursive;font-size:32px;color:var(--pink-500);line-height:1}
@@ -484,18 +474,6 @@
     </div>
   </section>
 
-  <!-- ============ FINAL CTA ============ -->
-  <section id="cta-final">
-    <div class="wrap">
-      <div class="final rv">
-        <div class="glowc"></div>
-        <span class="final-tag">UWU · Detalles románticos</span>
-        <h2>Hoy es un buen día para<br /><span class="script">hacerle saber que la amas</span></h2>
-        <p>No esperes al 14 de febrero. Las mejores dedicatorias son las que llegan un martes cualquiera, sin motivo.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ FOOTER ============ -->
   <footer>
     <div class="top">
@@ -601,7 +579,7 @@
     (function(){
       var ops=JSON.parse(localStorage.getItem('uwuOps')||'{}');
       var map={
-        hero:'#inicio',marquee:'#categorias',showcase:'#plantillas','cta-final':'#cta-final'
+        hero:'#inicio',marquee:'#categorias',showcase:'#plantillas'
       };
       if(ops.sections){Object.keys(ops.sections).forEach(function(id){
         if(ops.sections[id]===false&&map[id]){var el=document.querySelector(map[id]);if(el)el.style.display='none';}
@@ -695,7 +673,7 @@
     function saveOps(){localStorage.setItem('uwuOps',JSON.stringify(OPS));var s=document.getElementById('admSaved');if(s){s.textContent='✓ Guardado ahora';clearTimeout(saveOps._t);saveOps._t=setTimeout(function(){s.textContent='✓ Autoguardado';},1400);}}
 
     var SKIP='#hearts,.hearts-in,.confetti,.dhearts,.ov,.adm-ui,.adm-ctl,.eq,#showGrid,#car,.chk-ov';
-    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.qa,.step,.arrow,.float-chip,.demo-box,.final,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
+    var BLOCKS='section,.mini,.tcard,.cat,.stat,.test,.qa,.step,.arrow,.float-chip,.demo-box,.hero-badge,.proof,.marquee,.share-chips i,footer .top>div,.carousel-head';
     var TEXTS='h1,h2,h3,h4,h5,p,li,.kicker,.lead,.btn,.cta,.minf .nm,.minf .ct,.tg,.stat span,.cat b,.cat span,.step b,.qa button,.inf b,.inf span,.who b,.who span,nav .links a,footer a,.bottom,.t1,.t2,.pill,.mbar s,.scr .tag,.scr .name,.scr .msg,.lview .btag,.lview .bname,.lview .bmsg,.lview .bbtn,.float-chip,.stars';
     (function(){
       var b=0,t=0,p=0;
