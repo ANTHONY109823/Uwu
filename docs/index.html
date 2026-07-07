@@ -149,7 +149,8 @@
     .marquee{overflow:hidden;padding:22px 0;border-top:var(--glass-b);border-bottom:var(--glass-b);background:rgba(255,255,255,.4);backdrop-filter:blur(8px)}
     .marquee .track{display:flex;gap:44px;width:max-content;animation:scrollX 30s linear infinite}
     @keyframes scrollX{to{transform:translateX(-50%)}}
-    .marquee span{font-size:13.5px;font-weight:600;color:#a97f92;white-space:nowrap;display:flex;align-items:center;gap:8px}
+    .marquee span{font-size:13.5px;font-weight:600;color:var(--rose-500);white-space:nowrap;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.65);border:1px solid rgba(238,126,177,.22)}
+    .marquee .marquee-label{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-500);margin-bottom:12px}
 
     /* ===== stats ===== */
     .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
@@ -365,9 +366,8 @@
     <div class="bar">
       <a class="logo" href="#">Uwu <span style="font-size:18px">🧸</span></a>
       <div class="links">
-        <a href="#plantillas">Plantillas</a>
         <a href="#categorias">Categorías</a>
-        <a href="#faq">FAQ</a>
+        <a href="#plantillas">Plantillas</a>
       </div>
       <a class="cta" href="#plantillas"><span class="full">Crear mi dedicatoria 💝</span><span class="short">Crear 💝</span></a>
     </div>
@@ -441,13 +441,15 @@
     </div>
   </header>
 
-  <!-- ============ MARQUEE ============ -->
-  <div class="marquee">
+  <!-- ============ MARQUEE — Categorías ============ -->
+  <div class="marquee" id="categorias">
+    <div class="wrap" style="padding-bottom:0">
+      <div class="marquee-label">Categorías · una para cada latido</div>
+    </div>
     <div class="track" id="marquee">
-      <span>💝 Enlace al instante</span><span>🎵 Spotify &amp; YouTube</span><span>📱 WhatsApp en 1 tap</span>
-      <span>🔒 Con contraseña secreta</span><span>⏳ Cuenta regresiva</span><span>📷 Sus fotos favoritas</span>
-      <span>🎊 Confeti y corazones</span><span>🧸 Hecho con amor</span><span>📍 El mapa de su primer beso</span>
-      <span>🌙 Modo oscuro</span><span>🔗 QR para imprimir</span><span>💌 Cartas y poemas</span>
+      <span>❤️ Enamorar</span><span>💕 Amar</span><span>🥰 Sorprender</span><span>💍 Pedida de mano</span><span>🎂 Cumpleaños</span>
+      <span>🌹 San Valentín</span><span>💒 Aniversarios</span><span>🌸 Perdón</span><span>🤗 Extrañar</span><span>💔 Olvidar y soltar</span>
+      <span>👨‍👩‍👧 Familia</span><span>🐶 Mascotas</span><span>🎄 Fechas especiales</span><span>😢 Despedidas</span><span>💌 Agradecer</span>
     </div>
   </div>
 
@@ -463,73 +465,6 @@
       </div>
 
       <div class="show-grid" id="showGrid"></div>
-    </div>
-  </section>
-
-  <!-- ============ CATEGORIES ============ -->
-  <section id="categorias" style="padding-top:30px">
-    <div class="wrap">
-      <span class="kicker rv">Categorías</span>
-      <h2 class="rv">Una categoría para <span class="grad">cada latido</span></h2>
-      <div class="cats">
-        <div class="cat rv" style="background:linear-gradient(150deg,#FF6584,#E8447A)"><span class="e">❤️</span><b>Enamorar</b><span>Da el primer paso</span></div>
-        <div class="cat rv" style="background:linear-gradient(150deg,#EE7EB1,#C2418F)"><span class="e">💕</span><b>Amar</b><span>Porque sí, porque hoy</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#B06AB3,#7873f5)"><span class="e">🥰</span><b>Sorprender</b><span>Sin motivo, con todo</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#2b2140,#6d3a8e)"><span class="e">💍</span><b>Pedida de mano</b><span>La gran pregunta</span></div>
-        <div class="cat rv d2" style="background:linear-gradient(150deg,#F6A13C,#F0567B)"><span class="e">🎂</span><b>Cumpleaños</b><span>Su día favorito</span></div>
-        <div class="cat rv" style="background:linear-gradient(150deg,#C21E4C,#F45C7F)"><span class="e">🌹</span><b>San Valentín</b><span>El 14 es de ustedes</span></div>
-        <div class="cat rv" style="background:linear-gradient(150deg,#8e2461,#d4589e)"><span class="e">💒</span><b>Aniversarios</b><span>Otro año, otro capítulo</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#7899d4,#c6a9e8)"><span class="e">🌸</span><b>Perdón</b><span>Dilo bonito</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#56A8E8,#8ED0F8)"><span class="e">🤗</span><b>Extrañar</b><span>La distancia no gana</span></div>
-        <div class="cat rv d2" style="background:linear-gradient(150deg,#5f72bd,#9b23ea)"><span class="e">💔</span><b>Olvidar y soltar</b><span>Cerrar en paz</span></div>
-        <div class="cat rv" style="background:linear-gradient(150deg,#E88A4A,#F2BC5C)"><span class="e">👨‍👩‍👧</span><b>Familia</b><span>Los de siempre</span></div>
-        <div class="cat rv" style="background:linear-gradient(150deg,#C98A4B,#E8B34B)"><span class="e">🐶</span><b>Mascotas</b><span>Tu mejor amigo</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#c23a3a,#e86a5a)"><span class="e">🎄</span><b>Fechas especiales</b><span>Navidad y más</span></div>
-        <div class="cat rv d1" style="background:linear-gradient(150deg,#6a7b96,#a3b3c9)"><span class="e">😢</span><b>Despedidas</b><span>Hasta pronto</span></div>
-        <div class="cat rv d2" style="background:linear-gradient(150deg,#E8447A,#F4A7CB)"><span class="e">💌</span><b>Agradecer</b><span>Gracias por existir</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ TESTIMONIALS ============ -->
-  <section id="testimonios">
-    <div class="wrap">
-      <span class="kicker rv">Historias reales</span>
-      <h2 class="rv">Ellos ya hicieron llorar <span class="grad">(de felicidad)</span></h2>
-      <div class="tests">
-        <div class="test rv">
-          <div class="stars">★★★★★</div>
-          <p>"Se lo mandé a las 12:00 de la noche de nuestro aniversario. Me llamó llorando. Me dijo que nadie había hecho algo así por ella. Mejores $7 de mi vida."</p>
-          <div class="who"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Diego" loading="lazy" /><div><b>Diego M.</b><span>Lima, Perú · 💕 Aniversario</span></div></div>
-        </div>
-        <div class="test rv d1">
-          <div class="stars">★★★★★</div>
-          <p>"Puse la canción con la que nos conocimos y fotos que ni él recordaba. Lo abrió en el trabajo y sus compañeros terminaron viéndolo todos. Ahora todos quieren uno."</p>
-          <div class="who"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Camila" loading="lazy" /><div><b>Camila R.</b><span>CDMX, México · ❤️ Enamorar</span></div></div>
-        </div>
-        <div class="test rv d2">
-          <div class="stars">★★★★★</div>
-          <p>"Le hice una a mi mamá por su cumpleaños con fotos de toda la familia. La imprimimos en QR y la pusimos en la torta. Fue el momento de la fiesta. Gracias UWU 🧸"</p>
-          <div class="who"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Valentina" loading="lazy" /><div><b>Valentina S.</b><span>Bogotá, Colombia · 👨‍👩‍👧 Familia</span></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ FAQ ============ -->
-  <section id="faq" style="padding-top:30px">
-    <div class="wrap">
-      <span class="kicker rv">Dudas</span>
-      <h2 class="rv">Preguntas <span class="grad">frecuentes</span></h2>
-      <div class="faq rv d1">
-        <div class="qa"><button>¿Necesito saber programar o diseñar?<i>+</i></button><div class="a"><p>Para nada. Eliges una plantilla, escribes tus palabras, subes fotos y eliges la canción. El editor te muestra el resultado en vivo mientras lo haces. Si sabes usar WhatsApp, sabes usar UWU.</p></div></div>
-        <div class="qa"><button>¿Recibo un código al pagar?<i>+</i></button><div class="a"><p>Sí. Al confirmar el pago recibes un código único (ej. UWU-A7K2-9M4P), el enlace de tu dedicatoria y un archivo HTML descargable con tus textos para seguir editando cuando quieras.</p></div></div>
-        <div class="qa"><button>¿Cuánto tarda en estar lista?<i>+</i></button><div class="a"><p>Al instante. En cuanto confirmas el pago, tu página se genera automáticamente y recibes el enlace, el código y el QR en segundos. Sin esperas, sin intermediarios.</p></div></div>
-        <div class="qa"><button>¿Cómo la comparto?<i>+</i></button><div class="a"><p>Como quieras: por WhatsApp con un tap, en Instagram o TikTok, con un QR para imprimir (en una carta, una taza, la torta 🎂) o incluso con un dominio personalizado.</p></div></div>
-        <div class="qa"><button>¿Puedo editarla después de enviarla?<i>+</i></button><div class="a"><p>Sí 💝. Desde tu panel puedes cambiar textos, fotos y música cuando quieras — el enlace que ya compartiste se actualiza solo, sin que tengas que reenviar nada.</p></div></div>
-        <div class="qa"><button>¿Sabré si la vio?<i>+</i></button><div class="a"><p>Sí. Te avisamos cuando tu dedicatoria se abre por primera vez, y en tu panel ves cuántas veces la ha visto, cuánto tiempo se quedó y cuántas veces la compartió.</p></div></div>
-        <div class="qa"><button>¿Cuánto tiempo dura el enlace?<i>+</i></button><div class="a"><p>Las dedicatorias premium quedan en línea de por vida, protegidas con tu código de acceso. Las gratuitas son válidas por 7 días.</p></div></div>
-      </div>
     </div>
   </section>
 
@@ -563,12 +498,6 @@
         <ul>
           <li><a href="#plantillas">Plantillas</a></li>
           <li><a href="#categorias">Categorías</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Recursos</h5>
-        <ul>
-          <li><a href="#faq">Preguntas frecuentes</a></li>
         </ul>
       </div>
       <div>
@@ -656,8 +585,7 @@
     (function(){
       var ops=JSON.parse(localStorage.getItem('uwuOps')||'{}');
       var map={
-        hero:'header.hero',marquee:'.marquee',showcase:'#plantillas',categorias:'#categorias',
-        testimonios:'#testimonios',faq:'#faq','cta-final':'#cta-final'
+        hero:'header.hero',marquee:'#categorias',showcase:'#plantillas','cta-final':'#cta-final'
       };
       if(ops.sections){Object.keys(ops.sections).forEach(function(id){
         if(ops.sections[id]===false&&map[id]){var el=document.querySelector(map[id]);if(el)el.style.display='none';}
@@ -672,16 +600,7 @@
       document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
     }
 
-    /* ---- FAQ ---- */
-    document.querySelectorAll('.qa button').forEach(function(b){
-      b.addEventListener('click',function(){
-        var qa=b.parentElement,a=qa.querySelector('.a'),open=qa.classList.contains('open');
-        document.querySelectorAll('.qa.open').forEach(function(o){o.classList.remove('open');o.querySelector('.a').style.maxHeight=0;});
-        if(!open){qa.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
-      });
-    });
-
-    /* ---- demo modal ---- */
+    /* ---- catálogo: showcase ---- */
     var typerTimer=null,tickTimer=null;
     function openDemo(){
       if(document.body.classList.contains('adm'))return;
