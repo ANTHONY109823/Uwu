@@ -13,6 +13,9 @@
   <a class="d-back" href="../index.html">← Volver a UWU</a>
   <div id="uwu-dedication"></div>
   <script src="../js/uwu.js"></script>
-  <script>UWU.renderDedicationPage(UWU.slugFromPath());</script>
+  <script>
+    var q = new URLSearchParams(location.search);
+    UWU.renderDedicationPage(q.get('slug') || UWU.slugFromPath());
+  </script>
 </body>
 </html>

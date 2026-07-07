@@ -48,6 +48,37 @@
     .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
     .toggle.on::after{transform:translateX(20px)}
     .topbar{display:flex;gap:10px;flex-wrap:wrap}
+    .tpl-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+    .tpl-list{display:grid;gap:10px;max-height:420px;overflow-y:auto;padding-right:4px}
+    .tpl-row{display:flex;align-items:center;gap:14px;padding:12px 14px;background:rgba(0,0,0,.22);border-radius:16px;border:1px solid rgba(255,255,255,.08)}
+    .tpl-row.is-hidden{opacity:.55}
+    .tpl-preview{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .tpl-info{flex:1;min-width:0}
+    .tpl-info b{display:block;font-size:14px;font-weight:600}
+    .tpl-info small{font-size:11px;color:#a58a99}
+    .tpl-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .tpl-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:999px;background:rgba(238,126,177,.2);color:#f4a7cb}
+    .tpl-badge.html{background:rgba(134,239,172,.15);color:#86efac}
+    .tpl-badge.off{background:rgba(255,255,255,.1);color:#8a7080}
+    .tpl-actions{display:flex;gap:6px;flex-shrink:0}
+    .btn.sm{padding:8px 12px;font-size:12px}
+    .tpl-empty{font-size:13px;color:#8a7080;text-align:center;padding:24px}
+    .tpl-hint{font-size:12px;color:#8a7080;margin-bottom:14px;line-height:1.6}
+    .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.65);backdrop-filter:blur(8px)}
+    .modal.open{display:flex}
+    .modal-box{width:min(560px,100%);max-height:90svh;overflow-y:auto;background:#1C1420;border:1px solid var(--border);border-radius:24px;padding:24px 22px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .modal-head h3{font-family:Sora,sans-serif;font-size:1.1rem}
+    .modal-x{background:none;border:none;color:#a58a99;font-size:18px;cursor:pointer;padding:4px 8px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-grid .full{grid-column:1/-1}
+    .form-grid label{font-size:11px;margin-bottom:0}
+    .form-grid input,.form-grid select,.form-grid textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.3);color:#fff;font-size:13px;margin-top:4px}
+    .form-grid textarea{min-height:72px;resize:vertical;font-family:inherit}
+    .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .html-status{font-size:11px;color:#86efac;margin-top:8px}
+    .file-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px dashed rgba(238,126,177,.4);background:rgba(0,0,0,.2);font-size:12px;color:#cbb3c0;cursor:pointer}
+    .file-btn input{display:none}
   </style>
 </head>
 <body>
@@ -105,8 +136,57 @@
       <p style="font-size:12px;color:#8a7080;margin-bottom:14px">Oculta o muestra bloques de la landing. Los cambios se aplican al visitar la página.</p>
       <div class="sections" id="secList"></div>
     </div>
+
+    <div class="card panel">
+      <h2>Plantillas del catálogo</h2>
+      <p class="tpl-hint">Sube archivos HTML, edita precios, categorías y textos. Los cambios se guardan en este navegador y se ven al instante en la web. Para publicarlos para todos, exporta y sube los archivos a GitHub.</p>
+      <div class="tpl-toolbar">
+        <button class="btn sm" id="btnNewTpl" type="button">➕ Nueva plantilla</button>
+        <button class="btn ghost sm" id="btnExportTpl" type="button">⬇ Exportar catálogo</button>
+        <label class="btn ghost sm" style="cursor:pointer">📥 Importar JSON<input type="file" id="importJsonFile" accept="application/json,.json" hidden /></label>
+        <button class="btn ghost sm" id="btnResetTpl" type="button">♻ Restaurar catálogo</button>
+      </div>
+      <div class="tpl-list" id="tplList"></div>
+    </div>
   </div>
 
+  <div class="modal" id="tplModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="tplModalTitle">Editar plantilla</h3>
+        <button type="button" class="modal-x" id="tplModalClose">✕</button>
+      </div>
+      <form id="tplForm">
+        <div class="form-grid">
+          <div class="full"><label>Nombre<input id="fName" required placeholder="Mi plantilla romántica" /></label></div>
+          <div><label>Slug (URL)<input id="fSlug" placeholder="mi-plantilla" pattern="[a-z0-9-]+" /></label></div>
+          <div><label>Código<input id="fId" placeholder="UWU-XXXX" /></label></div>
+          <div><label>Emoji<input id="fEmoji" maxlength="4" placeholder="💌" /></label></div>
+          <div><label>Categoría<select id="fCat"></select></label></div>
+          <div><label>Tipo<select id="fTier"><option value="prem">Premium</option><option value="free">Gratis</option></select></label></div>
+          <div><label>Precio S/<input id="fPen" type="text" placeholder="25.90" /></label></div>
+          <div><label>Precio USD<input id="fUsd" type="text" placeholder="6.99" /></label></div>
+          <div class="full"><label>Gradiente CSS<input id="fGrad" placeholder="linear-gradient(150deg,#EE7EB1,#E8447A)" /></label></div>
+          <div><label>Título preview<input id="fTitle" placeholder="Título en la tarjeta" /></label></div>
+          <div><label>Texto pill<input id="fPill" placeholder="Tocar para abrir 💝" /></label></div>
+          <div class="full"><label>Descripción<textarea id="fDesc" placeholder="Breve descripción de la experiencia"></textarea></label></div>
+          <div class="full"><label>Archivo en servidor (opcional)<input id="fPage" placeholder="hello-kitty.html en docs/d/" /></label></div>
+          <div class="full">
+            <label class="file-btn">📄 Subir HTML de plantilla<input type="file" id="fHtmlFile" accept=".html,text/html" /></label>
+            <div class="html-status" id="fHtmlStatus">Sin HTML subido</div>
+          </div>
+          <div class="full"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="fShowcase" /> Destacar en showcase (primeras tarjetas)</label></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">💾 Guardar plantilla</button>
+          <button class="btn ghost" type="button" id="tplModalCancel">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/uwu.js"></script>
+  <script src="js/admin-templates.js"></script>
   <script>
     var ADMIN_HASH = 'e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';
     var ADMIN_USER = 'admin';
@@ -128,6 +208,7 @@
       document.getElementById('dashView').classList.add('on');
       refreshStats();
       renderSections();
+      if (window.UWUAdminTemplates) UWUAdminTemplates.init();
     }
 
     function refreshStats() {
@@ -136,6 +217,10 @@
       document.getElementById('stOrders').textContent = orders.length;
       var hidden = Object.values(ops.sections || {}).filter(function (v) { return v === false; }).length;
       document.getElementById('stHidden').textContent = hidden;
+      if (typeof UWU !== 'undefined') {
+        UWU.initCatalog();
+        document.getElementById('stTpl').textContent = UWU.CATALOG_ORDER.length;
+      }
     }
 
     function renderSections() {

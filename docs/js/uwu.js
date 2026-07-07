@@ -43,6 +43,164 @@
     'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' }
   };
 
+  var _baseCatalog = JSON.parse(JSON.stringify(CATALOG));
+  var _baseOrder = CATALOG_ORDER.slice();
+  var _baseShowcase = SHOWCASE.slice();
+  var STORE_KEY = 'uwuCatalogAdmin';
+
+  function emptyStore() {
+    return { catalog: {}, order: [], showcase: [], hidden: [], html: {} };
+  }
+
+  function loadCatalogStore() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return emptyStore();
+      var s = JSON.parse(raw);
+      if (!s.catalog) s.catalog = {};
+      if (!s.order) s.order = [];
+      if (!s.showcase) s.showcase = [];
+      if (!s.hidden) s.hidden = [];
+      if (!s.html) s.html = {};
+      return s;
+    } catch (e) {
+      return emptyStore();
+    }
+  }
+
+  function saveCatalogStore(store) {
+    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    applyCatalogFromStore(store);
+  }
+
+  function applyCatalogFromStore(store) {
+    store = store || loadCatalogStore();
+    var merged = Object.assign({}, _baseCatalog, store.catalog || {});
+    (store.hidden || []).forEach(function (slug) { delete merged[slug]; });
+    Object.keys(CATALOG).forEach(function (k) { delete CATALOG[k]; });
+    Object.assign(CATALOG, merged);
+    var order = (store.order && store.order.length) ? store.order.slice() : _baseOrder.slice();
+    order = order.filter(function (slug) { return CATALOG[slug]; });
+    Object.keys(store.catalog || {}).forEach(function (slug) {
+      if (CATALOG[slug] && order.indexOf(slug) === -1) order.push(slug);
+    });
+    CATALOG_ORDER.length = 0;
+    order.forEach(function (slug) { CATALOG_ORDER.push(slug); });
+    var showcase = (store.showcase && store.showcase.length) ? store.showcase.slice() : _baseShowcase.slice();
+    showcase = showcase.filter(function (slug) { return CATALOG[slug]; });
+    SHOWCASE.length = 0;
+    showcase.forEach(function (slug) { SHOWCASE.push(slug); });
+  }
+
+  function initCatalog() {
+    applyCatalogFromStore(loadCatalogStore());
+  }
+
+  function getStoredHtml(slug) {
+    var store = loadCatalogStore();
+    return (store.html && store.html[slug]) || null;
+  }
+
+  function slugifyName(name) {
+    return String(name || 'plantilla').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'plantilla';
+  }
+
+  function openTemplatePreview(slug) {
+    var t = CATALOG[slug];
+    var html = getStoredHtml(slug);
+    if (html) {
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      window.open(URL.createObjectURL(blob), '_blank');
+      return true;
+    }
+    if (t && t.page) {
+      window.open('d/' + t.page, '_blank');
+      return true;
+    }
+    return false;
+  }
+
+  function saveTemplate(slug, tpl, opts) {
+    opts = opts || {};
+    var store = loadCatalogStore();
+    store.catalog[slug] = tpl;
+    if (store.order.indexOf(slug) === -1) store.order.unshift(slug);
+    if (opts.showcase) {
+      if (store.showcase.indexOf(slug) === -1) store.showcase.unshift(slug);
+    } else if (opts.showcase === false) {
+      store.showcase = store.showcase.filter(function (s) { return s !== slug; });
+    }
+    if (opts.html !== undefined) {
+      if (opts.html) store.html[slug] = opts.html;
+      else delete store.html[slug];
+    }
+    store.hidden = store.hidden.filter(function (s) { return s !== slug; });
+    saveCatalogStore(store);
+    return slug;
+  }
+
+  function deleteTemplate(slug, soft) {
+    var store = loadCatalogStore();
+    if (soft) {
+      if (store.hidden.indexOf(slug) === -1) store.hidden.push(slug);
+    } else if (store.catalog[slug]) {
+      delete store.catalog[slug];
+      delete store.html[slug];
+      store.order = store.order.filter(function (s) { return s !== slug; });
+      store.showcase = store.showcase.filter(function (s) { return s !== slug; });
+      store.hidden = store.hidden.filter(function (s) { return s !== slug; });
+    } else {
+      if (store.hidden.indexOf(slug) === -1) store.hidden.push(slug);
+    }
+    saveCatalogStore(store);
+  }
+
+  function unhideTemplate(slug) {
+    var store = loadCatalogStore();
+    store.hidden = store.hidden.filter(function (s) { return s !== slug; });
+    saveCatalogStore(store);
+  }
+
+  function restoreTemplate(slug) {
+    var store = loadCatalogStore();
+    store.hidden = store.hidden.filter(function (s) { return s !== slug; });
+    delete store.catalog[slug];
+    delete store.html[slug];
+    saveCatalogStore(store);
+  }
+
+  function exportCatalogBundle() {
+    var store = loadCatalogStore();
+    return {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      store: store,
+      order: CATALOG_ORDER.slice(),
+      catalog: JSON.parse(JSON.stringify(CATALOG))
+    };
+  }
+
+  function importCatalogBundle(data) {
+    if (!data || !data.store) throw new Error('Archivo inválido');
+    saveCatalogStore(data.store);
+  }
+
+  function listAdminTemplates() {
+    return CATALOG_ORDER.map(function (slug) {
+      var t = CATALOG[slug];
+      var store = loadCatalogStore();
+      return {
+        slug: slug,
+        tpl: Object.assign({}, t),
+        hidden: store.hidden.indexOf(slug) !== -1,
+        custom: !!(store.catalog[slug] || store.html[slug]),
+        hasHtml: !!(store.html[slug] || (t && t.page))
+      };
+    });
+  }
+
   function esc(s) {
     if (!s) return '';
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -71,6 +229,10 @@
     if (order.mensaje) q.set('msg', order.mensaje);
     if (order.accessCode) q.set('code', order.accessCode);
     if (order.cancion) q.set('song', order.cancion);
+    if (getStoredHtml(slug)) {
+      q.set('slug', slug);
+      return 'd/view.html?' + q.toString();
+    }
     if (t && t.page) return 'd/' + t.page + '?' + q.toString();
     q.set('slug', slug);
     return 'd/view.html?' + q.toString();
@@ -120,6 +282,17 @@
 
   function downloadHTML(slug, data, filename) {
     var t = CATALOG[slug];
+    var stored = getStoredHtml(slug);
+    if (stored) {
+      var out = personalizeCustomPage(stored, slug, data);
+      var blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename || ('uwu-' + slug + '-' + (data.accessCode || 'edicion') + '.html');
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      return;
+    }
     if (t && t.page) {
       fetch('d/' + t.page).then(function (r) { return r.text(); }).then(function (html) {
         var out = personalizeCustomPage(html, slug, data);
@@ -158,6 +331,13 @@
       accessCode: params.get('code') || null,
       cancion: params.get('song') || 'Ed Sheeran — Perfect'
     };
+    var stored = getStoredHtml(slug);
+    if (stored) {
+      document.open();
+      document.write(personalizeCustomPage(stored, slug, data));
+      document.close();
+      return;
+    }
     document.title = 'UWU — ' + t.name + ' para ' + data.para;
     container = container || document.getElementById('uwu-dedication');
     if (!container) return;
@@ -344,9 +524,7 @@
         btn.addEventListener('click', function (e) {
           e.stopPropagation();
           var slug = btn.dataset.demoSlug;
-          var tpl = slug && CATALOG[slug];
-          if (tpl && tpl.page) window.open('d/' + tpl.page, '_blank');
-          else onDemo();
+          if (!openTemplatePreview(slug)) onDemo();
         });
       });
       grid.querySelectorAll('[data-buy]').forEach(function (btn) {
@@ -508,6 +686,8 @@
     updatePrices(c);
   }
 
+  initCatalog();
+
   global.UWU = {
     SHOWCASE: SHOWCASE,
     CATALOG_ORDER: CATALOG_ORDER,
@@ -530,7 +710,20 @@
     openCheckout: openCheckout,
     closeCheckout: closeCheckout,
     setCurrency: setCurrency,
-    getOrders: getOrders
+    getOrders: getOrders,
+    initCatalog: initCatalog,
+    loadCatalogStore: loadCatalogStore,
+    saveCatalogStore: saveCatalogStore,
+    getStoredHtml: getStoredHtml,
+    saveTemplate: saveTemplate,
+    deleteTemplate: deleteTemplate,
+    restoreTemplate: restoreTemplate,
+    unhideTemplate: unhideTemplate,
+    exportCatalogBundle: exportCatalogBundle,
+    importCatalogBundle: importCatalogBundle,
+    listAdminTemplates: listAdminTemplates,
+    slugifyName: slugifyName,
+    openTemplatePreview: openTemplatePreview
   };
   global.openCheckout = openCheckout;
 })(typeof window !== 'undefined' ? window : this);
