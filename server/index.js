@@ -169,9 +169,13 @@ app.get('/api/admin/test', auth, (_req, res) => {
 
 app.put('/api/sync/template/:slug', auth, (req, res) => {
   const slug = String(req.params.slug || '').replace(/[^a-z0-9-]/gi, '');
-  const html = req.body && req.body.content;
+  let html = req.body && req.body.content;
   if (!slug || typeof html !== 'string') {
     return res.status(400).json({ error: 'slug y content (HTML) son obligatorios' });
+  }
+  const audioPath = resolveRead(path.join('d', 'audio', slug + '.mp3'));
+  if (fs.existsSync(audioPath)) {
+    html = tplAudio.ensureAudioPlaceholder(html);
   }
   writeFile(path.join('d', slug + '.html'), html, 'utf8');
   res.json({ ok: true, slug, path: 'd/' + slug + '.html' });

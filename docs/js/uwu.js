@@ -399,6 +399,9 @@
 
   function saveTemplateHtml(slug, html, opts) {
     opts = opts || {};
+    if (hasTemplateAudio(slug) || (opts && opts.forceAudio)) {
+      html = ensureAudioPlaceholder(html);
+    }
     if (canUseServerStorage() && opts.serverPublished) {
       return markTemplateHtmlPublished(slug, html, opts);
     }
