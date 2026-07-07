@@ -269,10 +269,10 @@
         </div>
         <div class="card panel" id="railwayPanel">
           <h2>☁️ Railway (recomendado)</h2>
-          <p class="tpl-hint">Sirve el sitio y guarda plantillas HTML, MP3 y <code>catalog.json</code> sin usar la API de GitHub.</p>
+          <p class="tpl-hint">Si el admin está en el mismo dominio Railway, basta con iniciar sesión — la cookie autoriza la sync. El token solo hace falta para publicar desde otro equipo.</p>
           <div class="form-grid">
-            <label class="full">URL del sitio<input id="rwBaseUrl" placeholder="https://tu-app.up.railway.app" /></label>
-            <label class="full">Token admin<input id="rwToken" type="password" placeholder="mismo valor que ADMIN_TOKEN en Railway" autocomplete="off" /></label>
+            <label class="full">URL del sitio<input id="rwBaseUrl" placeholder="https://tu-app.up.railway.app (opcional si usas el mismo dominio)" /></label>
+            <label class="full">Token admin (opcional)<input id="rwToken" type="password" placeholder="Solo si sincronizas desde otro dominio" autocomplete="off" /></label>
           </div>
           <div class="tpl-toolbar" style="margin-top:14px">
             <button class="btn sm" id="btnSaveRw" type="button">💾 Guardar y probar</button>
@@ -308,8 +308,6 @@
   <script src="js/admin-landing.js"></script>
   <script src="js/admin-templates.js"></script>
   <script>
-    var ADMIN_HASH = 'e7956c9d534573c0ace68d7119ccec6458af1c8ec3e5292e74b0aaad95d4edee';
-    var ADMIN_USER = 'admin';
     var SECTIONS = [
       { id: 'hero', label: 'Hero principal' },
       { id: 'marquee', label: 'Cinta de categorías' },
@@ -356,27 +354,45 @@
     }
 
     if (sessionStorage.getItem('uwuAdm') === '1') showDash();
+    else {
+      fetch('/api/admin/session', { credentials: 'include' }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j && j.ok) {
+          sessionStorage.setItem('uwuAdm', '1');
+          showDash();
+        }
+      }).catch(function () {});
+    }
 
     document.getElementById('loginForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      if (document.getElementById('user').value.trim() !== ADMIN_USER) {
+      fetch('/api/admin/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user: document.getElementById('user').value.trim(),
+          password: document.getElementById('pw').value
+        })
+      }).then(function (r) {
+        return r.json().then(function (j) {
+          if (!r.ok) throw new Error((j && j.error) || 'Login fallido');
+          return j;
+        });
+      }).then(function () {
+        sessionStorage.setItem('uwuAdm', '1');
+        document.getElementById('err').style.display = 'none';
+        showDash();
+      }).catch(function () {
         document.getElementById('err').style.display = 'block';
-        return;
-      }
-      crypto.subtle.digest('SHA-256', new TextEncoder().encode(document.getElementById('pw').value)).then(function (b) {
-        var h = Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join('');
-        if (h === ADMIN_HASH) {
-          sessionStorage.setItem('uwuAdm', '1');
-          document.getElementById('err').style.display = 'none';
-          showDash();
-        } else document.getElementById('err').style.display = 'block';
       });
     });
 
     document.getElementById('btnOut').onclick = function () {
       if (confirm('¿Cerrar sesión?')) {
-        sessionStorage.removeItem('uwuAdm');
-        location.reload();
+        fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () {
+          sessionStorage.removeItem('uwuAdm');
+          location.reload();
+        });
       }
     };
   </script>

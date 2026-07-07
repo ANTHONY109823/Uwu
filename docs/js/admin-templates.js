@@ -355,11 +355,12 @@
       UWURailwaySync.saveConfig({
         baseUrl: el('rwBaseUrl').value.trim(),
         token: el('rwToken').value.trim(),
+        useCookie: true,
         enabled: true
       });
       if (!UWURailwaySync.isReady()) {
-        setSyncStatus('Falta URL o token', 'err');
-        alert('Pega la URL de tu app Railway y el token de admin.');
+        setSyncStatus('Falta la URL de Railway', 'err');
+        alert('Pega la URL pública de tu app Railway (o abre el admin desde ese dominio).');
         return;
       }
       setSyncStatus('Probando conexión…', 'wait');

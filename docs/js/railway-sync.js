@@ -8,6 +8,7 @@
     return {
       baseUrl: '',
       token: '',
+      useCookie: true,
       enabled: true
     };
   }
@@ -28,21 +29,31 @@
     return String(url || '').replace(/\/+$/, '');
   }
 
+  function getBaseUrl(cfg) {
+    if (cfg.baseUrl) return normalizeBase(cfg.baseUrl);
+    if (typeof location !== 'undefined' && location.origin && location.protocol !== 'file:') {
+      return normalizeBase(location.origin);
+    }
+    return '';
+  }
+
   function isReady() {
     var c = getConfig();
-    return !!(c.enabled && c.baseUrl && c.token);
+    if (!c.enabled) return false;
+    return !!getBaseUrl(c);
   }
 
   function headers(cfg) {
-    return {
-      Authorization: 'Bearer ' + cfg.token,
+    var h = {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     };
+    if (cfg.token) h.Authorization = 'Bearer ' + cfg.token;
+    return h;
   }
 
   function apiUrl(cfg, path) {
-    return normalizeBase(cfg.baseUrl) + path;
+    return getBaseUrl(cfg) + path;
   }
 
   function request(cfg, path, options) {
@@ -50,6 +61,7 @@
     return fetch(apiUrl(cfg, path), {
       method: options.method || 'GET',
       headers: headers(cfg),
+      credentials: cfg.useCookie !== false ? 'include' : 'same-origin',
       body: options.body != null ? JSON.stringify(options.body) : undefined
     }).then(function (res) {
       return res.json().then(function (j) {
@@ -156,9 +168,9 @@
 
   function testConnection() {
     var cfg = getConfig();
-    if (!isReady()) return Promise.reject(new Error('Falta la URL o el token de Railway.'));
+    if (!isReady()) return Promise.reject(new Error('Falta la URL de Railway.'));
     return request(cfg, '/api/admin/test').then(function (j) {
-      return { ok: true, message: j.message || 'OK', baseUrl: normalizeBase(cfg.baseUrl) };
+      return { ok: true, message: j.message || 'OK', baseUrl: getBaseUrl(cfg) };
     });
   }
 
