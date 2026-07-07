@@ -244,6 +244,8 @@
               <label class="full">Música de plantilla (MP3)</label>
               <label class="file-btn full">🎵 Subir MP3<input type="file" id="fAudioUpload" accept="audio/mpeg,.mp3" /></label>
               <div class="html-status" id="fAudioStatus">Sin música</div>
+              <p class="tpl-hint" style="font-size:11px;margin:4px 0 8px">En tu HTML usa <code>__UWU_AUDIO__</code> (reproductor completo) o <code>__UWU_AUDIO_SRC__</code> (solo la URL). Si no pones ninguno, se inserta solo al guardar.</p>
+              <button type="button" class="btn ghost sm" id="btnInsertAudio">➕ Insertar __UWU_AUDIO__</button>
               <button type="button" class="btn ghost sm" id="btnRemoveAudio">🗑 Quitar audio</button>
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px"><input type="checkbox" id="fShowcase" /> Destacar en showcase</label>
             </div>

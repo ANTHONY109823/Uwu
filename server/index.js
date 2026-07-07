@@ -4,6 +4,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const tplAudio = require('./template-audio');
 
 const PORT = Number(process.env.PORT) || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
@@ -210,6 +211,8 @@ app.use((req, res, next) => {
   }
   const filePath = resolveRead(rel);
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+    const processed = tplAudio.resolveTemplateHtml(rel, resolveRead);
+    if (processed) return res.type('html').send(processed);
     return res.sendFile(filePath);
   }
   next();

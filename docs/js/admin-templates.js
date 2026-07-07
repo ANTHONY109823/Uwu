@@ -179,6 +179,36 @@
     };
   }
 
+  function willHaveAudio(slug) {
+    if (pendingAudio && pendingAudio !== null) return true;
+    if (pendingAudio === null) return false;
+    return UWU.hasTemplateAudio(slug);
+  }
+
+  function applyAudioPlaceholderToEditor() {
+    if (!editingSlug) return false;
+    if (!willHaveAudio(editingSlug)) return false;
+    var editor = el('fHtmlEditor');
+    if (!editor) return false;
+    var next = UWU.ensureAudioPlaceholder(editor.value);
+    if (next === editor.value) return false;
+    editor.value = next;
+    return true;
+  }
+
+  function insertAudioHook() {
+    if (!editingSlug) return;
+    if (!willHaveAudio(editingSlug) && !pendingAudio) {
+      alert('Primero sube un MP3 para esta plantilla.');
+      return;
+    }
+    if (applyAudioPlaceholderToEditor()) {
+      alert('Se insertó __UWU_AUDIO__ antes de </body>. Guarda para publicar.');
+    } else {
+      alert('Tu HTML ya tiene música integrada (__UWU_AUDIO__, __UWU_AUDIO_SRC__ o #uwuBgm).');
+    }
+  }
+
   function updateAudioStatus() {
     var node = el('fAudioStatus');
     if (!node || !editingSlug) return;
@@ -277,6 +307,10 @@
     if (!meta.name) { alert('El nombre es obligatorio.'); return; }
     var html = el('fHtmlEditor').value;
     var slug = editingSlug;
+    if (willHaveAudio(slug)) {
+      html = UWU.ensureAudioPlaceholder(html);
+      el('fHtmlEditor').value = html;
+    }
     var versionId = el('fVersion').value;
     var useServer = UWU.canUseServerStorage && UWU.canUseServerStorage();
     var audioFile = pendingAudio && pendingAudio !== null ? pendingAudio : null;
@@ -393,6 +427,7 @@
     }
     pendingAudio = file;
     updateAudioStatus();
+    applyAudioPlaceholderToEditor();
   }
 
   function onHtmlUpload(file) {
@@ -506,6 +541,7 @@
     if (el('btnPreviewWs')) el('btnPreviewWs').onclick = previewHtml;
     if (el('fHtmlUpload')) el('fHtmlUpload').onchange = function () { onHtmlUpload(this.files[0]); this.value = ''; };
     if (el('fAudioUpload')) el('fAudioUpload').onchange = function () { onAudioUpload(this.files[0]); this.value = ''; };
+    if (el('btnInsertAudio')) el('btnInsertAudio').onclick = insertAudioHook;
     if (el('btnRemoveAudio')) el('btnRemoveAudio').onclick = function () { pendingAudio = null; updateAudioStatus(); };
     if (el('fTier')) el('fTier').onchange = function () {
       if (this.value === 'free') { el('fPen').value = '0'; el('fUsd').value = '0'; }

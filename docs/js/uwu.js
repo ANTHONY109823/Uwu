@@ -346,6 +346,21 @@
     }).catch(function () { return null; });
   }
 
+  function hasAudioHook(html) {
+    if (!html) return false;
+    return html.indexOf('__UWU_AUDIO__') !== -1 ||
+      html.indexOf('__UWU_AUDIO_SRC__') !== -1 ||
+      html.indexOf('id="uwuBgm"') !== -1;
+  }
+
+  function ensureAudioPlaceholder(html) {
+    if (!html || hasAudioHook(html)) return html;
+    if (/<\/body>/i.test(html)) {
+      return html.replace(/<\/body>/i, '__UWU_AUDIO__\n</body>');
+    }
+    return html + '\n__UWU_AUDIO__';
+  }
+
   function audioPlayerSnippet(src) {
     if (!src) return '';
     return '<audio id="uwuBgm" loop preload="auto" playsinline src="' + escAttr(src) + '" style="display:none"></audio>' +
@@ -1090,6 +1105,8 @@
     getTemplateAudioFetchUrl: getTemplateAudioFetchUrl,
     prepareTemplateOutput: prepareTemplateOutput,
     finalizeTemplateHtml: finalizeTemplateHtml,
+    ensureAudioPlaceholder: ensureAudioPlaceholder,
+    hasAudioHook: hasAudioHook,
     getAudioSrcForSlug: getAudioSrcForSlug,
     saveTemplate: saveTemplate,
     deleteTemplate: deleteTemplate,
