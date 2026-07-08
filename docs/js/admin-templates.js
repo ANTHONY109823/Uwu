@@ -233,6 +233,38 @@
     node.textContent = 'Sin música — sube un MP3 (máx. 8 MB)';
   }
 
+  function syncAdvancedFields() {
+    var name = (el('fName') && el('fName').value.trim()) || '';
+    if (el('fIdVisible')) el('fIdVisible').value = el('fId').value || '';
+    if (el('fTitleVisible') && !el('fTitleVisible').dataset.touched) {
+      el('fTitleVisible').value = el('fTitle').value || name;
+    }
+    if (el('fPillVisible') && !el('fPillVisible').dataset.touched) {
+      el('fPillVisible').value = el('fPill').value || 'Abrir 💝';
+    }
+    if (el('fGradVisible') && !el('fGradVisible').dataset.touched) {
+      el('fGradVisible').value = el('fGrad').value || '';
+    }
+  }
+
+  function applyAdvancedToHidden() {
+    var name = (el('fName') && el('fName').value.trim()) || '';
+    if (el('fTitleVisible')) {
+      var title = el('fTitleVisible').value.trim();
+      el('fTitle').value = title || name;
+    }
+    if (el('fPillVisible')) {
+      var pill = el('fPillVisible').value.trim();
+      el('fPill').value = pill || 'Abrir 💝';
+    }
+    if (el('fGradVisible')) {
+      el('fGrad').value = el('fGradVisible').value.trim() || el('fGrad').value || 'linear-gradient(150deg,#EE7EB1,#E8447A)';
+    }
+    if (el('fIdVisible') && el('fIdVisible').value.trim()) {
+      el('fId').value = el('fIdVisible').value.trim();
+    }
+  }
+
   function openWorkspace(slug) {
     editingSlug = slug;
     pendingAudio = undefined;
@@ -252,11 +284,16 @@
     el('fTier').value = t.tier || 'prem';
     el('fPen').value = t.pen || '0';
     el('fUsd').value = t.usd || '0';
-    el('fGrad').value = t.grad || '';
-    el('fTitle').value = t.title || '';
-    el('fPill').value = t.pill || '';
+    el('fGrad').value = t.grad || 'linear-gradient(150deg,#EE7EB1,#E8447A)';
+    el('fTitle').value = t.title || t.name || '';
+    el('fPill').value = t.pill || 'Abrir 💝';
     el('fDesc').value = t.desc || '';
     el('fShowcase').checked = UWU.SHOWCASE.indexOf(slug) !== -1;
+    ['fTitleVisible', 'fPillVisible', 'fGradVisible'].forEach(function (id) {
+      if (el(id)) delete el(id).dataset.touched;
+    });
+    syncAdvancedFields();
+    togglePriceRow();
     fillVersionSelect(slug);
     UWU.loadTemplateHtml(slug).then(function (html) {
       currentHtml = html;
@@ -315,20 +352,30 @@
   }
 
   function readMeta() {
+    applyAdvancedToHidden();
+    var name = el('fName').value.trim();
     return {
-      id: el('fId').value.trim(),
-      name: el('fName').value.trim(),
-      emoji: el('fEmoji').value.trim(),
+      id: el('fId').value.trim() || ('UWU-' + UWU.slugifyName(name).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6)),
+      name: name,
+      emoji: el('fEmoji').value.trim() || '💌',
       cat: el('fCat').value,
       tier: el('fTier').value,
-      pen: el('fPen').value.trim(),
-      usd: el('fUsd').value.trim(),
-      grad: el('fGrad').value.trim(),
-      title: el('fTitle').value.trim(),
-      pill: el('fPill').value.trim(),
+      pen: el('fPen').value.trim() || '0',
+      usd: el('fUsd').value.trim() || '0',
+      grad: el('fGrad').value.trim() || 'linear-gradient(150deg,#EE7EB1,#E8447A)',
+      title: el('fTitle').value.trim() || name,
+      pill: el('fPill').value.trim() || 'Abrir 💝',
       desc: el('fDesc').value.trim(),
       page: editingSlug ? editingSlug + '.html' : undefined
     };
+  }
+
+  function togglePriceRow() {
+    var row = el('priceRow');
+    if (!row || !el('fTier')) return;
+    var isFree = el('fTier').value === 'free';
+    row.style.display = isFree ? 'none' : '';
+    if (isFree) { el('fPen').value = '0'; el('fUsd').value = '0'; }
   }
 
   function setSaveBusy(busy) {
@@ -602,8 +649,19 @@
     if (el('btnInsertAudio')) el('btnInsertAudio').onclick = insertAudioHook;
     if (el('btnRemoveAudio')) el('btnRemoveAudio').onclick = function () { pendingAudio = null; updateAudioStatus(); };
     if (el('fTier')) el('fTier').onchange = function () {
-      if (this.value === 'free') { el('fPen').value = '0'; el('fUsd').value = '0'; }
+      togglePriceRow();
     };
+    if (el('fName')) el('fName').oninput = function () {
+      if (el('fTitleVisible') && !el('fTitleVisible').dataset.touched) {
+        el('fTitleVisible').value = this.value;
+        el('fTitle').value = this.value;
+      }
+      el('wsTitle').textContent = (el('fEmoji').value || '💌') + ' ' + this.value;
+    };
+    ['fTitleVisible', 'fPillVisible', 'fGradVisible'].forEach(function (id) {
+      if (!el(id)) return;
+      el(id).oninput = function () { this.dataset.touched = '1'; };
+    });
     if (el('btnResetTpl')) el('btnResetTpl').onclick = function () {
       if (!confirm('¿Restaurar catálogo original? Se perderán los cambios locales sin publicar.')) return;
       localStorage.removeItem('uwuCatalogAdmin');

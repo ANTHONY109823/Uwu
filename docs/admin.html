@@ -528,21 +528,20 @@
             <!-- Left: metadata + audio -->
             <div class="ws-meta card card-body">
               <input type="hidden" id="fSlug" />
+              <input type="hidden" id="fId" />
+              <input type="hidden" id="fGrad" />
+              <input type="hidden" id="fTitle" />
+              <input type="hidden" id="fPill" />
 
               <div class="field-row">
-                <div class="field">
-                  <label>Código interno</label>
-                  <input id="fId" type="text" />
+                <div class="field" style="flex:1">
+                  <label>Nombre</label>
+                  <input id="fName" type="text" placeholder="Ej. Constelación" />
                 </div>
-                <div class="field">
+                <div class="field" style="max-width:72px">
                   <label>Emoji</label>
                   <input id="fEmoji" type="text" maxlength="4" />
                 </div>
-              </div>
-
-              <div class="field">
-                <label>Nombre de la plantilla</label>
-                <input id="fName" type="text" />
               </div>
 
               <div class="field-row">
@@ -560,7 +559,7 @@
                 </div>
               </div>
 
-              <div class="field-row">
+              <div class="field-row" id="priceRow">
                 <div class="field">
                   <label>Precio S/</label>
                   <input id="fPen" type="text" />
@@ -572,47 +571,57 @@
               </div>
 
               <div class="field">
-                <label>Gradiente (CSS)</label>
-                <input id="fGrad" type="text" placeholder="linear-gradient(…)" />
+                <label>Descripción corta <span style="font-weight:500;color:var(--text-3)">(opcional)</span></label>
+                <textarea id="fDesc" rows="2" placeholder="Qué siente el visitante al ver esta plantilla…"></textarea>
               </div>
 
               <div class="field">
-                <label>Título de la tarjeta</label>
-                <input id="fTitle" type="text" />
-              </div>
-
-              <div class="field">
-                <label>Texto del pill</label>
-                <input id="fPill" type="text" />
-              </div>
-
-              <div class="field">
-                <label>Descripción</label>
-                <textarea id="fDesc" rows="2"></textarea>
-              </div>
-
-              <div class="field">
-                <label>Versión HTML activa</label>
+                <label>Versión HTML</label>
                 <select id="fVersion"></select>
               </div>
 
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-2);margin:0">
+                <input type="checkbox" id="fShowcase" /> Destacar en el showcase de la landing
+              </label>
+
               <!-- Audio panel -->
               <div class="audio-panel">
-                <div style="font-size:12px;font-weight:700;color:var(--text-2)">🎵 Música de plantilla</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-2)">🎵 Música</div>
                 <div class="html-status" id="fAudioStatus">Sin música</div>
                 <div class="audio-hint">
-                  En tu HTML usa <code>__UWU_AUDIO__</code> para el reproductor o <code>__UWU_AUDIO_SRC__</code> solo para la URL. Si no pones ninguno, se inserta automáticamente al guardar.
+                  Sube un MP3 y se integra solo al guardar. El visitante lo lleva embebido al descargar.
                 </div>
                 <div style="display:flex;flex-wrap:wrap;gap:6px">
                   <label class="file-btn">📂 Subir MP3<input type="file" id="fAudioUpload" accept="audio/mpeg,.mp3" /></label>
                   <button type="button" class="btn btn-outline btn-sm" id="btnInsertAudio">+ Insertar marcador</button>
-                  <button type="button" class="btn btn-danger btn-sm" id="btnRemoveAudio">✕ Quitar audio</button>
+                  <button type="button" class="btn btn-danger btn-sm" id="btnRemoveAudio">✕ Quitar</button>
                 </div>
               </div>
 
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-2);margin:0">
-                <input type="checkbox" id="fShowcase" /> Destacar en showcase
-              </label>
+              <details class="adv-meta" style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:var(--bg)">
+                <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text-2)">⚙️ Opciones avanzadas</summary>
+                <div style="display:grid;gap:10px;margin-top:12px">
+                  <p style="font-size:11px;color:var(--text-3);line-height:1.5;margin:0">
+                    Estos valores se generan solos. Solo cámbialos si necesitas un texto o color distinto en la tarjeta del catálogo.
+                  </p>
+                  <div class="field">
+                    <label>Código interno <span style="font-weight:500;color:var(--text-3)">(solo referencia)</span></label>
+                    <input id="fIdVisible" type="text" readonly style="opacity:.7;background:#F8FAFC" />
+                  </div>
+                  <div class="field">
+                    <label>Título en tarjeta del catálogo</label>
+                    <input id="fTitleVisible" type="text" placeholder="Por defecto = Nombre" />
+                  </div>
+                  <div class="field">
+                    <label>Texto del botón en showcase</label>
+                    <input id="fPillVisible" type="text" placeholder="Por defecto = Abrir 💝" />
+                  </div>
+                  <div class="field">
+                    <label>Color de fondo (CSS)</label>
+                    <input id="fGradVisible" type="text" placeholder="linear-gradient(…)" />
+                  </div>
+                </div>
+              </details>
             </div>
 
             <!-- Right: HTML editor -->
