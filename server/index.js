@@ -15,6 +15,34 @@ const STORAGE_ROOT = process.env.STORAGE_ROOT || BUNDLED_DOCS;
 const SESSION_COOKIE = 'uwu_admin';
 const SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000;
 
+// Brute-force protection: max 10 login attempts per IP per 15 minutes
+const loginAttempts = new Map();
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_MAX_ATTEMPTS = 10;
+
+function checkLoginRateLimit(ip) {
+  const now = Date.now();
+  let entry = loginAttempts.get(ip);
+  if (!entry || now - entry.start > LOGIN_WINDOW_MS) {
+    entry = { count: 0, start: now };
+  }
+  entry.count++;
+  loginAttempts.set(ip, entry);
+  return entry.count <= LOGIN_MAX_ATTEMPTS;
+}
+
+function resetLoginRateLimit(ip) {
+  loginAttempts.delete(ip);
+}
+
+// Purge stale rate-limit entries every 30 minutes
+setInterval(function () {
+  const cutoff = Date.now() - LOGIN_WINDOW_MS;
+  for (const [ip, entry] of loginAttempts) {
+    if (entry.start < cutoff) loginAttempts.delete(ip);
+  }
+}, 30 * 60 * 1000);
+
 const app = express();
 app.use(express.json({ limit: '12mb' }));
 app.set('trust proxy', 1);
@@ -96,14 +124,23 @@ function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+function isSafePath(base, resolved) {
+  const rel = path.relative(base, resolved);
+  return !!rel && !rel.startsWith('..') && !path.isAbsolute(rel);
+}
+
 function resolveStorage(rel) {
-  return path.join(STORAGE_ROOT, rel);
+  const resolved = path.resolve(STORAGE_ROOT, rel);
+  if (!isSafePath(STORAGE_ROOT, resolved)) throw new Error('Ruta no permitida');
+  return resolved;
 }
 
 function resolveRead(rel) {
-  const storagePath = resolveStorage(rel);
-  if (fs.existsSync(storagePath)) return storagePath;
-  return path.join(BUNDLED_DOCS, rel);
+  const storagePath = path.resolve(STORAGE_ROOT, rel);
+  if (isSafePath(STORAGE_ROOT, storagePath) && fs.existsSync(storagePath)) return storagePath;
+  const bundledPath = path.resolve(BUNDLED_DOCS, rel);
+  if (!isSafePath(BUNDLED_DOCS, bundledPath)) throw new Error('Ruta no permitida');
+  return bundledPath;
 }
 
 function writeFile(rel, content, encoding) {
@@ -129,7 +166,6 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'uwu',
-    storage: STORAGE_ROOT,
     hasAdminToken: !!ADMIN_TOKEN,
     hasAdminPassword: !!ADMIN_PASSWORD,
     at: new Date().toISOString(),
@@ -148,11 +184,16 @@ app.post('/api/admin/login', (req, res) => {
   if (!ADMIN_TOKEN || !ADMIN_PASSWORD) {
     return res.status(503).json({ error: 'Login admin no configurado en el servidor' });
   }
+  const ip = req.ip || 'unknown';
+  if (!checkLoginRateLimit(ip)) {
+    return res.status(429).json({ error: 'Demasiados intentos. Intenta en 15 minutos.' });
+  }
   const user = String((req.body && req.body.user) || '').trim();
   const password = String((req.body && req.body.password) || '');
   if (user !== ADMIN_USER || password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
   }
+  resetLoginRateLimit(ip);
   const token = createSessionToken();
   setSessionCookie(res, token);
   res.json({ ok: true, user: ADMIN_USER });
@@ -191,6 +232,37 @@ app.put('/api/sync/audio/:slug', auth, (req, res) => {
   res.json({ ok: true, slug, path: 'd/audio/' + slug + '.mp3' });
 });
 
+// Download a self-contained HTML (audio embedded as base64 data URI, no server needed)
+app.get('/api/download/template/:slug', auth, (req, res) => {
+  const slug = String(req.params.slug || '').replace(/[^a-z0-9-]/gi, '');
+  if (!slug) return res.status(400).json({ error: 'slug inválido' });
+
+  let htmlPath, html;
+  try {
+    htmlPath = resolveRead(path.join('d', slug + '.html'));
+  } catch (e) {
+    return res.status(404).json({ error: 'Plantilla no encontrada' });
+  }
+  if (!fs.existsSync(htmlPath)) return res.status(404).json({ error: 'Plantilla no encontrada' });
+
+  html = fs.readFileSync(htmlPath, 'utf8');
+
+  let audioSrc = null;
+  try {
+    const audioPath = resolveRead(path.join('d', 'audio', slug + '.mp3'));
+    if (fs.existsSync(audioPath)) {
+      const audioB64 = fs.readFileSync(audioPath).toString('base64');
+      audioSrc = 'data:audio/mpeg;base64,' + audioB64;
+    }
+  } catch (_) {}
+
+  const out = tplAudio.finalizeTemplateHtml(html, slug, audioSrc || null);
+  const filename = slug + '-demo.html';
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
+  res.send(out);
+});
+
 app.delete('/api/sync/audio/:slug', auth, (req, res) => {
   const slug = String(req.params.slug || '').replace(/[^a-z0-9-]/gi, '');
   const target = resolveStorage(path.join('d', 'audio', slug + '.mp3'));
@@ -208,14 +280,29 @@ app.put('/api/sync/catalog', auth, (req, res) => {
 });
 
 app.use((req, res, next) => {
-  const rel = decodeURIComponent(req.path.replace(/^\//, ''));
-  if (!rel || rel.endsWith('/')) {
-    const indexPath = resolveRead(path.join(rel, 'index.html'));
-    if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
+  let rel;
+  try {
+    rel = decodeURIComponent(req.path.replace(/^\//, ''));
+  } catch (_) {
+    return res.status(400).send('Bad request');
   }
-  const filePath = resolveRead(rel);
+
+  // Block any path-traversal attempts before resolveRead can catch them
+  if (rel.includes('..') || rel.includes('\0')) return next();
+
+  if (!rel || rel.endsWith('/')) {
+    let indexPath;
+    try { indexPath = resolveRead(path.join(rel, 'index.html')); } catch (_) { return next(); }
+    if (fs.existsSync(indexPath)) return res.sendFile(indexPath);
+    return next();
+  }
+
+  let filePath;
+  try { filePath = resolveRead(rel); } catch (_) { return next(); }
+
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    const processed = tplAudio.resolveTemplateHtml(rel, resolveRead);
+    let processed;
+    try { processed = tplAudio.resolveTemplateHtml(rel, resolveRead); } catch (_) {}
     if (processed) return res.type('html').send(processed);
     return res.sendFile(filePath);
   }

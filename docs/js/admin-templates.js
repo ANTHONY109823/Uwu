@@ -390,6 +390,19 @@
     });
   }
 
+  function downloadDemo() {
+    if (!editingSlug) return;
+    var cfg = (typeof UWURailwaySync !== 'undefined') ? UWURailwaySync.getConfig() : {};
+    var base = (cfg.baseUrl || '').replace(/\/+$/, '') || location.origin;
+    var url = base + '/api/download/template/' + encodeURIComponent(editingSlug);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = editingSlug + '-demo.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
   function previewHtml() {
     var html = el('fHtmlEditor').value;
     if (!editingSlug) return;
@@ -492,6 +505,7 @@
         ghNode.className = 'html-status sync-ok';
       }
     }
+    if (el('btnSyncNowGh')) el('btnSyncNowGh').onclick = function () { syncNow(true); };
     el('btnSaveGh').onclick = function () {
       UWUGitHubSync.saveConfig({
         token: el('ghToken').value.trim(),
@@ -539,6 +553,7 @@
     if (el('btnSaveWs')) el('btnSaveWs').onclick = function () { saveWorkspace(false); };
     if (el('btnSaveWsNew')) el('btnSaveWsNew').onclick = function () { saveWorkspace(true); };
     if (el('btnPreviewWs')) el('btnPreviewWs').onclick = previewHtml;
+    if (el('btnDownloadDemo')) el('btnDownloadDemo').onclick = downloadDemo;
     if (el('fHtmlUpload')) el('fHtmlUpload').onchange = function () { onHtmlUpload(this.files[0]); this.value = ''; };
     if (el('fAudioUpload')) el('fAudioUpload').onchange = function () { onAudioUpload(this.files[0]); this.value = ''; };
     if (el('btnInsertAudio')) el('btnInsertAudio').onclick = insertAudioHook;
