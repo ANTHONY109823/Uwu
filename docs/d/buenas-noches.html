@@ -2,41 +2,75 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="robots" content="noindex"/>
-<title>🌙 Buenas Noches — UWU</title>
+<title>🌙 Buenas noches — UWU</title>
 <style>
+
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;min-height:100svh;background:linear-gradient(150deg,#1C1420,#3d2a6e);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px}
-.wrap{max-width:400px;width:100%;text-align:center;background:rgba(0,0,0,.22);border-radius:28px;padding:32px 22px;border:1px solid rgba(255,255,255,.2)}
-.big{font-size:64px;margin-bottom:12px}
-h1{font-size:1.35rem;margin-bottom:8px}
-.pill{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:700;cursor:pointer}
-.msg{margin:18px 0;font-size:15px;line-height:1.7;font-style:italic;min-height:3em}
-.sub{font-size:12px;opacity:.85;margin-top:12px}
-.code{margin-top:16px;font-size:10px;opacity:.65;font-family:monospace}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,Roboto,sans-serif;min-height:100svh;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;position:relative}
+#uwuBg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.wrap{position:relative;z-index:2;max-width:420px;width:100%;text-align:center;background:rgba(12,10,20,.34);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:28px;padding:34px 24px;border:1px solid rgba(255,255,255,.18);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:wrapIn .9s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes wrapIn{0%{opacity:0;transform:translateY(24px) scale(.94)}100%{opacity:1;transform:none}}
+.big{font-size:66px;line-height:1;margin-bottom:12px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.4));cursor:pointer;transition:transform .2s}
+.big:hover{transform:scale(1.08)}
+h1{font-size:1.5rem;margin-bottom:10px;letter-spacing:.3px}
+.sub{font-size:12.5px;opacity:.85;margin-top:10px;line-height:1.5}
+.msg{margin:16px 0;font-size:15.5px;line-height:1.75;font-style:italic;min-height:2.6em}
+.pill{display:inline-block;margin-top:14px;padding:13px 26px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:14.5px;cursor:pointer;transition:transform .18s,background .25s,box-shadow .25s}
+.pill:hover{transform:translateY(-2px) scale(1.03);background:rgba(255,255,255,.26);box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.pill:active{transform:translateY(0) scale(.98)}
+.code{margin-top:16px;font-size:10px;opacity:.6;font-family:ui-monospace,Menlo,monospace;letter-spacing:1px}
+.note{opacity:.5;margin-top:6px}
+
+body{background:linear-gradient(180deg,#0a0e27,#1a2151)}
+
 </style>
 </head>
 <body>
+<canvas id="uwuBg"></canvas>
+
 <div class="wrap">
-<div class="big">🌙</div>
-<h1>Buenas noches, amor</h1>
+<div class="big" id="bigEmoji">🌙</div>
+<h1>Buenas noches</h1>
 <p class="sub" id="uwuSubtitle">__UWU_SUBTITLE__</p>
 <p class="msg" id="uwuMsg">__UWU_MSG__</p>
-<button class="pill" type="button">Soñar juntos 🌙</button>
+
+<button class="pill" id="actionBtn" type="button">Mandar un besito 😴</button>
 <div class="code">__UWU_CODE__</div>
-<p class="sub">Plantilla UWU-NOCHE · Edita este HTML en el panel admin</p>
+<p class="sub note">Plantilla UWU-NOCH · UWU</p>
 </div>
 <script>
-(function(){
-var p=new URLSearchParams(location.search);
-var msg=p.get("msg")||"__UWU_MSG__";
-var sub=p.get("subtitle")||"__UWU_SUBTITLE__";
-var code=p.get("code")||"__UWU_CODE__";
-if(msg!=="__UWU_MSG__")document.getElementById("uwuMsg").textContent=msg;
-if(sub!=="__UWU_SUBTITLE__")document.getElementById("uwuSubtitle").textContent=sub;
-if(code!=="__UWU_CODE__")document.querySelector(".code").textContent="Código: "+code;
+
+var UWUFX=(function(){
+  function canvas(){ var c=document.getElementById('uwuBg'); var x=c.getContext('2d'); function fit(){c.width=innerWidth;c.height=innerHeight;} fit(); addEventListener('resize',fit); return {c:c,x:x}; }
+  function rnd(a,b){ return a+Math.random()*(b-a); }
+  function heart(x,ctx,px,py,s,col){ ctx.save();ctx.translate(px,py);ctx.scale(s,s);ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,-3);ctx.bezierCurveTo(3,-9,11,-2,0,7);ctx.bezierCurveTo(-11,-2,-3,-9,0,-3);ctx.fill();ctx.restore(); }
+  function burst(px,py,cols){ cols=cols||['#ff5c8a','#ffd1e0','#c084fc','#ffffff']; var ps=[]; for(var i=0;i<26;i++){var a=Math.random()*6.28,sp=rnd(1,5);ps.push({x:px,y:py,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,l:1,s:rnd(.4,1),c:cols[i%cols.length]});} var lay=document.getElementById('uwuFxLayer'); if(!lay){lay=document.createElement('canvas');lay.id='uwuFxLayer';lay.style.cssText='position:fixed;inset:0;z-index:50;pointer-events:none';document.body.appendChild(lay);} lay.width=innerWidth;lay.height=innerHeight; var lx=lay.getContext('2d'); var run=lay.__run; if(!run){ (function loop(){ lx.clearRect(0,0,lay.width,lay.height); for(var k=lay.__ps.length-1;k>=0;k--){var p=lay.__ps[k];p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.l-=.016;lx.globalAlpha=Math.max(0,p.l);heart(0,lx,p.x,p.y,p.s*1.6,p.c);if(p.l<=0)lay.__ps.splice(k,1);} lx.globalAlpha=1; lay.__raf=requestAnimationFrame(loop);})(); lay.__run=true; } lay.__ps=(lay.__ps||[]).concat(ps); }
+  return {canvas:canvas,rnd:rnd,heart:heart,burst:burst};
 })();
+
+
+(function(){
+  var p=new URLSearchParams(location.search);
+  var para=p.get('para')||'', de=p.get('de')||'';
+  var msg=p.get('msg'), sub=p.get('subtitle'), code=p.get('code');
+  var mEl=document.getElementById('uwuMsg'), sEl=document.getElementById('uwuSubtitle'), cEl=document.querySelector('.code');
+  function isPh(t){return !t||t.indexOf('__UWU_')===0;}
+  if(msg) mEl.textContent=msg; else if(isPh(mEl.textContent)) mEl.textContent="Antes de dormir quiero que sepas que fuiste mi pensamiento favorito de todo el día. Descansa, mi amor. Mañana te sigo queriendo.";
+  if(sub) sEl.textContent=sub;
+  else if(para||de) sEl.textContent=("Para {para} — de {de}").replace('{para}',para||'ti').replace('{de}',de||'alguien que te ama');
+  else if(isPh(sEl.textContent)) sEl.textContent="Que sueñes bonito, mi cielo";
+  if(code) cEl.textContent='Código: '+code; else if(isPh(cEl.textContent)) cEl.textContent='';
+})();
+
+var G=UWUFX.canvas(),x=G.x,st=[];for(var i=0;i<150;i++)st.push({x:Math.random(),y:Math.random()*.85,r:Math.random()*1.6,tw:Math.random()*6});var zzz=[];
+ function d(){var W=G.c.width,H=G.c.height;x.clearRect(0,0,W,H);var t=Date.now()/800;x.fillStyle='rgba(255,247,214,.9)';x.beginPath();x.arc(W*.8,H*.2,34,0,6.28);x.fill();x.fillStyle=G.c.style.background;x.globalCompositeOperation='destination-out';x.beginPath();x.arc(W*.8+12,H*.2-6,30,0,6.28);x.fill();x.globalCompositeOperation='source-over';
+ for(var i=0;i<st.length;i++){var s=st[i];x.globalAlpha=.4+.6*Math.sin(t+s.tw);x.fillStyle='#fff';x.beginPath();x.arc(s.x*W,s.y*H,s.r,0,6.28);x.fill();}x.globalAlpha=1;
+ for(var k=zzz.length-1;k>=0;k--){var z=zzz[k];z.y-=.6;z.l-=.008;x.globalAlpha=Math.max(0,z.l);x.fillStyle='#cdb4ff';x.font=z.s+'px serif';x.fillText('z',z.x,z.y);if(z.l<=0)zzz.splice(k,1);}x.globalAlpha=1;requestAnimationFrame(d);}d();
+ setInterval(function(){zzz.push({x:innerWidth*.5+UWUFX.rnd(-10,10),y:innerHeight*.42,s:UWUFX.rnd(14,26),l:1});},700);
+ document.getElementById('actionBtn').onclick=function(){UWUFX.burst(innerWidth/2,innerHeight*0.4,['#cdb4ff','#fff','#ff9ec7']);};
 </script>
 <!-- ===== UWU KIT · marca + música (subir tu propio MP3) ===== -->
 <a id="uwuBrand" href="../index.html" aria-label="Volver a UWU">
