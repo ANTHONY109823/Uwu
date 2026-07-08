@@ -4,7 +4,8 @@
 
   var SHOWCASE = [
     'hello-kitty', 'carta-eterna', 'feliz-cumple', 'quieres-casarte', 'nuestro-tiempo', 'mi-valentin',
-    'perdoname', 'gracias-por-todo', 'para-mama', 'firulais-forever'
+    'perdoname', 'gracias-por-todo', 'para-mama', 'firulais-forever',
+    'galaxia-amor', 'flores-interactivas', 'lluvia-te-amo', 'laberinto-neon'
   ];
 
   var CATALOG_ORDER = [
@@ -12,7 +13,9 @@
     'perdoname', 'netflix-del-amor', 'nuestro-playlist', 'constelacion', 'cuenta-regresiva',
     'vhs-recuerdos', 'mapa-primer-beso', 'latidos', 'gracias-por-todo', 'para-mama',
     'firulais-forever', 'navidad-juntos', 'amor-distancia', 'nuestra-historia', 'buenas-noches',
-    'ano-nuevo', 'ramo-infinito', 'perdoname-bonito', 'globos-deseos'
+    'ano-nuevo', 'ramo-infinito', 'perdoname-bonito', 'globos-deseos',
+    'galaxia-amor', 'flores-interactivas', 'lluvia-te-amo', 'lluvia-frases',
+    'lluvia-letras', 'esfera-dragon', 'laberinto-neon'
   ];
 
   var CATALOG = {
@@ -40,7 +43,14 @@
     'ano-nuevo':          { id:'UWU-ANUE',  name:'Año Nuevo, Amor Nuevo',   emoji:'🥂', cat:'Fechas especiales',  tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#2d2410,#c9a227)', pill:'Brindar 🥂',                 title:'Un brindis por nosotros',     desc:'Celebrar lo vivido y lo que viene, con fuegos artificiales y promesas bonitas.' },
     'ramo-infinito':      { id:'UWU-RAMO',  name:'Ramo Infinito',           emoji:'💐', cat:'San Valentín',       tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#E8447A,#F4A7CB)', pill:'Recibir flores 💐',          title:'Un ramo para ti',             desc:'Flores que nunca se marchitan y palabras que florecen con cada scroll.' },
     'perdoname-bonito':   { id:'UWU-PBON',  name:'Perdóname Bonito',        emoji:'🤍', cat:'Perdón',             tier:'prem', pen:'19.90', usd:'5.49',  grad:'linear-gradient(150deg,#8a9bb8,#c4d0e0)', pill:'Leer con calma 🤍',          title:'Lo siento de verdad',         desc:'Una disculpa sincera, envuelta en calma, luz suave y mucha honestidad.' },
-    'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' }
+    'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' },
+    'galaxia-amor':       { id:'UWU-GALX',  name:'Galaxia de Nuestro Amor', emoji:'🌌', cat:'Enamorar',           tier:'excl', pen:'45.90', usd:'11.99', page:'galaxia-amor.html',        grad:'linear-gradient(150deg,#050010,#c084fc)', pill:'Explorar la galaxia 🌌',    title:'Nuestra galaxia',             desc:'Una galaxia 3D interactiva con frases de amor flotando entre las estrellas. Controles de órbita incluidos.' },
+    'flores-interactivas':{ id:'UWU-FLOR',  name:'Flores Interactivas',     emoji:'🌸', cat:'Enamorar',           tier:'prem', pen:'25.90', usd:'6.99',  page:'flores-interactivas.html', grad:'linear-gradient(135deg,#1a0a2e,#7c3aed)', pill:'Clic para florecer 🌸',     title:'Florece por ti',              desc:'Flores que nacen donde tocas la pantalla, dibujadas con magia WebGL. Cada clic es un te quiero.' },
+    'lluvia-te-amo':      { id:'UWU-LTAM',  name:'Lluvia de Te Amo',        emoji:'💕', cat:'Amar',               tier:'free', pen:'0',     usd:'0',     page:'lluvia-te-amo.html',       grad:'linear-gradient(135deg,#000,#ff4d6d)',     pill:'Ver la lluvia 💕',          title:'Te Amo',                      desc:'Una lluvia de "TE AMO" en colores rosados que cae sin parar. Toca la pantalla para ver corazones.' },
+    'lluvia-frases':      { id:'UWU-LFRA',  name:'Lluvia de Frases',        emoji:'💗', cat:'Amar',               tier:'prem', pen:'19.90', usd:'5.49',  page:'lluvia-frases.html',       grad:'linear-gradient(135deg,#000,#ff1493)',     pill:'Sentir el amor 💗',         title:'Me gustas mucho',             desc:'Una lluvia de frases románticas con tu canción favorita de fondo y mensaje central que brillan en la pantalla.' },
+    'lluvia-letras':      { id:'UWU-LLTR',  name:'Lluvia de Letras',        emoji:'🌧️', cat:'Sorprender',         tier:'prem', pen:'19.90', usd:'5.49',  page:'lluvia-letras.html',       grad:'linear-gradient(135deg,#0e2636,#00cc44)',  pill:'Tocar para ver 🌧️',        title:'Lluvia de palabras',          desc:'Letras y palabras de amor caen desde una nube brillante con efecto neón. Personalizable con cualquier mensaje.' },
+    'esfera-dragon':      { id:'UWU-DRAG',  name:'Esfera del Dragón',       emoji:'🐉', cat:'Sorprender',         tier:'prem', pen:'19.90', usd:'5.49',  page:'esfera-dragon.html',       grad:'linear-gradient(135deg,#ff4500,#ffa500)',  pill:'Tocar la esfera 🐉',        title:'Tu deseo se cumple',          desc:'Una esfera del dragón interactiva con animación pulsante y brillo. Para los fans del anime y las sorpresas únicas.' },
+    'laberinto-neon':     { id:'UWU-NEON',  name:'Laberinto Neon',          emoji:'🎮', cat:'Sorprender',         tier:'excl', pen:'45.90', usd:'11.99', page:'laberinto-neon.html',      grad:'linear-gradient(135deg,#000,#4583dc)',     pill:'Entrar al neon 🎮',         title:'Laberinto de luz',            desc:'Un laberinto 3D estilo Pac-Man con luces de neón y efectos volumétricos. Impresionante y completamente único.' }
   };
 
   Object.keys(CATALOG).forEach(function (slug) {

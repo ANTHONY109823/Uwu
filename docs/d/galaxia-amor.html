@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Galaxia de Nuestro Amor 🌌</title>
+  <meta name="robots" content="noindex">
+  <style>
+    html,body{margin:0;height:100%;background:#000;overflow:hidden}
+    #galaxy-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .pill{position:fixed;top:12px;left:50%;transform:translateX(-50%);padding:7px 16px;border-radius:999px;
+          background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);color:#fff;
+          font:13px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+          backdrop-filter:blur(8px);white-space:nowrap;z-index:10}
+    .attribution{position:fixed;right:12px;bottom:12px;font-size:11px;color:#b9a0ff;opacity:.7;
+                 background:rgba(0,0,0,.35);padding:5px 9px;border-radius:8px}
+    .player{position:fixed;left:10px;right:10px;bottom:10px;display:flex;gap:8px;align-items:center;
+            background:rgba(20,15,35,.45);border:1px solid rgba(255,255,255,.12);border-radius:12px;
+            padding:8px;backdrop-filter:blur(8px);color:#fff;
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial}
+    .player button{padding:8px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.2);
+                   background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:14px}
+    .player button:hover{background:rgba(255,255,255,.15)}
+    .player input[type=file]{display:none}
+    .player-label{font-size:12px;opacity:.8;flex:1}
+    #err{position:fixed;inset:auto 10px 70px 10px;background:#260015;color:#ffd9f7;
+         border:1px solid #ff8ae5;border-radius:10px;padding:10px;font:12px system-ui;display:none}
+    #fx{position:fixed;inset:0;pointer-events:none}
+    .back-btn{position:fixed;top:12px;left:12px;padding:7px 14px;border-radius:999px;
+              background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.20);
+              color:#fff;font-size:12px;text-decoration:none;backdrop-filter:blur(8px);z-index:20}
+    .back-btn:hover{background:rgba(255,255,255,.22)}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+<a class="back-btn" href="../index.html">← Volver a UWU</a>
+<canvas id="galaxy-canvas"></canvas>
+<div class="pill" id="pillText">Nuestra Galaxia 🌌</div>
+<div class="attribution">UWU 💫</div>
+<div id="err"></div>
+
+<div class="player">
+  <button id="playBtn">▶︎</button>
+  <span class="player-label">Elige tu canción 🎵</span>
+  <input type="file" id="pickFile" accept="audio/*">
+  <button id="pickBtn">Subir canción</button>
+  <audio id="audio" preload="none"></audio>
+</div>
+
+<canvas id="fx"></canvas>
+
+__UWU_AUDIO__
+
+<script>
+(function(){
+  var err = document.getElementById('err');
+  function showError(msg){ err.textContent = msg; err.style.display='block'; }
+
+  var audio = document.getElementById('audio');
+  var playBtn = document.getElementById('playBtn');
+  var pickBtn = document.getElementById('pickBtn');
+  var pickFile = document.getElementById('pickFile');
+
+  playBtn.onclick = async function() {
+    try {
+      if (audio.paused) { await audio.play(); playBtn.textContent='⏸︎'; }
+      else { audio.pause(); playBtn.textContent='▶︎'; }
+    } catch(e){ showError('Toca "Subir canción" y selecciona tu MP3.'); }
+  };
+  pickBtn.onclick = function(){ pickFile.click(); };
+  pickFile.onchange = function() {
+    if (pickFile.files && pickFile.files[0]) {
+      var url = URL.createObjectURL(pickFile.files[0]);
+      audio.src = url; audio.play().then(function(){ playBtn.textContent='⏸︎'; }).catch(function(){});
+    }
+  };
+
+  try {
+    var test = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
+    if(!test) throw new Error('Sin WebGL');
+  } catch(e) { showError('Tu navegador necesita WebGL. Prueba Chrome o Firefox.'); return; }
+
+  try {
+    var canvas = document.getElementById('galaxy-canvas');
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias:true, alpha:false });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.06;
+    controls.minDistance = 10; controls.maxDistance = 220;
+
+    function setCam(){
+      var w = window.innerWidth, h = window.innerHeight;
+      var isMobile = w < 768 || w < h;
+      camera.fov = isMobile ? 90 : 75;
+      camera.position.set(0, isMobile ? 26 : 22, isMobile ? 110 : 75);
+      camera.updateProjectionMatrix(); controls.update();
+    } setCam();
+
+    function makePrettyStarTexture(size, count) {
+      size = size || 1024; count = count || 2000;
+      var c = document.createElement('canvas'); c.width = c.height = size;
+      var g = c.getContext('2d');
+      var r = size/2;
+      var bg = g.createRadialGradient(r,r,r*0.2,r,r,r);
+      bg.addColorStop(0,'#050010'); bg.addColorStop(1,'#000000');
+      g.fillStyle = bg; g.fillRect(0,0,size,size);
+      for (var i=0;i<count;i++) {
+        var x=Math.random()*size, y=Math.random()*size, base=Math.random()*0.7+0.3;
+        var glow=g.createRadialGradient(x,y,0,x,y,Math.random()*2.2+1.6);
+        var hp=Math.random();
+        glow.addColorStop(0,'rgba(255,255,255,'+(0.65*base)+')');
+        glow.addColorStop(1, hp<0.25 ? 'rgba(255,180,240,'+(0.12*base)+')' : 'rgba(180,190,255,'+(0.12*base)+')');
+        g.fillStyle=glow; g.beginPath(); g.arc(x,y,Math.random()*1.2+0.6,0,Math.PI*2); g.fill();
+      }
+      return new THREE.CanvasTexture(c);
+    }
+
+    var bgGeo = new THREE.SphereGeometry(600,64,64);
+    var starTex = makePrettyStarTexture(1024,2600);
+    starTex.wrapS = starTex.wrapT = THREE.RepeatWrapping;
+    var bg = new THREE.Mesh(bgGeo, new THREE.MeshBasicMaterial({map:starTex,side:THREE.BackSide}));
+    scene.add(bg);
+
+    var galaxy = new THREE.Group(); scene.add(galaxy);
+    var phrases = [
+      "Te Amo ✨","Eres Única 💛","Mi Bebe","Mi Cielito 🌌","Eres Hermosa ✨",
+      "Mi Infinita ♾️","Mi Todo","Me Encantas 🥰","Love 💫","Te Amo 💛",
+      "Mi Canción Favorita 🎶","Única 😊","Mi Reina 👑","Mi Amor","Mi Mundo",
+      "Mi Luz 🌠","Mi Niña","Mi Tesoro 💛","Mi Paz","Mi Eterna",
+      "Mi Sueño","Mi Pensamiento Favorito","Mi Bombom","Mi Diosa","Te Amo Infinitamente ♾️"
+    ];
+    var phraseCount = Math.max(phrases.length*6, 180);
+    var arms=5, radius=82, maxH=22;
+
+    function makeTextTexture(text, size) {
+      size = size || 48;
+      var c=document.createElement('canvas'); c.width=1024; c.height=128;
+      var g=c.getContext('2d'); g.clearRect(0,0,c.width,c.height);
+      g.font='800 '+size+'px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial';
+      g.textAlign='center'; g.textBaseline='middle';
+      g.shadowColor='rgba(210,140,255,0.95)'; g.shadowBlur=24;
+      g.fillStyle='rgba(255,240,255,0.98)'; g.fillText(text,c.width/2,c.height/2);
+      return new THREE.CanvasTexture(c);
+    }
+
+    for(var i=0;i<phraseCount;i++){
+      var text=phrases[i%phrases.length];
+      var tex=makeTextTexture(text,48);
+      var spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+      var perArm=phraseCount/arms, ang=(i%perArm)*(Math.PI*2/perArm);
+      var armAng=Math.floor(i/perArm)*(Math.PI*2/arms);
+      var dist=Math.pow(i/phraseCount,0.72)*radius;
+      var thickness=Math.pow(1-(dist/radius),2);
+      var x=Math.cos(ang+armAng)*dist, z=Math.sin(ang+armAng)*dist, y=(Math.random()-0.5)*maxH*thickness*.9;
+      spr.position.set(x,y,z); spr.scale.set(20,2.6,1); galaxy.add(spr);
+    }
+
+    var starCount=8000, geom=new THREE.BufferGeometry(), pos=new Float32Array(starCount*3);
+    for(var j=0;j<starCount;j++){
+      var ang2=Math.random()*Math.PI*2, dist2=Math.random()*radius*1.15;
+      var y2=(Math.random()-0.5)*36*Math.pow(1-Math.min(dist2,radius)/radius,1.5);
+      pos[j*3]=Math.cos(ang2)*dist2; pos[j*3+1]=y2; pos[j*3+2]=Math.sin(ang2)*dist2;
+    }
+    geom.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    galaxy.add(new THREE.Points(geom,new THREE.PointsMaterial({color:0xffffff,size:0.28,transparent:true,opacity:0.65,blending:THREE.AdditiveBlending})));
+
+    var coreR=12;
+    var coreCvs=document.createElement('canvas'); coreCvs.width=coreCvs.height=256;
+    var cg=coreCvs.getContext('2d'), grd=cg.createRadialGradient(128,128,10,128,128,128);
+    grd.addColorStop(0,'#140018'); grd.addColorStop(0.6,'#090012'); grd.addColorStop(1,'#000');
+    cg.fillStyle=grd; cg.arc(128,128,128,0,Math.PI*2); cg.fill();
+    var core=new THREE.Mesh(new THREE.SphereGeometry(coreR,64,64),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(coreCvs)}));
+    core.renderOrder=1; scene.add(core);
+
+    var photonRing=new THREE.Mesh(new THREE.RingGeometry(coreR*1.05,coreR*1.18,128),new THREE.MeshBasicMaterial({color:0xEAAEFF,transparent:true,opacity:0.95,side:THREE.DoubleSide}));
+    photonRing.rotation.x=-Math.PI/2; photonRing.renderOrder=0.5; scene.add(photonRing);
+
+    function makeHaloTexture(size,inner){
+      size=size||1024; inner=inner||0.45;
+      var c=document.createElement('canvas'); c.width=c.height=size; var g=c.getContext('2d'); var r=size/2;
+      var grd2=g.createRadialGradient(r,r,r*inner,r,r,r);
+      grd2.addColorStop(0.0,'rgba(255,200,240,0.45)');
+      grd2.addColorStop(0.35,'rgba(220,180,255,0.35)');
+      grd2.addColorStop(0.7,'rgba(160,200,255,0.28)');
+      grd2.addColorStop(1,'rgba(0,0,0,0)');
+      g.fillStyle=grd2; g.fillRect(0,0,size,size);
+      var t=new THREE.CanvasTexture(c); t.needsUpdate=true; return t;
+    }
+    var haloPlane=new THREE.Mesh(new THREE.PlaneGeometry(320,320),new THREE.MeshBasicMaterial({map:makeHaloTexture(1024,0.45),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.9}));
+    haloPlane.rotation.x=-Math.PI/2; haloPlane.renderOrder=0.2; scene.add(haloPlane);
+
+    var tw=0;
+    function animate(){
+      requestAnimationFrame(animate);
+      var t=performance.now()*0.001;
+      tw=(tw+0.0003)%1; starTex.offset.set(tw,0);
+      galaxy.rotation.y=t*0.05; core.rotation.y=t*0.12;
+      photonRing.rotation.z=t*0.18; haloPlane.rotation.z=t*0.02;
+      controls.update(); renderer.render(scene,camera);
+    } animate();
+
+    window.addEventListener('resize',function(){
+      renderer.setSize(window.innerWidth,window.innerHeight);
+      camera.aspect=window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix(); setCam();
+    });
+
+    var fx=document.getElementById('fx');
+    var ctx2=fx.getContext('2d');
+    function resizeFx(){
+      var dpr=Math.min(2,window.devicePixelRatio||1);
+      fx.width=Math.floor(innerWidth*dpr); fx.height=Math.floor(innerHeight*dpr);
+      fx.style.width=innerWidth+'px'; fx.style.height=innerHeight+'px';
+    }
+    window.addEventListener('resize',resizeFx); resizeFx();
+    var DPR=Math.min(2,window.devicePixelRatio||1);
+    var hearts=[];
+    function spawnHearts(x,y,n){
+      n=n||20; x*=DPR; y*=DPR;
+      for(var k=0;k<n;k++){
+        var a=Math.random()*Math.PI*2;
+        hearts.push({x:x,y:y,vx:Math.cos(a)*(0.6+Math.random()*0.8),vy:-(0.8+Math.random()*1.2),life:1,size:10+Math.random()*16});
+      }
+    }
+    function drawHeart(x,y,size){
+      var s=size; ctx2.save(); ctx2.translate(x,y);
+      ctx2.beginPath(); ctx2.moveTo(0,-0.25*s);
+      ctx2.bezierCurveTo(.5*s,-.9*s,1.4*s,-.1*s,0,.9*s);
+      ctx2.bezierCurveTo(-1.4*s,-.1*s,-.5*s,-.9*s,0,-.25*s);
+      var g2=ctx2.createRadialGradient(0,0,0,0,0,s);
+      g2.addColorStop(0,'rgba(255,190,220,.95)'); g2.addColorStop(1,'rgba(255,90,160,0)');
+      ctx2.fillStyle=g2; ctx2.fill(); ctx2.restore();
+    }
+    var lastTap=0;
+    window.addEventListener('click',function(e){
+      var now=performance.now();
+      if(now-lastTap<320) spawnHearts(e.clientX,e.clientY,20);
+      lastTap=now;
+    },{passive:true});
+    window.addEventListener('touchend',function(e){
+      var now=performance.now(), t2=e.changedTouches&&e.changedTouches[0];
+      if(now-lastTap<320&&t2) spawnHearts(t2.clientX,t2.clientY,20);
+      lastTap=now;
+    },{passive:true});
+    function loopFx(){
+      ctx2.clearRect(0,0,fx.width,fx.height);
+      for(var k=hearts.length-1;k>=0;k--){
+        var h=hearts[k]; h.x+=h.vx; h.y+=h.vy; h.vy-=0.02; h.life-=0.015;
+        ctx2.globalAlpha=Math.max(0,h.life); drawHeart(h.x,h.y,h.size); ctx2.globalAlpha=1;
+        if(h.life<=0) hearts.splice(k,1);
+      }
+      requestAnimationFrame(loopFx);
+    } loopFx();
+
+  } catch(e){ showError('Error: '+e.message); console.error(e); }
+})();
+</script>
+</body>
+</html>

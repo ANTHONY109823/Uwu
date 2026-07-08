@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Esfera del Dragón 🐉</title>
+  <style>
+    body {
+      display:flex; justify-content:center; align-items:center;
+      background-color:#111; height:100vh; margin:0;
+    }
+    .dragon-ball {
+      position:relative; width:200px; height:200px;
+      background:radial-gradient(circle at 30% 30%,#ffa500,#ff4500);
+      border-radius:50%; box-shadow:inset 0 0 20px rgb(255,98,0);
+    }
+    .star {
+      position:absolute; width:30px; height:30px; background-color:#ff0000;
+      clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+      transform-origin:center center;
+    }
+    .star:nth-child(1){ top:50%; left:50%; transform:translate(-50%,-50%) scale(1.2); }
+    .star:nth-child(2){ top:30%; left:30%; transform:translate(-50%,-50%); }
+    .star:nth-child(3){ top:30%; left:70%; transform:translate(-50%,-50%); }
+    .star:nth-child(4){ top:70%; left:30%; transform:translate(-50%,-50%); }
+    .star:nth-child(5){ top:70%; left:70%; transform:translate(-50%,-50%); }
+    .star:nth-child(6){ top:50%; left:20%; transform:translate(-50%,-50%); }
+    .star:nth-child(7){ top:50%; left:80%; transform:translate(-50%,-50%); }
+
+    .dragon-ball::before {
+      content:""; position:absolute; top:10%; left:15%; width:70%; height:70%;
+      background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.8),transparent 70%);
+      border-radius:50%; filter:blur(10px); opacity:.7; animation:pulse 4s infinite alternate;
+    }
+    .dragon-ball::after {
+      content:""; position:absolute; top:10px; left:20px; width:160px; height:60px;
+      background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.9),transparent 70%);
+      border-radius:50%; filter:blur(8px); opacity:.8; transform:rotate(-20deg);
+    }
+    @keyframes pulse {
+      0%   { opacity:.4; transform:scale(.95); }
+      100% { opacity:.9; transform:scale(1.05); }
+    }
+    .dragon-logo {
+      position:absolute; top:-60%; left:50%; width:220px;
+      transform:translate(-50%,-50%);
+    }
+    .zoom { animation:zoomSmooth 1.5s ease-in-out; }
+    @keyframes zoomSmooth {
+      0%   { transform:scale(1); box-shadow:0 0 0 rgba(255,180,0,0); }
+      50%  { transform:scale(1.25); box-shadow:0 0 60px rgba(255,179,0,.6),0 0 120px rgba(255,102,0,.4); }
+      100% { transform:scale(1); box-shadow:0 0 0 rgba(255,180,0,0); }
+    }
+    .back-btn {
+      position:fixed; top:12px; left:12px; padding:7px 14px; border-radius:999px;
+      background:rgba(255,100,0,.2); border:1px solid rgba(255,150,0,.4);
+      color:#ffa500; font-size:12px; text-decoration:none; z-index:200;
+    }
+    .back-btn:hover { background:rgba(255,100,0,.35); }
+    .hint {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      color:#ffa500; font-size:13px; font-family:sans-serif; opacity:.7;
+    }
+  </style>
+</head>
+<body>
+  <a class="back-btn" href="../index.html">← Volver a UWU</a>
+  <div class="hint">¡Toca la esfera! 🐉</div>
+
+  <div class="dragon-ball" id="dragon-ball">
+    <img src="https://i.postimg.cc/pdrQzFfJ/dragonballsuper.png" class="dragon-logo" alt="">
+    <div class="dragon-ball">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+    </div>
+  </div>
+
+  <script>
+    const ball = document.getElementById("dragon-ball");
+    ball.addEventListener("click", () => {
+      ball.classList.add("zoom");
+      setTimeout(() => ball.classList.remove("zoom"), 1500);
+    });
+  </script>
+
+__UWU_AUDIO__
+</body>
+</html>
