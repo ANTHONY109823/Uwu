@@ -11,7 +11,7 @@ function audioPlayerSnippet(src) {
   if (!src) return '';
   return (
     '<audio id="uwuBgm" loop preload="auto" playsinline src="' + escAttr(src) + '" style="display:none"></audio>' +
-    '<script>(function(){var a=document.getElementById("uwuBgm");if(!a||!a.src)return;var p=function(){a.play().catch(function(){});};document.addEventListener("click",p,{once:true});document.addEventListener("touchstart",p,{once:true});var b=document.getElementById("uwuPlayBtn");if(b)b.addEventListener("click",function(e){e.preventDefault();a.play().catch(function(){});});})();<\/script>'
+    '<script>(function(){var a=document.getElementById("uwuBgm");if(!a||!a.src)return;var p=function(){if(a.paused)a.play().catch(function(){});};document.addEventListener("click",p,{once:true});document.addEventListener("touchstart",p,{once:true});})();<\/script>'
   );
 }
 
@@ -32,7 +32,10 @@ function ensureAudioPlaceholder(html) {
 
 function finalizeTemplateHtml(html, slug, src) {
   if (!html) return html;
-  if (!src) return html;
+  if (!src) {
+    // Sin audio: quitar los marcadores para que no aparezcan como texto en la página
+    return html.replace(/__UWU_AUDIO_SRC__/g, '').replace(/__UWU_AUDIO__/g, '');
+  }
   if (html.indexOf('__UWU_AUDIO_SRC__') !== -1) {
     html = html.replace(/__UWU_AUDIO_SRC__/g, escAttr(src));
   }
@@ -54,10 +57,12 @@ function resolveTemplateHtml(rel, resolveRead) {
   const slug = m[1];
   const htmlPath = resolveRead(rel);
   if (!fs.existsSync(htmlPath) || !fs.statSync(htmlPath).isFile()) return null;
-  const audioPath = resolveRead(path.join('d', 'audio', slug + '.mp3'));
-  if (!fs.existsSync(audioPath)) return null;
   const html = fs.readFileSync(htmlPath, 'utf8');
-  return finalizeTemplateHtml(html, slug, audioPublicPath(slug));
+  const audioPath = resolveRead(path.join('d', 'audio', slug + '.mp3'));
+  const src = fs.existsSync(audioPath) ? audioPublicPath(slug) : null;
+  // Si no hay audio y tampoco marcadores, servir el archivo tal cual (sin reprocesar)
+  if (!src && !hasAudioHook(html)) return null;
+  return finalizeTemplateHtml(html, slug, src);
 }
 
 module.exports = {
