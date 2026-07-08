@@ -7,6 +7,11 @@
   function el(id) { return document.getElementById(id); }
 
   function showView(id) {
+    // Al cambiar de sección, cerrar el editor de plantilla abierto para
+    // que "Plantillas" siempre muestre el listado y no quede atascado.
+    if (window.UWUAdminTemplates && UWUAdminTemplates.closeWorkspace) {
+      UWUAdminTemplates.closeWorkspace();
+    }
     currentView = id;
     document.querySelectorAll('.sidebar-nav button').forEach(function (btn) {
       btn.classList.toggle('active', btn.dataset.view === id);

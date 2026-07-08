@@ -269,10 +269,49 @@
   function closeWorkspace() {
     editingSlug = null;
     pendingAudio = undefined;
-    el('tplWorkspace').classList.remove('open');
-    el('tplBrowser').style.display = '';
-    el('tplFilters').style.display = '';
+    var ws = el('tplWorkspace');
+    if (ws) ws.classList.remove('open');
+    if (el('tplBrowser')) el('tplBrowser').style.display = '';
+    if (el('tplFilters')) el('tplFilters').style.display = '';
     renderBrowser();
+    var content = document.querySelector('.admin-content');
+    if (content) content.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  function newTemplate() {
+    var name = prompt('Nombre de la nueva plantilla:', 'Mi plantilla');
+    if (name === null) return;
+    name = name.trim();
+    if (!name) { alert('El nombre es obligatorio.'); return; }
+    var base = UWU.slugifyName(name);
+    var slug = base;
+    var i = 2;
+    while (UWU.CATALOG[slug]) { slug = base + '-' + i; i++; }
+    var idCode = 'UWU-' + slug.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    var cat = activeCat !== 'all' ? activeCat : 'Enamorar';
+    var tpl = {
+      id: idCode,
+      name: name,
+      emoji: '💌',
+      cat: cat,
+      tier: 'prem',
+      pen: '15',
+      usd: '5',
+      grad: 'linear-gradient(150deg,#EE7EB1,#E8447A)',
+      title: name,
+      pill: 'Abrir 💝',
+      desc: '',
+      page: slug + '.html'
+    };
+    try {
+      UWU.saveTemplate(slug, tpl, {});
+    } catch (err) {
+      alert('No se pudo crear la plantilla: ' + (err && err.message ? err.message : err));
+      return;
+    }
+    renderBrowser();
+    openWorkspace(slug);
   }
 
   function readMeta() {
@@ -548,8 +587,11 @@
   }
 
   function bind() {
+    if (bind._done) return;
+    bind._done = true;
     renderTierTabs();
     renderCatFilter();
+    if (el('btnNewTpl')) el('btnNewTpl').onclick = newTemplate;
     if (el('btnCloseWs')) el('btnCloseWs').onclick = closeWorkspace;
     if (el('btnSaveWs')) el('btnSaveWs').onclick = function () { saveWorkspace(false); };
     if (el('btnSaveWsNew')) el('btnSaveWsNew').onclick = function () { saveWorkspace(true); };
@@ -563,24 +605,29 @@
       if (this.value === 'free') { el('fPen').value = '0'; el('fUsd').value = '0'; }
     };
     if (el('btnResetTpl')) el('btnResetTpl').onclick = function () {
-      if (!confirm('¿Restaurar catálogo original?')) return;
+      if (!confirm('¿Restaurar catálogo original? Se perderán los cambios locales sin publicar.')) return;
       localStorage.removeItem('uwuCatalogAdmin');
       UWU.initCatalog();
+      closeWorkspace();
       afterCatalogChange('Catálogo restaurado.');
     };
   }
 
   window.UWUAdminTemplates = {
     init: function () {
-      var start = function () {
-        bind();
-        initSyncPanel();
-        renderBrowser();
-      };
-      if (UWU.bootstrap) UWU.bootstrap(start);
-      else { UWU.initCatalog(); start(); }
+      // Enlazar botones de inmediato (los nodos ya existen en el DOM),
+      // así "Volver", "Guardar" y "Nueva plantilla" funcionan aunque la
+      // carga del catálogo remoto tarde o falle.
+      bind();
+      initSyncPanel();
+      renderBrowser();
+      var refresh = function () { renderBrowser(); };
+      if (UWU.bootstrap) UWU.bootstrap(refresh);
+      else { UWU.initCatalog(); refresh(); }
     },
     renderBrowser: renderBrowser,
+    closeWorkspace: closeWorkspace,
+    newTemplate: newTemplate,
     syncNow: syncNow
   };
 })();
