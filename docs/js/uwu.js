@@ -138,6 +138,11 @@
     Object.keys(store.catalog || {}).forEach(function (slug) {
       if (CATALOG[slug] && order.indexOf(slug) === -1) order.push(slug);
     });
+    // La base es la fuente de verdad: un order guardado (localStorage/remoto) puede
+    // reordenar, pero nunca debe ocultar plantillas base nuevas. Añadimos las que falten.
+    _baseOrder.forEach(function (slug) {
+      if (CATALOG[slug] && order.indexOf(slug) === -1) order.push(slug);
+    });
     CATALOG_ORDER.length = 0;
     order.forEach(function (slug) { CATALOG_ORDER.push(slug); });
     var showcase = (store.showcase && store.showcase.length) ? store.showcase.slice() : _baseShowcase.slice();
