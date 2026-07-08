@@ -19,38 +19,38 @@
   ];
 
   var CATALOG = {
-    'hello-kitty':        { id:'UWU-HKIT',  name:'Hello Kitty Mágica',      emoji:'🎀', cat:'Sorprender',         tier:'excl', pen:'49.90', usd:'12.99', page:'hello-kitty.html', grad:'linear-gradient(135deg,#e542a1,#3890dd,#c654ce)', pill:'Tocar para abrir 🎀', title:'Hello Kitty para ti', desc:'Hello Kitty se dibuja sola, luego tu mensaje aparece letra por letra con corazones flotantes.' },
-    'carta-eterna':       { id:'UWU-CTRN',  name:'Carta Eterna',            emoji:'💌', cat:'Carta romántica',    tier:'prem', pen:'25.90', usd:'6.99', page:'carta-eterna.html',  grad:'linear-gradient(165deg,#4a1030,#8e2461)', pill:'Tocar para abrir 💝',       title:'Mi carta para ti',          desc:'Una carta que se abre con tu voz, tus palabras y la canción de los dos.' },
-    'feliz-cumple':       { id:'UWU-FIIN',  name:'Fiesta Infinita',         emoji:'🎂', cat:'Cumpleaños',         tier:'free', pen:'0',     usd:'0', page:'feliz-cumple.html',     grad:'linear-gradient(160deg,#F6A13C,#F0567B)', pill:'Soplar velitas 🎉',          title:'¡Feliz cumpleaños!',          desc:'Sopla las velitas, revienta los globos y descubre 25 razones para celebrarte.' },
-    'quieres-casarte':    { id:'UWU-LGPREG',name:'La Gran Pregunta',        emoji:'💍', cat:'Pedida de mano',     tier:'excl', pen:'49.90', usd:'12.99', page:'quieres-casarte.html', grad:'linear-gradient(165deg,#1C1420,#5b2a5e)', pill:'Ver nuestra historia ✨',    title:'¿Te casarías conmigo?',       desc:'Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.' },
-    'nuestro-tiempo':     { id:'UWU-NUTI',  name:'Nuestro Tiempo',          emoji:'💕', cat:'Aniversario',        tier:'prem', pen:'25.90', usd:'6.99', page:'nuestro-tiempo.html',  grad:'linear-gradient(160deg,#8e2461,#E8447A)', pill:'Ver cada momento ⏳',        title:'847 días juntos',           desc:'Un contador en vivo de cada segundo a tu lado, con la línea de tiempo de los dos.' },
-    'mi-valentin':        { id:'UWU-JDROS', name:'Jardín de Rosas',         emoji:'🌹', cat:'San Valentín',       tier:'prem', pen:'25.90', usd:'6.99', page:'mi-valentin.html',  grad:'linear-gradient(160deg,#C21E4C,#F45C7F)', pill:'Abrir el jardín 🌹',         title:'Mi San Valentín',             desc:'Un jardín de rosas que florece mientras lee por qué la elegiste a ella.' },
-    'perdoname':          { id:'UWU-LLFL',  name:'Lluvia de Flores',        emoji:'🌸', cat:'Perdón',             tier:'free', pen:'0',     usd:'0', page:'perdoname.html',     grad:'linear-gradient(165deg,#7899d4,#c6a9e8)', pill:'Leer mi disculpa 🌸',        title:'Perdóname',                   desc:'A veces las palabras cuestan. Esta página las dice bonito por ti, con lluvia de flores.' },
-    'gracias-por-todo':   { id:'UWU-VOLAR', name:'Volar de Nuevo',          emoji:'💔', cat:'Cerrar ciclos',      tier:'prem', pen:'19.90', usd:'5.49', page:'gracias-por-todo.html',  grad:'linear-gradient(160deg,#5f72bd,#9b23ea)', pill:'Soltar con amor 🕊️',         title:'Gracias por todo',            desc:'Cerrar un ciclo también puede ser hermoso. Una despedida en paz, sin rencor.' },
-    'para-mama':          { id:'UWU-RAIZ',  name:'Raíces',                  emoji:'👨‍👩‍👧', cat:'Familia',            tier:'prem', pen:'25.90', usd:'6.99', page:'para-mama.html',  grad:'linear-gradient(160deg,#E88A4A,#F2BC5C)', pill:'Abrir el álbum 📖',          title:'Para mamá',                   desc:'El álbum de la familia con las fotos de siempre y las palabras que nunca le dijiste.' },
-    'firulais-forever':   { id:'UWU-MEAM',  name:'Mejor Amigo',             emoji:'🐶', cat:'Mascotas',           tier:'free', pen:'0',     usd:'0', page:'firulais-forever.html',     grad:'linear-gradient(160deg,#C98A4B,#E8B34B)', pill:'Ver sus travesuras 🐾',       title:'Firulais 4ever',              desc:'Porque también son familia: la página de tu mejor amigo de cuatro patas.' },
-    'netflix-del-amor':   { id:'UWU-NFLX',  name:'Netflix del Amor',        emoji:'🎬', cat:'Aniversario',        tier:'excl', pen:'45.90', usd:'11.99', page:'netflix-del-amor.html', grad:'linear-gradient(150deg,#141414,#E50914)', pill:'Reproducir ❤️',              title:'Nuestra serie',               desc:'Tu historia en formato binge: capítulos, fotos y la banda sonora de los dos.' },
-    'nuestro-playlist':   { id:'UWU-PLAY',  name:'Nuestro Playlist',        emoji:'🎧', cat:'Amar',               tier:'prem', pen:'25.90', usd:'6.99', page:'nuestro-playlist.html',  grad:'linear-gradient(150deg,#121212,#1DB954)', pill:'Escuchar juntos 🎵',         title:'Nuestra playlist',            desc:'Las canciones que marcaron cada momento, en una página que suena como ustedes.' },
-    'constelacion':       { id:'UWU-CONST', name:'Constelación',            emoji:'⭐', cat:'Enamorar',           tier:'excl', pen:'45.90', usd:'11.99', page:'constelacion.html', grad:'linear-gradient(150deg,#0f1030,#4b3f8e)', pill:'Ver las estrellas ✨',       title:'Nuestra constelación',        desc:'Un cielo estrellado con el mapa de los momentos que los unieron para siempre.' },
-    'cuenta-regresiva':   { id:'UWU-CUENT', name:'Cuenta Regresiva',        emoji:'⏳', cat:'Sorprender',         tier:'prem', pen:'25.90', usd:'6.99',  grad:'linear-gradient(150deg,#B06AB3,#7873f5)', pill:'Iniciar cuenta ⏳',           title:'Faltan solo…',                desc:'La sorpresa perfecta: un contador que desemboca en el momento más esperado.' },
-    'vhs-recuerdos':      { id:'UWU-VHS',   name:'VHS de Recuerdos',        emoji:'📼', cat:'Extrañar',           tier:'prem', pen:'19.90', usd:'5.49', page:'vhs-recuerdos.html',  grad:'linear-gradient(150deg,#3a2d20,#8a6a3c)', pill:'Rebobinar 📼',               title:'Recuerdos en VHS',            desc:'Nostalgia en pantalla: fotos retro, música y la sensación de volver a empezar.' },
-    'mapa-primer-beso':   { id:'UWU-MAPB',  name:'El Mapa del Primer Beso', emoji:'📍', cat:'Amar',               tier:'prem', pen:'25.90', usd:'6.99', page:'mapa-primer-beso.html',  grad:'linear-gradient(150deg,#134E5E,#71B280)', pill:'Ver el mapa 📍',             title:'Aquí empezó todo',            desc:'El lugar exacto donde el mundo cambió, marcado en un mapa hecho con amor.' },
-    'latidos':            { id:'UWU-LAT',   name:'Latidos',                 emoji:'💗', cat:'Enamorar',           tier:'free', pen:'0',     usd:'0', page:'latidos.html',     grad:'linear-gradient(150deg,#FF6584,#E8447A)', pill:'Sentir el latido 💗',        title:'Mi corazón late por ti',      desc:'Una página que late al ritmo de tu mensaje, simple y profundamente romántica.' },
-    'navidad-juntos':     { id:'UWU-NAV',   name:'Navidad Juntos',          emoji:'🎄', cat:'Fechas especiales',  tier:'prem', pen:'25.90', usd:'6.99', page:'navidad-juntos.html',  grad:'linear-gradient(150deg,#c23a3a,#1e5e3a)', pill:'Abrir regalo 🎁',            title:'Feliz Navidad juntos',        desc:'Luces, nieve digital y las palabras más cálidas para quien llena tu diciembre.' },
-    'amor-distancia':     { id:'UWU-DIST',  name:'Amor a Distancia',        emoji:'✈️', cat:'Extrañar',           tier:'prem', pen:'25.90', usd:'6.99', page:'amor-distancia.html',  grad:'linear-gradient(150deg,#56A8E8,#8ED0F8)', pill:'Cruzar kilómetros ✈️',       title:'A kilómetros, juntos',        desc:'La distancia no gana cuando el amor tiene su propia página en internet.' },
-    'nuestra-historia':   { id:'UWU-HIST',  name:'Nuestra Historia',        emoji:'📖', cat:'Aniversario',        tier:'prem', pen:'25.90', usd:'6.99', page:'nuestra-historia.html',  grad:'linear-gradient(150deg,#6d4226,#b8845a)', pill:'Leer capítulo 📖',           title:'Capítulo a capítulo',         desc:'La línea de tiempo de los dos, contada como la mejor historia que jamás vivieron.' },
-    'buenas-noches':      { id:'UWU-NOCHE', name:'Buenas Noches',           emoji:'🌙', cat:'Amar',               tier:'prem', pen:'19.90', usd:'5.49', page:'buenas-noches.html',  grad:'linear-gradient(150deg,#1C1420,#3d2a6e)', pill:'Soñar juntos 🌙',            title:'Buenas noches, amor',         desc:'Para cerrar el día con una carta suave, estrellas y la canción que los arrulla.' },
-    'ano-nuevo':          { id:'UWU-ANUE',  name:'Año Nuevo, Amor Nuevo',   emoji:'🥂', cat:'Fechas especiales',  tier:'prem', pen:'25.90', usd:'6.99', page:'ano-nuevo.html',  grad:'linear-gradient(150deg,#2d2410,#c9a227)', pill:'Brindar 🥂',                 title:'Un brindis por nosotros',     desc:'Celebrar lo vivido y lo que viene, con fuegos artificiales y promesas bonitas.' },
-    'ramo-infinito':      { id:'UWU-RAMO',  name:'Ramo Infinito',           emoji:'💐', cat:'San Valentín',       tier:'prem', pen:'25.90', usd:'6.99', page:'ramo-infinito.html',  grad:'linear-gradient(150deg,#E8447A,#F4A7CB)', pill:'Recibir flores 💐',          title:'Un ramo para ti',             desc:'Flores que nunca se marchitan y palabras que florecen con cada scroll.' },
-    'perdoname-bonito':   { id:'UWU-PBON',  name:'Perdóname Bonito',        emoji:'🤍', cat:'Perdón',             tier:'prem', pen:'19.90', usd:'5.49', page:'perdoname-bonito.html',  grad:'linear-gradient(150deg,#8a9bb8,#c4d0e0)', pill:'Leer con calma 🤍',          title:'Lo siento de verdad',         desc:'Una disculpa sincera, envuelta en calma, luz suave y mucha honestidad.' },
-    'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'25.90', usd:'6.99', page:'globos-deseos.html',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' },
-    'galaxia-amor':       { id:'UWU-GALX',  name:'Galaxia de Nuestro Amor', emoji:'🌌', cat:'Enamorar',           tier:'excl', pen:'45.90', usd:'11.99', page:'galaxia-amor.html',        grad:'linear-gradient(150deg,#050010,#c084fc)', pill:'Explorar la galaxia 🌌',    title:'Nuestra galaxia',             desc:'Una galaxia 3D interactiva con frases de amor flotando entre las estrellas. Controles de órbita incluidos.' },
-    'flores-interactivas':{ id:'UWU-FLOR',  name:'Flores Interactivas',     emoji:'🌸', cat:'Enamorar',           tier:'prem', pen:'25.90', usd:'6.99',  page:'flores-interactivas.html', grad:'linear-gradient(135deg,#1a0a2e,#7c3aed)', pill:'Clic para florecer 🌸',     title:'Florece por ti',              desc:'Flores que nacen donde tocas la pantalla, dibujadas con magia WebGL. Cada clic es un te quiero.' },
-    'lluvia-te-amo':      { id:'UWU-LTAM',  name:'Lluvia de Te Amo',        emoji:'💕', cat:'Amar',               tier:'free', pen:'0',     usd:'0',     page:'lluvia-te-amo.html',       grad:'linear-gradient(135deg,#000,#ff4d6d)',     pill:'Ver la lluvia 💕',          title:'Te Amo',                      desc:'Una lluvia de "TE AMO" en colores rosados que cae sin parar. Toca la pantalla para ver corazones.' },
-    'lluvia-frases':      { id:'UWU-LFRA',  name:'Lluvia de Frases',        emoji:'💗', cat:'Amar',               tier:'prem', pen:'19.90', usd:'5.49',  page:'lluvia-frases.html',       grad:'linear-gradient(135deg,#000,#ff1493)',     pill:'Sentir el amor 💗',         title:'Me gustas mucho',             desc:'Una lluvia de frases románticas con tu canción favorita de fondo y mensaje central que brillan en la pantalla.' },
-    'lluvia-letras':      { id:'UWU-LLTR',  name:'Lluvia de Letras',        emoji:'🌧️', cat:'Sorprender',         tier:'prem', pen:'19.90', usd:'5.49',  page:'lluvia-letras.html',       grad:'linear-gradient(135deg,#0e2636,#00cc44)',  pill:'Tocar para ver 🌧️',        title:'Lluvia de palabras',          desc:'Letras y palabras de amor caen desde una nube brillante con efecto neón. Personalizable con cualquier mensaje.' },
-    'esfera-dragon':      { id:'UWU-DRAG',  name:'Esfera del Dragón',       emoji:'🐉', cat:'Sorprender',         tier:'prem', pen:'19.90', usd:'5.49',  page:'esfera-dragon.html',       grad:'linear-gradient(135deg,#ff4500,#ffa500)',  pill:'Tocar la esfera 🐉',        title:'Tu deseo se cumple',          desc:'Una esfera del dragón interactiva con animación pulsante y brillo. Para los fans del anime y las sorpresas únicas.' },
-    'laberinto-neon':     { id:'UWU-NEON',  name:'Laberinto Neon',          emoji:'🎮', cat:'Sorprender',         tier:'excl', pen:'45.90', usd:'11.99', page:'laberinto-neon.html',      grad:'linear-gradient(135deg,#000,#4583dc)',     pill:'Entrar al neon 🎮',         title:'Laberinto de luz',            desc:'Un laberinto 3D estilo Pac-Man con luces de neón y efectos volumétricos. Impresionante y completamente único.' }
+    'hello-kitty':        { id:'UWU-HKIT',  name:'Hello Kitty Mágica',      emoji:'🎀', cat:'Sorprender',         tier:'excl', pen:'5', usd:'1.50', page:'hello-kitty.html', grad:'linear-gradient(135deg,#e542a1,#3890dd,#c654ce)', pill:'Tocar para abrir 🎀', title:'Hello Kitty para ti', desc:'Hello Kitty se dibuja sola, luego tu mensaje aparece letra por letra con corazones flotantes.' },
+    'carta-eterna':       { id:'UWU-CTRN',  name:'Carta Eterna',            emoji:'💌', cat:'Carta romántica',    tier:'prem', pen:'8', usd:'2.00', page:'carta-eterna.html',  grad:'linear-gradient(165deg,#4a1030,#8e2461)', pill:'Tocar para abrir 💝',       title:'Mi carta para ti',          desc:'Una carta que se abre con tu voz, tus palabras y la canción de los dos.' },
+    'feliz-cumple':       { id:'UWU-FIIN',  name:'Fiesta Infinita',         emoji:'🎂', cat:'Cumpleaños',         tier:'free', pen:'0', usd:'0', page:'feliz-cumple.html',     grad:'linear-gradient(160deg,#F6A13C,#F0567B)', pill:'Soplar velitas 🎉',          title:'¡Feliz cumpleaños!',          desc:'Sopla las velitas, revienta los globos y descubre 25 razones para celebrarte.' },
+    'quieres-casarte':    { id:'UWU-LGPREG',name:'La Gran Pregunta',        emoji:'💍', cat:'Pedida de mano',     tier:'excl', pen:'5', usd:'1.50', page:'quieres-casarte.html', grad:'linear-gradient(165deg,#1C1420,#5b2a5e)', pill:'Ver nuestra historia ✨',    title:'¿Te casarías conmigo?',       desc:'Un cielo de estrellas, la historia de los dos, y la pregunta más importante al final.' },
+    'nuestro-tiempo':     { id:'UWU-NUTI',  name:'Nuestro Tiempo',          emoji:'💕', cat:'Aniversario',        tier:'prem', pen:'8', usd:'2.00', page:'nuestro-tiempo.html',  grad:'linear-gradient(160deg,#8e2461,#E8447A)', pill:'Ver cada momento ⏳',        title:'847 días juntos',           desc:'Un contador en vivo de cada segundo a tu lado, con la línea de tiempo de los dos.' },
+    'mi-valentin':        { id:'UWU-JDROS', name:'Jardín de Rosas',         emoji:'🌹', cat:'San Valentín',       tier:'prem', pen:'8', usd:'2.00', page:'mi-valentin.html',  grad:'linear-gradient(160deg,#C21E4C,#F45C7F)', pill:'Abrir el jardín 🌹',         title:'Mi San Valentín',             desc:'Un jardín de rosas que florece mientras lee por qué la elegiste a ella.' },
+    'perdoname':          { id:'UWU-LLFL',  name:'Lluvia de Flores',        emoji:'🌸', cat:'Perdón',             tier:'free', pen:'0', usd:'0', page:'perdoname.html',     grad:'linear-gradient(165deg,#7899d4,#c6a9e8)', pill:'Leer mi disculpa 🌸',        title:'Perdóname',                   desc:'A veces las palabras cuestan. Esta página las dice bonito por ti, con lluvia de flores.' },
+    'gracias-por-todo':   { id:'UWU-VOLAR', name:'Volar de Nuevo',          emoji:'💔', cat:'Cerrar ciclos',      tier:'prem', pen:'8', usd:'2.00', page:'gracias-por-todo.html',  grad:'linear-gradient(160deg,#5f72bd,#9b23ea)', pill:'Soltar con amor 🕊️',         title:'Gracias por todo',            desc:'Cerrar un ciclo también puede ser hermoso. Una despedida en paz, sin rencor.' },
+    'para-mama':          { id:'UWU-RAIZ',  name:'Raíces',                  emoji:'👨‍👩‍👧', cat:'Familia',            tier:'prem', pen:'8', usd:'2.00', page:'para-mama.html',  grad:'linear-gradient(160deg,#E88A4A,#F2BC5C)', pill:'Abrir el álbum 📖',          title:'Para mamá',                   desc:'El álbum de la familia con las fotos de siempre y las palabras que nunca le dijiste.' },
+    'firulais-forever':   { id:'UWU-MEAM',  name:'Mejor Amigo',             emoji:'🐶', cat:'Mascotas',           tier:'free', pen:'0', usd:'0', page:'firulais-forever.html',     grad:'linear-gradient(160deg,#C98A4B,#E8B34B)', pill:'Ver sus travesuras 🐾',       title:'Firulais 4ever',              desc:'Porque también son familia: la página de tu mejor amigo de cuatro patas.' },
+    'netflix-del-amor':   { id:'UWU-NFLX',  name:'Netflix del Amor',        emoji:'🎬', cat:'Aniversario',        tier:'excl', pen:'5', usd:'1.50', page:'netflix-del-amor.html', grad:'linear-gradient(150deg,#141414,#E50914)', pill:'Reproducir ❤️',              title:'Nuestra serie',               desc:'Tu historia en formato binge: capítulos, fotos y la banda sonora de los dos.' },
+    'nuestro-playlist':   { id:'UWU-PLAY',  name:'Nuestro Playlist',        emoji:'🎧', cat:'Amar',               tier:'prem', pen:'8', usd:'2.00', page:'nuestro-playlist.html',  grad:'linear-gradient(150deg,#121212,#1DB954)', pill:'Escuchar juntos 🎵',         title:'Nuestra playlist',            desc:'Las canciones que marcaron cada momento, en una página que suena como ustedes.' },
+    'constelacion':       { id:'UWU-CONST', name:'Constelación',            emoji:'⭐', cat:'Enamorar',           tier:'excl', pen:'5', usd:'1.50', page:'constelacion.html', grad:'linear-gradient(150deg,#0f1030,#4b3f8e)', pill:'Ver las estrellas ✨',       title:'Nuestra constelación',        desc:'Un cielo estrellado con el mapa de los momentos que los unieron para siempre.' },
+    'cuenta-regresiva':   { id:'UWU-CUENT', name:'Cuenta Regresiva',        emoji:'⏳', cat:'Sorprender',         tier:'prem', pen:'8', usd:'2.00',  grad:'linear-gradient(150deg,#B06AB3,#7873f5)', pill:'Iniciar cuenta ⏳',           title:'Faltan solo…',                desc:'La sorpresa perfecta: un contador que desemboca en el momento más esperado.' },
+    'vhs-recuerdos':      { id:'UWU-VHS',   name:'VHS de Recuerdos',        emoji:'📼', cat:'Extrañar',           tier:'prem', pen:'8', usd:'2.00', page:'vhs-recuerdos.html',  grad:'linear-gradient(150deg,#3a2d20,#8a6a3c)', pill:'Rebobinar 📼',               title:'Recuerdos en VHS',            desc:'Nostalgia en pantalla: fotos retro, música y la sensación de volver a empezar.' },
+    'mapa-primer-beso':   { id:'UWU-MAPB',  name:'El Mapa del Primer Beso', emoji:'📍', cat:'Amar',               tier:'prem', pen:'8', usd:'2.00', page:'mapa-primer-beso.html',  grad:'linear-gradient(150deg,#134E5E,#71B280)', pill:'Ver el mapa 📍',             title:'Aquí empezó todo',            desc:'El lugar exacto donde el mundo cambió, marcado en un mapa hecho con amor.' },
+    'latidos':            { id:'UWU-LAT',   name:'Latidos',                 emoji:'💗', cat:'Enamorar',           tier:'free', pen:'0', usd:'0', page:'latidos.html',     grad:'linear-gradient(150deg,#FF6584,#E8447A)', pill:'Sentir el latido 💗',        title:'Mi corazón late por ti',      desc:'Una página que late al ritmo de tu mensaje, simple y profundamente romántica.' },
+    'navidad-juntos':     { id:'UWU-NAV',   name:'Navidad Juntos',          emoji:'🎄', cat:'Fechas especiales',  tier:'prem', pen:'8', usd:'2.00', page:'navidad-juntos.html',  grad:'linear-gradient(150deg,#c23a3a,#1e5e3a)', pill:'Abrir regalo 🎁',            title:'Feliz Navidad juntos',        desc:'Luces, nieve digital y las palabras más cálidas para quien llena tu diciembre.' },
+    'amor-distancia':     { id:'UWU-DIST',  name:'Amor a Distancia',        emoji:'✈️', cat:'Extrañar',           tier:'prem', pen:'8', usd:'2.00', page:'amor-distancia.html',  grad:'linear-gradient(150deg,#56A8E8,#8ED0F8)', pill:'Cruzar kilómetros ✈️',       title:'A kilómetros, juntos',        desc:'La distancia no gana cuando el amor tiene su propia página en internet.' },
+    'nuestra-historia':   { id:'UWU-HIST',  name:'Nuestra Historia',        emoji:'📖', cat:'Aniversario',        tier:'prem', pen:'8', usd:'2.00', page:'nuestra-historia.html',  grad:'linear-gradient(150deg,#6d4226,#b8845a)', pill:'Leer capítulo 📖',           title:'Capítulo a capítulo',         desc:'La línea de tiempo de los dos, contada como la mejor historia que jamás vivieron.' },
+    'buenas-noches':      { id:'UWU-NOCHE', name:'Buenas Noches',           emoji:'🌙', cat:'Amar',               tier:'prem', pen:'8', usd:'2.00', page:'buenas-noches.html',  grad:'linear-gradient(150deg,#1C1420,#3d2a6e)', pill:'Soñar juntos 🌙',            title:'Buenas noches, amor',         desc:'Para cerrar el día con una carta suave, estrellas y la canción que los arrulla.' },
+    'ano-nuevo':          { id:'UWU-ANUE',  name:'Año Nuevo, Amor Nuevo',   emoji:'🥂', cat:'Fechas especiales',  tier:'prem', pen:'8', usd:'2.00', page:'ano-nuevo.html',  grad:'linear-gradient(150deg,#2d2410,#c9a227)', pill:'Brindar 🥂',                 title:'Un brindis por nosotros',     desc:'Celebrar lo vivido y lo que viene, con fuegos artificiales y promesas bonitas.' },
+    'ramo-infinito':      { id:'UWU-RAMO',  name:'Ramo Infinito',           emoji:'💐', cat:'San Valentín',       tier:'prem', pen:'8', usd:'2.00', page:'ramo-infinito.html',  grad:'linear-gradient(150deg,#E8447A,#F4A7CB)', pill:'Recibir flores 💐',          title:'Un ramo para ti',             desc:'Flores que nunca se marchitan y palabras que florecen con cada scroll.' },
+    'perdoname-bonito':   { id:'UWU-PBON',  name:'Perdóname Bonito',        emoji:'🤍', cat:'Perdón',             tier:'prem', pen:'8', usd:'2.00', page:'perdoname-bonito.html',  grad:'linear-gradient(150deg,#8a9bb8,#c4d0e0)', pill:'Leer con calma 🤍',          title:'Lo siento de verdad',         desc:'Una disculpa sincera, envuelta en calma, luz suave y mucha honestidad.' },
+    'globos-deseos':      { id:'UWU-GLOB',  name:'Globos y Deseos',         emoji:'🎈', cat:'Cumpleaños',         tier:'prem', pen:'8', usd:'2.00', page:'globos-deseos.html',  grad:'linear-gradient(150deg,#F0567B,#FDD35C)', pill:'Soltar globos 🎈',           title:'Pide un deseo',               desc:'Globos, confeti y una celebración digital que se siente como fiesta de verdad.' },
+    'galaxia-amor':       { id:'UWU-GALX',  name:'Galaxia de Nuestro Amor', emoji:'🌌', cat:'Enamorar',           tier:'excl', pen:'5', usd:'1.50', page:'galaxia-amor.html',        grad:'linear-gradient(150deg,#050010,#c084fc)', pill:'Explorar la galaxia 🌌',    title:'Nuestra galaxia',             desc:'Una galaxia 3D interactiva con frases de amor flotando entre las estrellas. Controles de órbita incluidos.' },
+    'flores-interactivas':{ id:'UWU-FLOR',  name:'Flores Interactivas',     emoji:'🌸', cat:'Enamorar',           tier:'prem', pen:'8', usd:'2.00',  page:'flores-interactivas.html', grad:'linear-gradient(135deg,#1a0a2e,#7c3aed)', pill:'Clic para florecer 🌸',     title:'Florece por ti',              desc:'Flores que nacen donde tocas la pantalla, dibujadas con magia WebGL. Cada clic es un te quiero.' },
+    'lluvia-te-amo':      { id:'UWU-LTAM',  name:'Lluvia de Te Amo',        emoji:'💕', cat:'Amar',               tier:'free', pen:'0', usd:'0',     page:'lluvia-te-amo.html',       grad:'linear-gradient(135deg,#000,#ff4d6d)',     pill:'Ver la lluvia 💕',          title:'Te Amo',                      desc:'Una lluvia de "TE AMO" en colores rosados que cae sin parar. Toca la pantalla para ver corazones.' },
+    'lluvia-frases':      { id:'UWU-LFRA',  name:'Lluvia de Frases',        emoji:'💗', cat:'Amar',               tier:'prem', pen:'8', usd:'2.00',  page:'lluvia-frases.html',       grad:'linear-gradient(135deg,#000,#ff1493)',     pill:'Sentir el amor 💗',         title:'Me gustas mucho',             desc:'Una lluvia de frases románticas con tu canción favorita de fondo y mensaje central que brillan en la pantalla.' },
+    'lluvia-letras':      { id:'UWU-LLTR',  name:'Lluvia de Letras',        emoji:'🌧️', cat:'Sorprender',         tier:'prem', pen:'8', usd:'2.00',  page:'lluvia-letras.html',       grad:'linear-gradient(135deg,#0e2636,#00cc44)',  pill:'Tocar para ver 🌧️',        title:'Lluvia de palabras',          desc:'Letras y palabras de amor caen desde una nube brillante con efecto neón. Personalizable con cualquier mensaje.' },
+    'esfera-dragon':      { id:'UWU-DRAG',  name:'Esfera del Dragón',       emoji:'🐉', cat:'Sorprender',         tier:'prem', pen:'8', usd:'2.00',  page:'esfera-dragon.html',       grad:'linear-gradient(135deg,#ff4500,#ffa500)',  pill:'Tocar la esfera 🐉',        title:'Tu deseo se cumple',          desc:'Una esfera del dragón interactiva con animación pulsante y brillo. Para los fans del anime y las sorpresas únicas.' },
+    'laberinto-neon':     { id:'UWU-NEON',  name:'Laberinto Neon',          emoji:'🎮', cat:'Sorprender',         tier:'excl', pen:'5', usd:'1.50', page:'laberinto-neon.html',      grad:'linear-gradient(135deg,#000,#4583dc)',     pill:'Entrar al neon 🎮',         title:'Laberinto de luz',            desc:'Un laberinto 3D estilo Pac-Man con luces de neón y efectos volumétricos. Impresionante y completamente único.' }
   };
 
   Object.keys(CATALOG).forEach(function (slug) {
@@ -60,15 +60,20 @@
   var _baseOrder = CATALOG_ORDER.slice();
   var _baseShowcase = SHOWCASE.slice();
   var STORE_KEY = 'uwuCatalogAdmin';
+  var _storeCache = null;
 
   function emptyStore() {
     return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {}, audio: {}, audioMeta: {} };
   }
 
   function loadCatalogStore() {
+    if (_storeCache) return _storeCache;
     try {
       var raw = localStorage.getItem(STORE_KEY);
-      if (!raw) return emptyStore();
+      if (!raw) {
+        _storeCache = emptyStore();
+        return _storeCache;
+      }
       var s = JSON.parse(raw);
       if (!s.catalog) s.catalog = {};
       if (!s.order) s.order = [];
@@ -79,9 +84,11 @@
       if (!s.activeVersion) s.activeVersion = {};
       if (!s.audio) s.audio = {};
       if (!s.audioMeta) s.audioMeta = {};
-      return s;
+      _storeCache = s;
+      return _storeCache;
     } catch (e) {
-      return emptyStore();
+      _storeCache = emptyStore();
+      return _storeCache;
     }
   }
 
@@ -92,11 +99,13 @@
     }
     try {
       localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      _storeCache = store;
     } catch (e) {
       if (e && e.name === 'QuotaExceededError') {
         pruneHeavyLocalData(store, true);
         try {
           localStorage.setItem(STORE_KEY, JSON.stringify(store));
+          _storeCache = store;
         } catch (e2) {
           throw new Error('Espacio del navegador lleno. Conecta Railway y guarda de nuevo.');
         }
@@ -105,6 +114,10 @@
       }
     }
     applyCatalogFromStore(store);
+  }
+
+  function invalidateStoreCache() {
+    _storeCache = null;
   }
 
   function pruneHeavyLocalData(store, aggressive) {
@@ -131,6 +144,9 @@
     store = store || loadCatalogStore();
     var merged = Object.assign({}, _baseCatalog, store.catalog || {});
     (store.hidden || []).forEach(function (slug) { delete merged[slug]; });
+    Object.keys(merged).forEach(function (slug) {
+      if (merged[slug]) applyTierPrice(merged[slug]);
+    });
     Object.keys(CATALOG).forEach(function (k) { delete CATALOG[k]; });
     Object.assign(CATALOG, merged);
     var order = (store.order && store.order.length) ? store.order.slice() : _baseOrder.slice();
@@ -498,6 +514,7 @@
 
   function saveTemplate(slug, tpl, opts) {
     opts = opts || {};
+    applyTierPrice(tpl);
     var store = loadCatalogStore();
     store.catalog[slug] = tpl;
     if (store.order.indexOf(slug) === -1) store.order.unshift(slug);
@@ -541,41 +558,21 @@
     saveCatalogStore(store);
   }
 
-  function restoreTemplate(slug) {
-    var store = loadCatalogStore();
-    store.hidden = store.hidden.filter(function (s) { return s !== slug; });
-    delete store.catalog[slug];
-    delete store.html[slug];
-    saveCatalogStore(store);
-  }
-
-  function exportCatalogBundle() {
-    var store = loadCatalogStore();
-    return {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      store: store,
-      order: CATALOG_ORDER.slice(),
-      catalog: JSON.parse(JSON.stringify(CATALOG))
-    };
-  }
-
-  function importCatalogBundle(data) {
-    if (!data || !data.store) throw new Error('Archivo inválido');
-    saveCatalogStore(data.store);
-  }
-
   function listAdminTemplates() {
+    var store = loadCatalogStore();
+    var hidden = store.hidden || [];
     return CATALOG_ORDER.map(function (slug) {
       var t = CATALOG[slug];
-      var store = loadCatalogStore();
       return {
         slug: slug,
         tpl: Object.assign({}, t),
-        hidden: store.hidden.indexOf(slug) !== -1,
-        custom: !!(store.catalog[slug] || store.html[slug]),
+        hidden: hidden.indexOf(slug) !== -1,
         hasHtml: !!(store.html[slug] || (t && t.page)),
-        hasAudio: hasTemplateAudio(slug)
+        hasAudio: !!(
+          (store.audio && store.audio[slug]) ||
+          (store.catalog[slug] && store.catalog[slug].audio) ||
+          (t && t.audio)
+        )
       };
     });
   }
@@ -587,17 +584,36 @@
 
   function getCur() { return localStorage.getItem('uwuCur') || 'pen'; }
 
+  var TIER_PRICES = {
+    free: { pen: '0', usd: '0' },
+    prem: { pen: '8', usd: '2.00' },
+    excl: { pen: '5', usd: '1.50' }
+  };
+
+  function pricesForTier(tier) {
+    return TIER_PRICES[tier] || TIER_PRICES.prem;
+  }
+
+  function applyTierPrice(tpl) {
+    if (!tpl) return tpl;
+    var p = pricesForTier(tpl.tier || 'prem');
+    tpl.pen = p.pen;
+    tpl.usd = p.usd;
+    return tpl;
+  }
+
   function tierLabel(tier) {
     if (tier === 'free') return 'Gratis';
-    if (tier === 'excl') return '💎 Exclusiva';
+    if (tier === 'excl') return '💎 VIP';
     return 'Premium';
   }
 
   function fmtPrice(t, cur) {
     cur = cur || getCur();
-    if (t.tier === 'free' || t.pen === '0') return cur === 'pen' ? 'Gratis' : 'Free';
-    var prefix = t.tier === 'excl' ? '💎 ' : '';
-    return cur === 'pen' ? prefix + 'S/ ' + t.pen : prefix + '$' + t.usd;
+    var priced = applyTierPrice(Object.assign({}, t));
+    if (priced.tier === 'free' || priced.pen === '0') return cur === 'pen' ? 'Gratis' : 'Free';
+    var prefix = priced.tier === 'excl' ? '💎 ' : '';
+    return cur === 'pen' ? prefix + 'S/ ' + priced.pen : prefix + '$' + priced.usd;
   }
 
   function slugFromPath() {
@@ -976,7 +992,7 @@
       '<button type="button" data-c="pen">🇵🇪 Soles S/</button>' +
       '<button type="button" data-c="usd">🇺🇸 Dólares $</button>' +
       '</div>' +
-      '<div class="chk-price">Total: <strong id="chkPrice">S/ 25.90</strong></div>' +
+      '<div class="chk-price">Total: <strong id="chkPrice">S/ 8</strong></div>' +
       '<button class="chk-pay btn" id="chkPayBtn" type="button">💳 Pagar y obtener mi dedicatoria</button>' +
       '<button class="chk-free btn ghost" id="chkFreeBtn" type="button" style="display:none">✨ Obtener gratis</button>' +
       '</div>' +
@@ -1087,6 +1103,8 @@
     CATEGORIES: CATEGORIES,
     esc: esc,
     tierLabel: tierLabel,
+    pricesForTier: pricesForTier,
+    applyTierPrice: applyTierPrice,
     getCur: getCur,
     fmtPrice: fmtPrice,
     slugFromPath: slugFromPath,
@@ -1129,13 +1147,11 @@
     getAudioSrcForSlug: getAudioSrcForSlug,
     saveTemplate: saveTemplate,
     deleteTemplate: deleteTemplate,
-    restoreTemplate: restoreTemplate,
     unhideTemplate: unhideTemplate,
-    exportCatalogBundle: exportCatalogBundle,
-    importCatalogBundle: importCatalogBundle,
     listAdminTemplates: listAdminTemplates,
     slugifyName: slugifyName,
-    openTemplatePreview: openTemplatePreview
+    openTemplatePreview: openTemplatePreview,
+    invalidateStoreCache: invalidateStoreCache
   };
   global.openCheckout = openCheckout;
 })(typeof window !== 'undefined' ? window : this);

@@ -141,16 +141,16 @@
     if (!isReady()) {
       return Promise.reject(new Error('Configura Railway o inicia sesión en el admin.'));
     }
-    var chain = Promise.resolve();
+    var jobs = [];
     if (opts.html != null) {
-      chain = chain.then(function () { return uploadTemplate(slug, opts.html); });
+      jobs.push(uploadTemplate(slug, opts.html));
     }
     if (opts.removeAudio) {
-      chain = chain.then(function () { return deleteAudio(slug); });
+      jobs.push(deleteAudio(slug));
     } else if (opts.audioFile) {
-      chain = chain.then(function () { return uploadAudio(slug, opts.audioFile); });
+      jobs.push(uploadAudio(slug, opts.audioFile));
     }
-    return chain.then(function () {
+    return Promise.all(jobs).then(function () {
       if (!global.UWU) return { ok: true, at: new Date().toISOString() };
       var store = global.UWU.loadCatalogStore();
       var payload = buildRemotePayload(store);
@@ -173,29 +173,23 @@
     audioKeys = audioKeys.filter(function (slug) { return store.audio && store.audio[slug]; });
     var removeAudio = opts.removeAudio || [];
 
-    var chain = Promise.resolve();
+    var jobs = [];
     htmlKeys.forEach(function (slug) {
-      chain = chain.then(function () {
-        return request(cfg, '/api/sync/template/' + encodeURIComponent(slug), {
-          method: 'PUT',
-          body: { content: store.html[slug] }
-        });
-      });
+      jobs.push(request(cfg, '/api/sync/template/' + encodeURIComponent(slug), {
+        method: 'PUT',
+        body: { content: store.html[slug] }
+      }));
     });
     audioKeys.forEach(function (slug) {
-      chain = chain.then(function () {
-        return request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), {
-          method: 'PUT',
-          body: { content: store.audio[slug] }
-        });
-      });
+      jobs.push(request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), {
+        method: 'PUT',
+        body: { content: store.audio[slug] }
+      }));
     });
     removeAudio.forEach(function (slug) {
-      chain = chain.then(function () {
-        return request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), { method: 'DELETE' });
-      });
+      jobs.push(request(cfg, '/api/sync/audio/' + encodeURIComponent(slug), { method: 'DELETE' }));
     });
-    return chain.then(function () {
+    return Promise.all(jobs).then(function () {
       var payload = buildRemotePayload(store);
       return request(cfg, '/api/sync/catalog', { method: 'PUT', body: payload });
     }).then(function () {

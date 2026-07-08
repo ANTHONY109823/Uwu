@@ -4,9 +4,9 @@
 
   var TIERS = [
     { id: 'all', label: 'Todas' },
-    { id: 'free', label: 'Gratis' },
-    { id: 'prem', label: 'Premium' },
-    { id: 'excl', label: '💎 Exclusiva' }
+    { id: 'free', label: 'Gratis · S/ 0' },
+    { id: 'prem', label: 'Premium · S/ 8' },
+    { id: 'excl', label: '💎 VIP · S/ 5' }
   ];
 
   var CAT_OPTIONS = [
@@ -18,8 +18,8 @@
   var activeTier = 'all';
   var activeCat = 'all';
   var editingSlug = null;
-  var currentHtml = '';
   var pendingAudio = undefined;
+  var browserDirty = false;
 
   function el(id) { return document.getElementById(id); }
 
@@ -28,6 +28,14 @@
     if (!node) return;
     node.textContent = msg;
     node.className = 'html-status' + (kind ? ' sync-' + kind : '');
+  }
+
+  function toast(msg, kind) {
+    if (msg) setSyncStatus(msg, kind || 'ok');
+    var hint = el('wsSaveHint');
+    if (!hint) return;
+    hint.textContent = msg || '';
+    hint.className = 'html-status' + (msg && kind ? ' sync-' + kind : (msg ? ' sync-ok' : ''));
   }
 
   function getSyncProvider() {
@@ -57,24 +65,34 @@
     });
   }
 
-  function afterCatalogChange(msg, slug, extraOpts) {
+  function refreshBrowserIfVisible() {
+    var ws = el('tplWorkspace');
+    if (ws && ws.classList.contains('open')) {
+      browserDirty = true;
+      return;
+    }
+    browserDirty = false;
     renderBrowser();
+  }
+
+  function afterCatalogChange(msg, slug, extraOpts) {
+    refreshBrowserIfVisible();
     if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
+    if (msg) toast(msg, 'ok');
     if (UWU.canUseServerStorage && UWU.canUseServerStorage()) {
-      if (msg) alert(msg);
       return Promise.resolve();
     }
     var provider = getSyncProvider();
     if (provider) {
       var label = provider === UWURailwaySync ? 'Railway' : 'GitHub';
       return syncNow(false, slug, extraOpts).then(function () {
-        if (msg) alert(msg + ' Sincronizado con ' + label + '.');
+        toast((msg || 'Guardado') + ' · publicado en ' + label, 'ok');
       }).catch(function (err) {
         var detail = err && err.message ? err.message : 'Error desconocido';
-        if (msg) alert(msg + ' Guardado en este navegador.\n\n' + label + ' no pudo publicar:\n' + detail);
+        toast((msg || 'Guardado local') + ' · ' + label + ' falló: ' + detail, 'err');
       });
     }
-    if (msg) alert(msg + ' Guardado localmente.\n\nVe a Configuración → conecta Railway para publicar.');
+    if (msg) toast(msg + ' · solo en este navegador', 'wait');
     return Promise.resolve();
   }
 
@@ -90,7 +108,7 @@
 
   function tierBadge(tier) {
     if (tier === 'free') return '<span class="tpl-badge tier-free">Gratis</span>';
-    if (tier === 'excl') return '<span class="tpl-badge tier-excl">💎 Exclusiva</span>';
+    if (tier === 'excl') return '<span class="tpl-badge tier-excl">💎 VIP</span>';
     return '<span class="tpl-badge tier-prem">Premium</span>';
   }
 
@@ -174,7 +192,6 @@
       if (!sel.value) return;
       UWU.setActiveTemplateVersion(slug, sel.value);
       UWU.loadTemplateHtml(slug).then(function (html) {
-        currentHtml = html;
         el('fHtmlEditor').value = html;
       });
     };
@@ -282,8 +299,7 @@
       return '<option value="' + c + '"' + (c === t.cat ? ' selected' : '') + '>' + c + '</option>';
     }).join('');
     el('fTier').value = t.tier || 'prem';
-    el('fPen').value = t.pen || '0';
-    el('fUsd').value = t.usd || '0';
+    applyPlanPrice();
     el('fGrad').value = t.grad || 'linear-gradient(150deg,#EE7EB1,#E8447A)';
     el('fTitle').value = t.title || t.name || '';
     el('fPill').value = t.pill || 'Abrir 💝';
@@ -293,14 +309,12 @@
       if (el(id)) delete el(id).dataset.touched;
     });
     syncAdvancedFields();
-    togglePriceRow();
     fillVersionSelect(slug);
     UWU.loadTemplateHtml(slug).then(function (html) {
-      currentHtml = html;
       el('fHtmlEditor').value = html;
     });
     updateAudioStatus();
-    renderBrowser();
+    toast('', '');
   }
 
   function closeWorkspace() {
@@ -310,6 +324,7 @@
     if (ws) ws.classList.remove('open');
     if (el('tplBrowser')) el('tplBrowser').style.display = '';
     if (el('tplFilters')) el('tplFilters').style.display = '';
+    browserDirty = false;
     renderBrowser();
     var content = document.querySelector('.admin-content');
     if (content) content.scrollTop = 0;
@@ -333,8 +348,8 @@
       emoji: '💌',
       cat: cat,
       tier: 'prem',
-      pen: '15',
-      usd: '5',
+      pen: '8',
+      usd: '2.00',
       grad: 'linear-gradient(150deg,#EE7EB1,#E8447A)',
       title: name,
       pill: 'Abrir 💝',
@@ -351,8 +366,22 @@
     openWorkspace(slug);
   }
 
+  function applyPlanPrice() {
+    var tier = (el('fTier') && el('fTier').value) || 'prem';
+    var prices = (UWU.pricesForTier && UWU.pricesForTier(tier)) || (
+      tier === 'free' ? { pen: '0', usd: '0' } :
+      tier === 'excl' ? { pen: '5', usd: '1.50' } :
+      { pen: '8', usd: '2.00' }
+    );
+    if (el('fPriceLabel')) {
+      el('fPriceLabel').textContent = tier === 'free' ? 'Gratis' : ('S/ ' + prices.pen);
+    }
+    return prices;
+  }
+
   function readMeta() {
     applyAdvancedToHidden();
+    var prices = applyPlanPrice();
     var name = el('fName').value.trim();
     return {
       id: el('fId').value.trim() || ('UWU-' + UWU.slugifyName(name).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6)),
@@ -360,22 +389,14 @@
       emoji: el('fEmoji').value.trim() || '💌',
       cat: el('fCat').value,
       tier: el('fTier').value,
-      pen: el('fPen').value.trim() || '0',
-      usd: el('fUsd').value.trim() || '0',
+      pen: prices.pen,
+      usd: prices.usd,
       grad: el('fGrad').value.trim() || 'linear-gradient(150deg,#EE7EB1,#E8447A)',
       title: el('fTitle').value.trim() || name,
       pill: el('fPill').value.trim() || 'Abrir 💝',
       desc: el('fDesc').value.trim(),
       page: editingSlug ? editingSlug + '.html' : undefined
     };
-  }
-
-  function togglePriceRow() {
-    var row = el('priceRow');
-    if (!row || !el('fTier')) return;
-    var isFree = el('fTier').value === 'free';
-    row.style.display = isFree ? 'none' : '';
-    if (isFree) { el('fPen').value = '0'; el('fUsd').value = '0'; }
   }
 
   function setSaveBusy(busy) {
@@ -424,7 +445,7 @@
 
     function onFail(err, partialMsg) {
       setSaveBusy(false);
-      alert((partialMsg || 'Error al guardar') + ': ' + (err && err.message ? err.message : err));
+      toast((partialMsg || 'Error al guardar') + ': ' + (err && err.message ? err.message : err), 'err');
     }
 
     if (useServer && typeof UWURailwaySync !== 'undefined') {
@@ -439,13 +460,14 @@
       } else if (removeAudio) {
         UWU.removeTemplateAudio(slug);
       }
+      toast('Publicando esta plantilla…', 'wait');
       UWURailwaySync.syncWorkspace({
         slug: slug,
         html: html,
         audioFile: audioFile,
         removeAudio: removeAudio
       }).then(function () {
-        onDone('Plantilla guardada.');
+        onDone('✓ ' + meta.name + ' guardada');
       }).catch(function (err) {
         onFail(err, 'No se pudo publicar en Railway');
       });
@@ -470,10 +492,10 @@
       audioChain = UWU.saveTemplateAudio(slug, audioFile);
     }
     audioChain.then(function () {
-      onDone('Plantilla guardada.');
+      onDone('✓ ' + meta.name + ' guardada');
     }).catch(function (err) {
-      onDone('Plantilla guardada (sin audio).', syncOpts);
-      alert('HTML guardado, pero falló el audio: ' + err.message);
+      onDone('✓ HTML guardado (sin audio)', syncOpts);
+      toast('HTML ok, audio falló: ' + err.message, 'err');
     });
   }
 
@@ -535,7 +557,6 @@
     var reader = new FileReader();
     reader.onload = function () {
       el('fHtmlEditor').value = reader.result;
-      currentHtml = reader.result;
     };
     reader.readAsText(file, 'UTF-8');
   }
@@ -649,7 +670,7 @@
     if (el('btnInsertAudio')) el('btnInsertAudio').onclick = insertAudioHook;
     if (el('btnRemoveAudio')) el('btnRemoveAudio').onclick = function () { pendingAudio = null; updateAudioStatus(); };
     if (el('fTier')) el('fTier').onchange = function () {
-      togglePriceRow();
+      applyPlanPrice();
     };
     if (el('fName')) el('fName').oninput = function () {
       if (el('fTitleVisible') && !el('fTitleVisible').dataset.touched) {
@@ -665,6 +686,7 @@
     if (el('btnResetTpl')) el('btnResetTpl').onclick = function () {
       if (!confirm('¿Restaurar catálogo original? Se perderán los cambios locales sin publicar.')) return;
       localStorage.removeItem('uwuCatalogAdmin');
+      if (UWU.invalidateStoreCache) UWU.invalidateStoreCache();
       UWU.initCatalog();
       closeWorkspace();
       afterCatalogChange('Catálogo restaurado.');

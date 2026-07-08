@@ -26,7 +26,6 @@
 
   function refresh() {
     if (!window.UWU) return;
-    UWU.initCatalog();
     var items = UWU.listAdminTemplates();
     var active = items.filter(function (i) { return !i.hidden; });
     var hidden = items.length - active.length;
@@ -71,10 +70,6 @@
         return '<div class="dash-row"><span>' + UWU.esc(o.templateName || o.slug || 'Dedicatoria') + '</span><small>' + UWU.esc(o.para || '') + '</small></div>';
       }).join('') || '<p class="tpl-empty">Aún no hay dedicatorias locales</p>';
     }
-
-    if (el('stTpl')) el('stTpl').textContent = active.length;
-    if (el('stOrders')) el('stOrders').textContent = orders.length;
-    if (el('stHidden')) el('stHidden').textContent = secHidden;
   }
 
   window.UWUAdminDashboard = { init: refresh, refresh: refresh };
