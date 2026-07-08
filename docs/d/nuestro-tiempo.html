@@ -102,6 +102,7 @@ var G=UWUFX.canvas(),x=G.x,st=[];for(var i=0;i<120;i++)st.push({x:Math.random(),
   var pickBtn=document.getElementById('uwuPickBtn');
   var pickFile=document.getElementById('uwuPickFile');
   var toast=document.getElementById('uwuToast');
+  if(!playBtn) return;
   var tHide;
   function say(m){ if(!toast)return; toast.textContent=m; toast.classList.add('show'); clearTimeout(tHide); tHide=setTimeout(function(){toast.classList.remove('show');},2800); }
   function setPlaying(on){ playBtn.classList[on?'add':'remove']('playing'); }
@@ -111,21 +112,27 @@ var G=UWUFX.canvas(),x=G.x,st=[];for(var i=0;i<120;i++)st.push({x:Math.random(),
     if(!a){ a=document.createElement('audio'); a.id='uwuBgm'; a.loop=true; a.setAttribute('playsinline',''); a.style.display='none'; document.body.appendChild(a); }
     bind(a); return a;
   }
+  function hasSrc(a){ return !!(a && (a.getAttribute('src')||a.src)); }
   playBtn.addEventListener('click',function(){
     var a=getAudio();
-    if(!a.src){ say('Toca ＋ para subir tu canción 🎵'); pickFile.click(); return; }
-    if(a.paused){ a.play().then(function(){setPlaying(true);}).catch(function(){ say('Toca ＋ para subir tu canción 🎵'); }); }
+    if(!hasSrc(a)){ say('Toca ＋ para subir tu canción 🎵'); if(pickFile) pickFile.click(); return; }
+    if(a.paused){ a.play().then(function(){setPlaying(true);}).catch(function(){ say('Toca la pantalla para activar el audio'); }); }
     else { a.pause(); setPlaying(false); }
   });
-  pickBtn.addEventListener('click',function(){ pickFile.click(); });
-  pickFile.addEventListener('change',function(){
-    if(pickFile.files&&pickFile.files[0]){
-      var a=getAudio();
-      a.src=URL.createObjectURL(pickFile.files[0]);
-      a.play().then(function(){setPlaying(true);say('🎶 '+pickFile.files[0].name);}).catch(function(){});
-    }
+  if(pickBtn&&pickFile){
+    pickBtn.addEventListener('click',function(){ pickFile.click(); });
+    pickFile.addEventListener('change',function(){
+      if(pickFile.files&&pickFile.files[0]){
+        var a=getAudio();
+        a.src=URL.createObjectURL(pickFile.files[0]);
+        a.play().then(function(){setPlaying(true);say('🎶 '+pickFile.files[0].name);}).catch(function(){});
+      }
+    });
+  }
+  window.addEventListener('load',function(){
+    var a=document.getElementById('uwuBgm');
+    if(a){ bind(a); if(hasSrc(a)) say('🎵 Música lista — toca 🎵'); if(!a.paused) setPlaying(true); }
   });
-  window.addEventListener('load',function(){ var a=document.getElementById('uwuBgm'); if(a){ bind(a); if(!a.paused)setPlaying(true); } });
 })();
 </script>
 <!-- ===== /UWU KIT ===== -->

@@ -9,9 +9,11 @@ function escAttr(s) {
 
 function audioPlayerSnippet(src) {
   if (!src) return '';
+  // Solo inyecta el <audio>. El kit UWU (#uwuPlayBtn) ya controla play/pause.
+  // Si no hay kit, un script mínimo arranca al primer toque.
   return (
     '<audio id="uwuBgm" loop preload="auto" playsinline src="' + escAttr(src) + '" style="display:none"></audio>' +
-    '<script>(function(){var a=document.getElementById("uwuBgm");if(!a||!a.src)return;var p=function(){if(a.paused)a.play().catch(function(){});};document.addEventListener("click",p,{once:true});document.addEventListener("touchstart",p,{once:true});})();<\/script>'
+    '<script>(function(){var a=document.getElementById("uwuBgm");if(!a||!a.src)return;if(document.getElementById("uwuPlayBtn"))return;var p=function(){if(a.paused)a.play().catch(function(){});};document.addEventListener("click",p,{once:true});document.addEventListener("touchstart",p,{once:true});})();<\/script>'
   );
 }
 

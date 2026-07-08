@@ -28,6 +28,9 @@
 <body>
   <a class="back-btn" href="../index.html">← Volver a UWU</a>
   <canvas id="canvas"></canvas>
+  <span id="uwuMsgDefault" hidden>__UWU_MSG__</span>
+  <div id="uwuSubtitle" hidden data-default="">__UWU_SUBTITLE__</div>
+  <div id="uwuCode" hidden>__UWU_CODE__</div>
 
   <script>
     const canvas = document.getElementById('canvas');
@@ -36,7 +39,7 @@
     canvas.width = width; canvas.height = height;
     // Personalizable: ?msg=TE%20AMO
     const params = new URLSearchParams(location.search);
-    const clickWord = (params.get('msg') || 'TE AMO').toUpperCase();
+    const clickWord = (params.get('msg') || (document.getElementById('uwuMsgDefault') && document.getElementById('uwuMsgDefault').textContent) || 'TE AMO').toUpperCase().replace(/__UWU_MSG__/i,'TE AMO');
     const phrase = clickWord + " ";
     const fontSize = 18;
     let columns = Math.floor(width / fontSize);
@@ -109,6 +112,7 @@
   var pickBtn=document.getElementById('uwuPickBtn');
   var pickFile=document.getElementById('uwuPickFile');
   var toast=document.getElementById('uwuToast');
+  if(!playBtn) return;
   var tHide;
   function say(m){ if(!toast)return; toast.textContent=m; toast.classList.add('show'); clearTimeout(tHide); tHide=setTimeout(function(){toast.classList.remove('show');},2800); }
   function setPlaying(on){ playBtn.classList[on?'add':'remove']('playing'); }
@@ -118,24 +122,64 @@
     if(!a){ a=document.createElement('audio'); a.id='uwuBgm'; a.loop=true; a.setAttribute('playsinline',''); a.style.display='none'; document.body.appendChild(a); }
     bind(a); return a;
   }
+  function hasSrc(a){ return !!(a && (a.getAttribute('src')||a.src)); }
   playBtn.addEventListener('click',function(){
     var a=getAudio();
-    if(!a.src){ say('Toca ＋ para subir tu canción 🎵'); pickFile.click(); return; }
-    if(a.paused){ a.play().then(function(){setPlaying(true);}).catch(function(){ say('Toca ＋ para subir tu canción 🎵'); }); }
+    if(!hasSrc(a)){ say('Toca ＋ para subir tu canción 🎵'); if(pickFile) pickFile.click(); return; }
+    if(a.paused){ a.play().then(function(){setPlaying(true);}).catch(function(){ say('Toca la pantalla para activar el audio'); }); }
     else { a.pause(); setPlaying(false); }
   });
-  pickBtn.addEventListener('click',function(){ pickFile.click(); });
-  pickFile.addEventListener('change',function(){
-    if(pickFile.files&&pickFile.files[0]){
-      var a=getAudio();
-      a.src=URL.createObjectURL(pickFile.files[0]);
-      a.play().then(function(){setPlaying(true);say('🎶 '+pickFile.files[0].name);}).catch(function(){});
-    }
+  if(pickBtn&&pickFile){
+    pickBtn.addEventListener('click',function(){ pickFile.click(); });
+    pickFile.addEventListener('change',function(){
+      if(pickFile.files&&pickFile.files[0]){
+        var a=getAudio();
+        a.src=URL.createObjectURL(pickFile.files[0]);
+        a.play().then(function(){setPlaying(true);say('🎶 '+pickFile.files[0].name);}).catch(function(){});
+      }
+    });
+  }
+  window.addEventListener('load',function(){
+    var a=document.getElementById('uwuBgm');
+    if(a){ bind(a); if(hasSrc(a)) say('🎵 Música lista — toca 🎵'); if(!a.paused) setPlaying(true); }
   });
-  window.addEventListener('load',function(){ var a=document.getElementById('uwuBgm'); if(a){ bind(a); if(!a.paused)setPlaying(true); } });
 })();
 </script>
 <!-- ===== /UWU KIT ===== -->
 __UWU_AUDIO__
+<script>
+/* UWU personalización — placeholders + ?para=&de=&msg=&code= */
+(function(){
+  var p=new URLSearchParams(location.search);
+  var para=p.get('para')||'', de=p.get('de')||'';
+  var msg=p.get('msg'), sub=p.get('subtitle'), code=p.get('code');
+  function isPh(t){return !t||String(t).indexOf('__UWU_')===0;}
+  function setText(el,val){ if(el&&val!=null&&val!=='') el.textContent=val; }
+  var mEl=document.getElementById('uwuMsg');
+  var sEl=document.getElementById('uwuSubtitle');
+  var cEl=document.getElementById('uwuCode')||document.querySelector('.code');
+  if(mEl){
+    if(msg) setText(mEl,msg);
+    else if(isPh(mEl.textContent)) setText(mEl,mEl.getAttribute('data-default')||mEl.textContent.replace(/__UWU_MSG__/g,'').trim()||'');
+  }
+  if(sEl){
+    if(sub) setText(sEl,sub);
+    else if(para||de) setText(sEl,('Para '+(para||'ti')+' — de '+(de||'alguien que te ama')));
+    else if(isPh(sEl.textContent)) setText(sEl,sEl.getAttribute('data-default')||'');
+  }
+  if(cEl){
+    if(code) setText(cEl,'Código: '+code);
+    else if(isPh(cEl.textContent)) setText(cEl,'');
+  }
+  document.querySelectorAll('[data-uwu-msg]').forEach(function(el){
+    if(msg) el.textContent=msg;
+    else if(isPh(el.textContent)) el.textContent=el.getAttribute('data-default')||el.textContent;
+  });
+  document.querySelectorAll('[data-uwu-sub]').forEach(function(el){
+    if(sub) el.textContent=sub;
+    else if(para||de) el.textContent='Para '+(para||'ti')+' — de '+(de||'alguien que te ama');
+  });
+})();
+</script>
 </body>
 </html>
