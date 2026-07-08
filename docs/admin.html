@@ -3,402 +3,821 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UWU 🧸 — Panel de administrador</title>
+  <title>UWU — Panel de Administración</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root{--pink-500:#EE7EB1;--rose-500:#E8447A;--night:#1C1420;--grad:linear-gradient(135deg,#EE7EB1,#E8447A 60%,#C2418F);--glass:rgba(255,255,255,.06);--border:rgba(238,126,177,.25);--sidebar:220px}
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{min-height:100svh;font-family:Inter,system-ui,sans-serif;background:#1C1420;color:#fff}
-    .logo{font-family:'Dancing Script',cursive;font-size:28px;font-weight:700;color:var(--pink-500)}
-    .logo small{display:block;font-family:Sora,sans-serif;font-size:10px;color:#a58a99;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
-    .card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:24px 22px}
-    .login-wrap{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#1C1420,#2A1E2E 50%,#3d1a30)}
-    .login-wrap .card{max-width:400px;width:100%;backdrop-filter:blur(18px)}
-    .sub{text-align:center;font-size:13px;color:#a58a99;margin:12px 0 28px;line-height:1.65}
-    label{display:block;font-size:12px;font-weight:600;color:#cbb3c0;margin-bottom:6px}
-    input,select,textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.3);color:#fff;font-size:13px;font-family:inherit}
-    input:focus,select:focus,textarea:focus{outline:2px solid var(--rose-500);border-color:transparent}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-family:Sora,sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 8px 24px rgba(232,68,122,.35);transition:transform .2s;text-decoration:none}
-    .btn:hover{transform:translateY(-1px)}
-    .btn.ghost{background:#2A1E2E;box-shadow:none;border:1px solid var(--border)}
-    .btn.block{width:100%}
-    .btn.sm{padding:8px 14px;font-size:12px}
-    .err{display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(232,68,122,.2);border:1px solid rgba(232,68,122,.4);font-size:13px;text-align:center;color:#ffb4c8}
-    .back{display:block;text-align:center;margin-top:20px;font-size:12px;color:#a58a99;text-decoration:none}
-    .dash{display:none}
-    .dash.on{display:flex;min-height:100svh}
-    .sidebar{width:var(--sidebar);flex-shrink:0;background:#161018;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;position:sticky;top:0;height:100svh}
-    .sidebar-brand{padding:8px 10px 20px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:12px}
-    .sidebar-nav{display:flex;flex-direction:column;gap:4px;flex:1}
-    .sidebar-nav button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:none;border-radius:12px;background:transparent;color:#cbb3c0;font-size:13px;font-weight:600;text-align:left;cursor:pointer;transition:background .15s,color .15s}
-    .sidebar-nav button:hover{background:rgba(255,255,255,.06);color:#fff}
-    .sidebar-nav button.active{background:rgba(238,126,177,.15);color:#fff;border:1px solid rgba(238,126,177,.25)}
-    .sidebar-foot{padding-top:12px;border-top:1px solid rgba(255,255,255,.06);display:grid;gap:8px}
-    .sidebar-foot a,.sidebar-foot button{font-size:12px}
-    .admin-main{flex:1;overflow-y:auto;padding:24px 28px 40px;min-width:0}
-    .admin-view{display:none}
-    .admin-view.active{display:block}
-    .view-head{margin-bottom:22px}
-    .view-head h1{font-family:Sora,sans-serif;font-size:1.45rem;font-weight:800}
-    .view-head p{font-size:13px;color:#a58a99;margin-top:4px}
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:22px}
-    .stat{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center}
-    .stat b{display:block;font-family:Sora,sans-serif;font-size:1.6rem;color:var(--pink-500);font-weight:800}
-    .stat span{font-size:10px;color:#a58a99;margin-top:4px;display:block}
-    .panel{margin-bottom:20px}
-    .panel h2{font-family:Sora,sans-serif;font-size:14px;font-weight:700;margin-bottom:12px;color:#e8d4dc}
-    .tpl-hint{font-size:12px;color:#8a7080;margin-bottom:14px;line-height:1.6}
-    .sections{display:grid;gap:8px}
-    .sec-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:rgba(0,0,0,.2);border-radius:12px;border:1px solid rgba(255,255,255,.06)}
-    .sec-row span{font-size:13px}
-    .toggle{width:44px;height:24px;border-radius:999px;background:#3a2940;border:none;cursor:pointer;position:relative}
-    .toggle.on{background:var(--rose-500)}
-    .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
-    .toggle.on::after{transform:translateX(20px)}
-    .site-toolbar,.tpl-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-    .site-group{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:rgba(0,0,0,.15)}
-    .site-group summary{padding:12px 14px;cursor:pointer;font-family:Sora,sans-serif;font-size:13px;font-weight:700;color:#e8d4dc;list-style:none}
-    .site-fields{padding:0 14px 14px;display:grid;gap:10px}
-    .site-field span{display:block;font-size:11px;font-weight:600;color:#cbb3c0;margin-bottom:4px}
-    .html-status{font-size:11px;color:#86efac;margin-top:8px}
-    .sync-ok{color:#86efac}.sync-err{color:#ffb4c8}.sync-wait{color:#f6d28b}
-    .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:800px){.dash-grid{grid-template-columns:1fr}.dash.on{flex-direction:column}.sidebar{width:100%;height:auto;position:relative}}
-    .dash-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}
-    .dash-row small{color:#8a7080;font-size:11px}
-    .tpl-empty{font-size:13px;color:#8a7080;text-align:center;padding:24px}
-    .tier-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-    .tier-tab{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.2);color:#cbb3c0;font-size:12px;font-weight:600;cursor:pointer}
-    .tier-tab.on{background:var(--grad);border-color:transparent;color:#fff}
-    .tpl-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}
-    .tpl-filters select{max-width:220px;margin:0}
-    .tpl-cat-block{margin-bottom:24px}
-    .tpl-cat-block h3{font-family:Sora,sans-serif;font-size:14px;margin-bottom:12px;color:#e8d4dc}
-    .tpl-cat-block h3 span{color:#8a7080;font-weight:500;font-size:12px}
-    .tpl-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-    .tpl-card{display:flex;gap:12px;padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2);cursor:pointer;text-align:left;color:inherit;transition:border-color .15s,transform .15s}
-    .tpl-card:hover,.tpl-card.on{border-color:rgba(238,126,177,.45);transform:translateY(-2px)}
-    .tpl-card-art{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-    .tpl-card-body{min-width:0;flex:1}
-    .tpl-card-body b{display:block;font-size:13px;margin-bottom:2px}
-    .tpl-card-body small{font-size:10px;color:#8a7080}
-    .tpl-card-price{display:block;font-size:11px;color:var(--pink-500);font-weight:700;margin-top:6px}
-    .tpl-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-    .tpl-badge{font-size:8px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:rgba(238,126,177,.2);color:#f4a7cb}
-    .tpl-badge.html{background:rgba(134,239,172,.15);color:#86efac}
-    .tpl-badge.tier-free{background:rgba(134,239,172,.12);color:#86efac}
-    .tpl-badge.tier-prem{background:rgba(238,126,177,.15);color:#f4a7cb}
-    .tpl-badge.tier-excl{background:rgba(251,191,36,.15);color:#fbbf24}
-    #tplWorkspace{display:none}
-    #tplWorkspace.open{display:block}
-    .ws-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-    .ws-head h2{font-family:Sora,sans-serif;font-size:1.2rem}
-    .ws-grid{display:grid;grid-template-columns:minmax(280px,340px) 1fr;gap:16px;align-items:start}
-    @media(max-width:960px){.ws-grid{grid-template-columns:1fr}}
-    .ws-meta{display:grid;gap:10px}
-    .ws-meta label{font-size:11px;margin:0}
-    .ws-meta input,.ws-meta select,.ws-meta textarea{margin-top:4px}
-    .ws-html label{font-size:11px}
-  #fHtmlEditor{width:100%;min-height:min(62svh,520px);font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.5;tab-size:2;resize:vertical}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .form-grid .full{grid-column:1/-1}
-    .ws-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .file-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px dashed rgba(238,126,177,.4);background:rgba(0,0,0,.2);font-size:11px;color:#cbb3c0;cursor:pointer}
-    .file-btn input{display:none}
+    /* ── Reset & Variables ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #F1F5F9;
+      --surface:   #FFFFFF;
+      --border:    #E2E8F0;
+      --border-focus: #6366F1;
+      --text:      #0F172A;
+      --text-2:    #475569;
+      --text-3:    #94A3B8;
+      --primary:   #6366F1;
+      --primary-h: #4F46E5;
+      --primary-bg:#EEF2FF;
+      --ok:        #10B981;
+      --ok-bg:     #ECFDF5;
+      --warn:      #F59E0B;
+      --warn-bg:   #FFFBEB;
+      --err:       #EF4444;
+      --err-bg:    #FEF2F2;
+      --sidebar-w: 240px;
+      --header-h:  60px;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -1px rgba(0,0,0,.05);
+    }
+    html, body { height: 100%; font-family: Inter, system-ui, sans-serif; font-size: 14px; background: var(--bg); color: var(--text); }
+
+    /* ── Typography helpers ─────────────────────────────── */
+    .text-sm  { font-size: 12px; }
+    .text-xs  { font-size: 11px; }
+    .text-muted { color: var(--text-2); }
+    .text-3   { color: var(--text-3); }
+    .fw-600   { font-weight: 600; }
+    .fw-700   { font-weight: 700; }
+
+    /* ── Buttons ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius); border: none;
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: background .15s, box-shadow .15s, transform .1s;
+      white-space: nowrap; line-height: 1;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(99,102,241,.3); }
+    .btn-primary:hover { background: var(--primary-h); }
+    .btn-outline { background: var(--surface); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--bg); color: var(--text); }
+    .btn-ghost { background: transparent; color: var(--text-2); }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+    .btn-danger { background: var(--err-bg); color: var(--err); border: 1px solid #FECACA; }
+    .btn-danger:hover { background: #FEE2E2; }
+    .btn-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid #A7F3D0; }
+    .btn-ok:hover { background: #D1FAE5; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-lg { padding: 11px 22px; font-size: 14px; }
+    .btn-block { width: 100%; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* ── Forms ──────────────────────────────────────────── */
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+    input[type=text], input[type=password], input[type=email], select, textarea {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-family: inherit; font-size: 13px; color: var(--text);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+    }
+    input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .field { display: grid; gap: 4px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-row .full { grid-column: 1/-1; }
+
+    /* ── Cards ──────────────────────────────────────────── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+    .card-body { padding: 20px; }
+    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .card-header h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+    .card-header p  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+    /* ── Status badges ──────────────────────────────────── */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-ok   { background: var(--ok-bg); color: var(--ok); }
+    .badge-err  { background: var(--err-bg); color: var(--err); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-gray { background: #F1F5F9; color: var(--text-2); }
+    .badge-primary { background: var(--primary-bg); color: var(--primary); }
+
+    /* ── Status line ────────────────────────────────────── */
+    .status-line { font-size: 12px; padding: 6px 10px; border-radius: 8px; margin-top: 8px; }
+    .sync-ok   { background: var(--ok-bg); color: var(--ok); }
+    .sync-err  { background: var(--err-bg); color: var(--err); }
+    .sync-wait { background: var(--warn-bg); color: var(--warn); }
+    .html-status { font-size: 12px; color: var(--text-2); }
+    .html-status.sync-ok   { color: var(--ok); }
+    .html-status.sync-err  { color: var(--err); }
+    .html-status.sync-wait { color: var(--warn); }
+
+    /* ── Alert box ──────────────────────────────────────── */
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; display: none; }
+    .alert-err { background: var(--err-bg); color: var(--err); border: 1px solid #FECACA; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /*  LOGIN                                              */
+    /* ═══════════════════════════════════════════════════ */
+    .login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #EEF2FF 0%, #F1F5F9 60%, #F0FDF4 100%);
+      padding: 24px;
+    }
+    .login-box { width: 100%; max-width: 380px; }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo .brand { font-family: Sora, sans-serif; font-size: 26px; font-weight: 800; color: var(--primary); letter-spacing: -.5px; }
+    .login-logo p { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+    .login-card { padding: 28px; border-radius: 16px; }
+    .login-card h2 { font-family: Sora, sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 18px; color: var(--text); }
+    .login-form .field { margin-bottom: 14px; }
+    .login-back { display: block; text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-3); text-decoration: none; transition: color .15s; }
+    .login-back:hover { color: var(--primary); }
+
+    /* ═══════════════════════════════════════════════════ */
+    /*  DASHBOARD SHELL                                    */
+    /* ═══════════════════════════════════════════════════ */
+    .dash { display: none; min-height: 100vh; }
+    .dash.on { display: flex; }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 20px 16px 16px; border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo .brand { font-family: Sora, sans-serif; font-size: 18px; font-weight: 800; color: var(--primary); }
+    .sidebar-logo small { display: block; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .1em; margin-top: 2px; }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .1em; padding: 10px 8px 4px; }
+    .sidebar-nav button {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 9px 12px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text-2); font-family: inherit;
+      font-size: 13px; font-weight: 500; text-align: left; cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+    .sidebar-nav button:hover { background: var(--bg); color: var(--text); }
+    .sidebar-nav button.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+    .sidebar-nav button .nav-icon { width: 18px; text-align: center; flex-shrink: 0; font-size: 15px; }
+    .sidebar-foot {
+      padding: 12px 10px; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+
+    /* Main area */
+    .admin-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      height: var(--header-h); flex-shrink: 0;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar h1 { font-family: Sora, sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .topbar-sub { font-size: 12px; color: var(--text-3); }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+    .admin-content { flex: 1; padding: 24px; overflow-y: auto; }
+
+    /* ── Admin views ────────────────────────────────────── */
+    .admin-view { display: none; }
+    .admin-view.active { display: block; }
+
+    /* ── Stats grid ─────────────────────────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .stat-card .stat-value { font-family: Sora, sans-serif; font-size: 1.7rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .stat-card .stat-label { font-size: 11px; color: var(--text-3); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-card.stat-ok .stat-value { color: var(--ok); }
+    .stat-card.stat-warn .stat-value { color: var(--warn); }
+
+    /* ── Dash grid ──────────────────────────────────────── */
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .dash-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .dash-row:last-child { border-bottom: none; }
+    .dash-row small { font-size: 11px; color: var(--text-3); }
+    .dash-empty { font-size: 13px; color: var(--text-3); text-align: center; padding: 20px; }
+
+    /* ── Section toggles (Landing) ──────────────────────── */
+    .sections { display: grid; gap: 8px; }
+    .sec-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-weight: 500; }
+    .toggle { width: 40px; height: 22px; border-radius: 999px; background: #CBD5E1; border: none; cursor: pointer; position: relative; flex-shrink: 0; transition: background .2s; }
+    .toggle.on { background: var(--primary); }
+    .toggle::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+    .toggle.on::after { transform: translateX(18px); }
+
+    /* ── Site form groups ───────────────────────────────── */
+    .site-group { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); margin-bottom: 10px; }
+    .site-group summary { padding: 12px 14px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text); list-style: none; background: var(--bg); }
+    .site-group summary:hover { background: #E2E8F0; }
+    .site-fields { padding: 14px; display: grid; gap: 10px; }
+    .site-field span { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+
+    /* ── Toolbar ────────────────────────────────────────── */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /*  TEMPLATES BROWSER                                  */
+    /* ═══════════════════════════════════════════════════ */
+    .tpl-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+    .tpl-filters select { max-width: 210px; }
+
+    .tier-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tier-tab { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; }
+    .tier-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .tier-tab.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .tpl-cat-block { margin-bottom: 24px; }
+    .tpl-cat-block h3 { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .tpl-cat-block h3 span { color: var(--text-3); font-weight: 500; }
+
+    .tpl-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+    .tpl-card {
+      display: flex; gap: 10px; padding: 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+      cursor: pointer; text-align: left; color: inherit;
+      transition: border-color .15s, box-shadow .15s, transform .1s;
+      box-shadow: var(--shadow);
+    }
+    .tpl-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(99,102,241,.12); transform: translateY(-1px); }
+    .tpl-card.on { border-color: var(--primary); background: var(--primary-bg); }
+    .tpl-card-art { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .tpl-card-body { min-width: 0; flex: 1; }
+    .tpl-card-body b { display: block; font-size: 12px; font-weight: 700; margin-bottom: 1px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tpl-card-body small { font-size: 10px; color: var(--text-3); }
+    .tpl-card-price { display: block; font-size: 11px; color: var(--primary); font-weight: 700; margin-top: 4px; }
+    .tpl-badges { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+    .tpl-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 999px; }
+    .tpl-badge.tier-free { background: #DCFCE7; color: #16A34A; }
+    .tpl-badge.tier-prem { background: var(--primary-bg); color: var(--primary); }
+    .tpl-badge.tier-excl { background: #FEF3C7; color: #B45309; }
+    .tpl-badge.html { background: #DBEAFE; color: #1D4ED8; }
+    .tpl-empty { font-size: 13px; color: var(--text-3); text-align: center; padding: 32px; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /*  WORKSPACE                                          */
+    /* ═══════════════════════════════════════════════════ */
+    #tplWorkspace { display: none; }
+    #tplWorkspace.open { display: block; }
+    #tplFilters, #tplBrowser { transition: opacity .15s; }
+
+    .ws-topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .ws-topbar h2 { font-family: Sora, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    .ws-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; align-items: start; }
+    .ws-meta { display: grid; gap: 10px; }
+    .ws-html-col { display: grid; gap: 10px; }
+    .ws-html-col label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+
+    #fHtmlEditor {
+      width: 100%; min-height: min(60vh, 500px);
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Consolas, monospace;
+      font-size: 12px; line-height: 1.55; tab-size: 2; resize: vertical;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: #F8FAFC; color: #1E293B; padding: 10px;
+    }
+    #fHtmlEditor:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+
+    .ws-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; }
+
+    .file-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 8px;
+      border: 1px dashed var(--border); background: var(--surface);
+      font-size: 12px; font-weight: 600; color: var(--text-2); cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .file-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .file-btn input { display: none; }
+
+    .audio-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; display: grid; gap: 8px; }
+    .audio-hint { font-size: 11px; color: var(--text-3); line-height: 1.55; }
+    .audio-hint code { background: #E2E8F0; padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 10px; color: var(--text); }
+
+    /* ═══════════════════════════════════════════════════ */
+    /*  CONFIG                                             */
+    /* ═══════════════════════════════════════════════════ */
+    .config-section { margin-bottom: 16px; }
+    .config-section + .config-section { padding-top: 16px; border-top: 1px solid var(--border); }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .dash-grid { grid-template-columns: 1fr; }
+      .ws-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .dash.on { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; }
+      .sidebar-nav { flex-direction: row; }
+      .sidebar-foot { flex-direction: row; border-top: none; border-left: 1px solid var(--border); }
+      .admin-content { padding: 16px; }
+    }
   </style>
 </head>
 <body>
-  <div class="login-wrap" id="loginView">
-    <div>
-      <div class="logo" style="text-align:center">Uwu 🧸<small>Panel de administrador</small></div>
-      <div class="card" style="margin-top:20px">
-        <p class="sub">Gestiona la landing, plantillas y contenido de UWU.</p>
-        <form id="loginForm">
-          <label for="user">Usuario</label>
-          <input id="user" type="text" value="admin" autocomplete="username" required style="margin-bottom:14px" />
-          <label for="pw">Contraseña</label>
-          <input id="pw" type="password" placeholder="Tu contraseña" autocomplete="current-password" required style="margin-bottom:18px" />
-          <button class="btn block" type="submit">🔑 Ingresar</button>
-        </form>
-        <div class="err" id="err">Usuario o contraseña incorrectos</div>
-        <a class="back" href="index.html">← Volver a la web</a>
-      </div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  LOGIN SCREEN                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="login-screen" id="loginView">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="brand">UWU ✦</div>
+      <p>Panel de Administración</p>
     </div>
+    <div class="card login-card">
+      <h2>Iniciar sesión</h2>
+      <form id="loginForm" class="login-form">
+        <div class="field">
+          <label for="user">Usuario</label>
+          <input id="user" type="text" value="admin" autocomplete="username" required />
+        </div>
+        <div class="field" style="margin-bottom:18px">
+          <label for="pw">Contraseña</label>
+          <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" required />
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Ingresar al panel</button>
+      </form>
+      <div class="alert alert-err" id="err" style="margin-top:12px">Usuario o contraseña incorrectos</div>
+    </div>
+    <a class="login-back" href="index.html">← Volver al sitio web</a>
   </div>
+</div>
 
-  <div class="dash" id="dashView">
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <div class="logo">Uwu 🧸<small>Administración</small></div>
-      </div>
-      <nav class="sidebar-nav">
-        <button type="button" data-view="dashboard" class="active">📊 Dashboard</button>
-        <button type="button" data-view="landing">🌐 Landing</button>
-        <button type="button" data-view="plantillas">💌 Plantillas</button>
-        <button type="button" data-view="config">⚙️ Configuración</button>
-      </nav>
-      <div class="sidebar-foot">
-        <a class="btn ghost block sm" href="index.html" target="_blank">👁 Ver sitio</a>
-        <button class="btn ghost block sm" id="btnOut" type="button">🚪 Salir</button>
-      </div>
-    </aside>
+<!-- ═══════════════════════════════════════════════ -->
+<!--  DASHBOARD                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="dash" id="dashView">
 
-    <main class="admin-main">
-      <!-- DASHBOARD -->
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">UWU ✦</div>
+      <small>Administración</small>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="sidebar-nav-label">Menú</span>
+      <button type="button" data-view="dashboard" class="active">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button type="button" data-view="landing">
+        <span class="nav-icon">🌐</span> Landing
+      </button>
+      <button type="button" data-view="plantillas">
+        <span class="nav-icon">💌</span> Plantillas
+      </button>
+      <button type="button" data-view="config">
+        <span class="nav-icon">⚙️</span> Configuración
+      </button>
+    </nav>
+    <div class="sidebar-foot">
+      <a class="btn btn-outline btn-sm btn-block" href="index.html" target="_blank">
+        ↗ Ver sitio web
+      </a>
+      <button class="btn btn-ghost btn-sm btn-block" id="btnOut" type="button">
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 id="topbarTitle">Dashboard</h1>
+        <span class="topbar-sub" id="topbarSub">Resumen del sistema</span>
+      </div>
+      <div class="topbar-right">
+        <a class="btn btn-outline btn-sm" href="index.html" target="_blank">↗ Sitio web</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- ── DASHBOARD ─────────────────────────────── -->
       <section class="admin-view active" id="view-dashboard">
-        <div class="view-head">
-          <h1>Dashboard</h1>
-          <p>Métricas y resumen de tu página UWU</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="mTotalTpl">—</div>
+            <div class="stat-label">Plantillas activas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#16A34A" id="mFree">—</div>
+            <div class="stat-label">Gratis</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mPrem">—</div>
+            <div class="stat-label">Premium</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#B45309" id="mExcl">—</div>
+            <div class="stat-label">Exclusivas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mOrders">0</div>
+            <div class="stat-label">Dedicatorias</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mHiddenTpl">0</div>
+            <div class="stat-label">Ocultas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mSiteEdits">0</div>
+            <div class="stat-label">Textos editados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mSecHidden">0</div>
+            <div class="stat-label">Secc. ocultas</div>
+          </div>
+          <div class="stat-card" id="rwStatusCard">
+            <div class="stat-value" id="mRwStatus" style="font-size:1rem">—</div>
+            <div class="stat-label">Railway</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mGhStatus" style="font-size:1rem">—</div>
+            <div class="stat-label">GitHub</div>
+          </div>
         </div>
-        <div class="stats">
-          <div class="stat"><b id="mTotalTpl">25</b><span>Plantillas activas</span></div>
-          <div class="stat"><b id="mFree">3</b><span>Gratis</span></div>
-          <div class="stat"><b id="mPrem">17</b><span>Premium</span></div>
-          <div class="stat"><b id="mExcl">5</b><span>💎 Exclusiva</span></div>
-          <div class="stat"><b id="mOrders">0</b><span>Dedicatorias</span></div>
-          <div class="stat"><b id="mHiddenTpl">0</b><span>Plantillas ocultas</span></div>
-          <div class="stat"><b id="mSiteEdits">0</b><span>Textos editados</span></div>
-          <div class="stat"><b id="mSecHidden">0</b><span>Secciones ocultas</span></div>
-          <div class="stat"><b id="mRwStatus">—</b><span>Railway</span></div>
-          <div class="stat"><b id="mGhStatus">—</b><span>GitHub</span></div>
-        </div>
+
         <div class="dash-grid">
-          <div class="card panel">
-            <h2>Por categoría</h2>
-            <div id="dashCatList"></div>
+          <div class="card">
+            <div class="card-header"><h3>Plantillas por categoría</h3></div>
+            <div class="card-body" id="dashCatList">
+              <p class="dash-empty">Cargando…</p>
+            </div>
           </div>
-          <div class="card panel">
-            <h2>Últimas dedicatorias (local)</h2>
-            <div id="dashRecent"></div>
+          <div class="card">
+            <div class="card-header"><h3>Últimas dedicatorias</h3></div>
+            <div class="card-body" id="dashRecent">
+              <p class="dash-empty">Sin registros locales</p>
+            </div>
           </div>
-        </div>
-        <div class="stats" style="margin-top:4px">
-          <div class="stat"><b id="stTpl">25</b><span>En catálogo</span></div>
-          <div class="stat"><b id="stOrders">0</b><span>Pedidos local</span></div>
-          <div class="stat"><b id="stHidden">0</b><span>Secciones ocultas</span></div>
-          <div class="stat"><b>✓</b><span>En línea</span></div>
         </div>
       </section>
 
-      <!-- LANDING -->
+      <!-- ── LANDING ────────────────────────────────── -->
       <section class="admin-view" id="view-landing">
-        <div class="view-head">
-          <h1>Landing</h1>
-          <p>Todo el contenido visible de la página principal</p>
-        </div>
-        <div class="card panel">
-          <div class="site-toolbar">
-            <button class="btn sm" id="btnSaveSite" type="button">💾 Guardar</button>
-            <button class="btn ghost sm" id="btnPreviewSite" type="button">👁 Vista previa</button>
-            <button class="btn ghost sm" id="btnResetSite" type="button">♻ Restaurar textos</button>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <div>
+              <h3>Contenido de la landing</h3>
+              <p>Edita textos y guarda — los visitantes ven los cambios al recargar</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0">
+              <button class="btn btn-outline btn-sm" id="btnResetSite" type="button">↺ Restaurar textos</button>
+              <button class="btn btn-outline btn-sm" id="btnPreviewSite" type="button">👁 Vista previa</button>
+              <button class="btn btn-primary btn-sm" id="btnSaveSite" type="button">💾 Guardar</button>
+            </div>
           </div>
-          <div class="html-status" id="siteSaveStatus"></div>
-          <div id="siteForm" style="margin-top:14px"></div>
+          <div class="card-body">
+            <div class="html-status" id="siteSaveStatus"></div>
+            <div id="siteForm" style="margin-top:10px"></div>
+          </div>
         </div>
-        <div class="card panel">
-          <h2>Visibilidad de secciones</h2>
-          <p class="tpl-hint">Oculta o muestra bloques de la landing.</p>
-          <div class="sections" id="secList"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Visibilidad de secciones</h3>
+              <p>Oculta o muestra bloques de la página principal</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="sections" id="secList"></div>
+          </div>
         </div>
       </section>
 
-      <!-- PLANTILLAS -->
+      <!-- ── PLANTILLAS ─────────────────────────────── -->
       <section class="admin-view" id="view-plantillas">
-        <div class="view-head">
-          <h1>Plantillas</h1>
-          <p>Edita metadatos y HTML por categoría y plan de precio</p>
-        </div>
+
+        <!-- Filters / browser -->
         <div id="tplFilters">
           <div class="tier-tabs" id="tierTabs"></div>
           <div class="tpl-filters">
             <select id="catFilter"></select>
-            <button class="btn ghost sm" id="btnResetTpl" type="button">♻ Restaurar catálogo</button>
           </div>
         </div>
         <div id="tplBrowser"></div>
-        <div class="card" id="tplWorkspace">
-          <div class="ws-head">
-            <h2 id="wsTitle">Editar plantilla</h2>
-            <button type="button" class="btn ghost sm" id="btnCloseWs">← Volver al listado</button>
+
+        <!-- Workspace (opens when a card is clicked) -->
+        <div id="tplWorkspace">
+          <div class="ws-topbar">
+            <div style="display:flex;align-items:center;gap:12px">
+              <button type="button" class="btn btn-outline btn-sm" id="btnCloseWs">← Volver a plantillas</button>
+              <h2 id="wsTitle">Editar plantilla</h2>
+            </div>
+            <div class="ws-actions" style="margin:0">
+              <button type="button" class="btn btn-outline btn-sm" id="btnPreviewWs">👁 Vista previa</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnDownloadDemo">⬇ Descargar demo</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnSaveWsNew">+ Guardar nueva versión</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btnSaveWs">💾 Guardar</button>
+            </div>
           </div>
-          <div class="ws-grid">
-            <div class="ws-meta">
+
+          <div class="ws-layout">
+            <!-- Left: metadata + audio -->
+            <div class="ws-meta card card-body">
               <input type="hidden" id="fSlug" />
-              <label>Código<input id="fId" /></label>
-              <label>Nombre<input id="fName" /></label>
-              <div class="form-grid">
-                <label>Emoji<input id="fEmoji" maxlength="4" /></label>
-                <label>Plan<select id="fTier"><option value="free">Gratis</option><option value="prem">Premium</option><option value="excl">💎 Exclusiva</option></select></label>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Código interno</label>
+                  <input id="fId" type="text" />
+                </div>
+                <div class="field">
+                  <label>Emoji</label>
+                  <input id="fEmoji" type="text" maxlength="4" />
+                </div>
               </div>
-              <label>Categoría<select id="fCat"></select></label>
-              <div class="form-grid">
-                <label>Precio S/<input id="fPen" /></label>
-                <label>Precio USD<input id="fUsd" /></label>
+
+              <div class="field">
+                <label>Nombre de la plantilla</label>
+                <input id="fName" type="text" />
               </div>
-              <label>Gradiente<input id="fGrad" /></label>
-              <label>Título tarjeta<input id="fTitle" /></label>
-              <label>Texto pill<input id="fPill" /></label>
-              <label>Descripción<textarea id="fDesc" rows="2"></textarea></label>
-              <label>Versión HTML<select id="fVersion"></select></label>
-              <label class="full">Música de plantilla (MP3)</label>
-              <label class="file-btn full">🎵 Subir MP3<input type="file" id="fAudioUpload" accept="audio/mpeg,.mp3" /></label>
-              <div class="html-status" id="fAudioStatus">Sin música</div>
-              <p class="tpl-hint" style="font-size:11px;margin:4px 0 8px">En tu HTML usa <code>__UWU_AUDIO__</code> (reproductor completo) o <code>__UWU_AUDIO_SRC__</code> (solo la URL). Si no pones ninguno, se inserta solo al guardar.</p>
-              <button type="button" class="btn ghost sm" id="btnInsertAudio">➕ Insertar __UWU_AUDIO__</button>
-              <button type="button" class="btn ghost sm" id="btnRemoveAudio">🗑 Quitar audio</button>
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px"><input type="checkbox" id="fShowcase" /> Destacar en showcase</label>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Plan</label>
+                  <select id="fTier">
+                    <option value="free">Gratis</option>
+                    <option value="prem">Premium</option>
+                    <option value="excl">💎 Exclusiva</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Categoría</label>
+                  <select id="fCat"></select>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label>Precio S/</label>
+                  <input id="fPen" type="text" />
+                </div>
+                <div class="field">
+                  <label>Precio USD</label>
+                  <input id="fUsd" type="text" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Gradiente (CSS)</label>
+                <input id="fGrad" type="text" placeholder="linear-gradient(…)" />
+              </div>
+
+              <div class="field">
+                <label>Título de la tarjeta</label>
+                <input id="fTitle" type="text" />
+              </div>
+
+              <div class="field">
+                <label>Texto del pill</label>
+                <input id="fPill" type="text" />
+              </div>
+
+              <div class="field">
+                <label>Descripción</label>
+                <textarea id="fDesc" rows="2"></textarea>
+              </div>
+
+              <div class="field">
+                <label>Versión HTML activa</label>
+                <select id="fVersion"></select>
+              </div>
+
+              <!-- Audio panel -->
+              <div class="audio-panel">
+                <div style="font-size:12px;font-weight:700;color:var(--text-2)">🎵 Música de plantilla</div>
+                <div class="html-status" id="fAudioStatus">Sin música</div>
+                <div class="audio-hint">
+                  En tu HTML usa <code>__UWU_AUDIO__</code> para el reproductor o <code>__UWU_AUDIO_SRC__</code> solo para la URL. Si no pones ninguno, se inserta automáticamente al guardar.
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <label class="file-btn">📂 Subir MP3<input type="file" id="fAudioUpload" accept="audio/mpeg,.mp3" /></label>
+                  <button type="button" class="btn btn-outline btn-sm" id="btnInsertAudio">+ Insertar marcador</button>
+                  <button type="button" class="btn btn-danger btn-sm" id="btnRemoveAudio">✕ Quitar audio</button>
+                </div>
+              </div>
+
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-2);margin:0">
+                <input type="checkbox" id="fShowcase" /> Destacar en showcase
+              </label>
             </div>
-            <div class="ws-html">
-              <label>Editor HTML — reemplaza el código y guarda para publicar</label>
-              <textarea id="fHtmlEditor" spellcheck="false"></textarea>
-              <div class="ws-actions">
-                <button type="button" class="btn sm" id="btnSaveWs">💾 Guardar</button>
-                <button type="button" class="btn ghost sm" id="btnSaveWsNew">➕ Guardar nueva versión</button>
-                <button type="button" class="btn ghost sm" id="btnPreviewWs">👁 Vista previa</button>
-                <button type="button" class="btn ghost sm" id="btnDownloadDemo">⬇️ Descargar demo</button>
-                <label class="file-btn">📄 Subir HTML<input type="file" id="fHtmlUpload" accept=".html,text/html" /></label>
+
+            <!-- Right: HTML editor -->
+            <div class="ws-html-col card card-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+                <span style="font-size:12px;font-weight:700;color:var(--text-2)">Editor HTML</span>
+                <label class="file-btn" style="margin:0">📄 Subir archivo HTML<input type="file" id="fHtmlUpload" accept=".html,text/html" /></label>
               </div>
+              <textarea id="fHtmlEditor" spellcheck="false" placeholder="Pega o escribe el código HTML de la plantilla aquí…"></textarea>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- CONFIG -->
+      <!-- ── CONFIGURACIÓN ──────────────────────────── -->
       <section class="admin-view" id="view-config">
-        <div class="view-head">
-          <h1>Configuración</h1>
-          <p>Publicación de plantillas y archivos</p>
+
+        <!-- Railway -->
+        <div class="card config-section" style="margin-bottom:16px">
+          <div class="card-header">
+            <div>
+              <h3>☁️ Railway — publicación en vivo</h3>
+              <p>Si el admin está en el mismo dominio Railway, la cookie ya autoriza la sync. El token solo hace falta desde otro equipo.</p>
+            </div>
+          </div>
+          <div class="card-body" style="display:grid;gap:12px">
+            <div class="field">
+              <label>URL del sitio en Railway</label>
+              <input id="rwBaseUrl" type="text" placeholder="https://tu-app.up.railway.app (vacío = mismo dominio)" />
+            </div>
+            <div class="field">
+              <label>Token admin (opcional)</label>
+              <input id="rwToken" type="password" placeholder="Solo si publicas desde otro dominio" autocomplete="off" />
+            </div>
+            <div class="toolbar" style="margin:0">
+              <button class="btn btn-primary btn-sm" id="btnSaveRw" type="button">💾 Guardar y probar</button>
+              <button class="btn btn-outline btn-sm" id="btnSyncNow" type="button">☁️ Sincronizar ahora</button>
+            </div>
+            <div class="html-status" id="rwSyncStatus">Sin configurar</div>
+          </div>
         </div>
-        <div class="card panel" id="railwayPanel">
-          <h2>☁️ Railway (recomendado)</h2>
-          <p class="tpl-hint">Si el admin está en el mismo dominio Railway, basta con iniciar sesión — la cookie autoriza la sync. El token solo hace falta para publicar desde otro equipo.</p>
-          <div class="form-grid">
-            <label class="full">URL del sitio<input id="rwBaseUrl" placeholder="https://tu-app.up.railway.app (opcional si usas el mismo dominio)" /></label>
-            <label class="full">Token admin (opcional)<input id="rwToken" type="password" placeholder="Solo si sincronizas desde otro dominio" autocomplete="off" /></label>
+
+        <!-- GitHub (backup) -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>GitHub — respaldo opcional</h3>
+              <p>Solo si quieres seguir publicando al repositorio <code>docs/</code> como respaldo.</p>
+            </div>
           </div>
-          <div class="tpl-toolbar" style="margin-top:14px">
-            <button class="btn sm" id="btnSaveRw" type="button">💾 Guardar y probar</button>
-            <button class="btn ghost sm" id="btnSyncNow" type="button">☁️ Sincronizar ahora</button>
+          <div class="card-body" style="display:grid;gap:12px">
+            <div class="field">
+              <label>Token de GitHub</label>
+              <input id="ghToken" type="password" placeholder="github_pat_…" autocomplete="off" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Usuario</label>
+                <input id="ghOwner" type="text" placeholder="ANTHONY109823" />
+              </div>
+              <div class="field">
+                <label>Repositorio</label>
+                <input id="ghRepo" type="text" placeholder="Uwu" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Rama</label>
+              <input id="ghBranch" type="text" placeholder="main" />
+            </div>
+            <div class="toolbar" style="margin:0">
+              <button class="btn btn-primary btn-sm" id="btnSaveGh" type="button">💾 Guardar token</button>
+              <button class="btn btn-outline btn-sm" id="btnSyncNowGh" type="button">☁️ Sincronizar ahora</button>
+            </div>
+            <div class="html-status" id="ghSyncStatus">Sin configurar</div>
           </div>
-          <div class="html-status" id="rwSyncStatus">Sin configurar</div>
         </div>
-        <div class="card panel" id="githubPanel" style="margin-top:16px;opacity:.85">
-          <h2>GitHub (respaldo)</h2>
-          <p class="tpl-hint">Opcional. Solo si quieres seguir publicando al repo <code>docs/</code>.</p>
-          <div class="form-grid">
-            <div class="full"><label>Token<input id="ghToken" type="password" placeholder="github_pat_…" autocomplete="off" /></label></div>
-            <label>Usuario<input id="ghOwner" placeholder="ANTHONY109823" /></label>
-            <label>Repositorio<input id="ghRepo" placeholder="Uwu" /></label>
-            <label class="full">Rama<input id="ghBranch" placeholder="main" /></label>
-          </div>
-          <div class="tpl-toolbar" style="margin-top:14px">
-            <button class="btn sm" id="btnSaveGh" type="button">💾 Guardar token</button>
-            <button class="btn ghost sm" id="btnSyncNowGh" type="button">☁️ Sincronizar ahora</button>
-          </div>
-          <div class="html-status" id="ghSyncStatus">Sin configurar</div>
-        </div>
+
       </section>
-    </main>
-  </div>
 
-  <script src="js/uwu.js"></script>
-  <script src="js/uwu-site.js"></script>
-  <script src="js/github-sync.js"></script>
-  <script src="js/railway-sync.js"></script>
-  <script src="js/admin-shell.js"></script>
-  <script src="js/admin-dashboard.js"></script>
-  <script src="js/admin-landing.js"></script>
-  <script src="js/admin-templates.js"></script>
-  <script>
-    var SECTIONS = [
-      { id: 'hero', label: 'Hero principal' },
-      { id: 'marquee', label: 'Cinta de categorías' },
-      { id: 'showcase', label: 'Showcase plantillas' },
-      { id: 'footer', label: 'Footer' }
-    ];
+    </div><!-- /admin-content -->
+  </div><!-- /admin-main -->
+</div><!-- /dash -->
 
-    function getOps() {
-      return JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}');
-    }
-    function saveOps(ops) { localStorage.setItem('uwuOps', JSON.stringify(ops)); }
+<!-- ═══════════════════════════════════════════════ -->
+<!--  Scripts                                        -->
+<!-- ═══════════════════════════════════════════════ -->
+<script src="js/uwu.js"></script>
+<script src="js/uwu-site.js"></script>
+<script src="js/github-sync.js"></script>
+<script src="js/railway-sync.js"></script>
+<script src="js/admin-shell.js"></script>
+<script src="js/admin-dashboard.js"></script>
+<script src="js/admin-landing.js"></script>
+<script src="js/admin-templates.js"></script>
+<script>
+  /* ── Section toggles ── */
+  var SECTIONS = [
+    { id: 'hero',     label: 'Hero principal' },
+    { id: 'marquee', label: 'Cinta de categorías' },
+    { id: 'showcase',label: 'Showcase de plantillas' },
+    { id: 'footer',  label: 'Footer' }
+  ];
 
-    function renderSections() {
-      var ops = getOps();
-      if (!ops.sections) ops.sections = {};
-      var list = document.getElementById('secList');
-      if (!list) return;
-      list.innerHTML = SECTIONS.map(function (s) {
-        var on = ops.sections[s.id] !== false;
-        return '<div class="sec-row"><span>' + s.label + '</span><button class="toggle' + (on ? ' on' : '') + '" data-id="' + s.id + '" type="button"></button></div>';
-      }).join('');
-      list.querySelectorAll('.toggle').forEach(function (btn) {
-        btn.onclick = function () {
-          var ops = getOps();
-          var id = btn.dataset.id;
-          ops.sections[id] = !btn.classList.contains('on');
-          if (ops.sections[id]) delete ops.sections[id];
-          else ops.sections[id] = false;
-          saveOps(ops);
-          btn.classList.toggle('on');
-          if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
-        };
-      });
-    }
+  function getOps() { return JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); }
+  function saveOps(ops) { localStorage.setItem('uwuOps', JSON.stringify(ops)); }
 
-    function showDash() {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('dashView').classList.add('on');
-      renderSections();
-      if (window.UWUAdminShell) UWUAdminShell.init();
-      if (window.UWUAdminDashboard) UWUAdminDashboard.init();
-      if (window.UWUAdminLanding) UWUAdminLanding.init();
-      if (window.UWUAdminTemplates) UWUAdminTemplates.init();
-    }
-
-    if (sessionStorage.getItem('uwuAdm') === '1') showDash();
-    else {
-      fetch('/api/admin/session', { credentials: 'include' }).then(function (r) { return r.json(); }).then(function (j) {
-        if (j && j.ok) {
-          sessionStorage.setItem('uwuAdm', '1');
-          showDash();
-        }
-      }).catch(function () {});
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      fetch('/api/admin/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user: document.getElementById('user').value.trim(),
-          password: document.getElementById('pw').value
-        })
-      }).then(function (r) {
-        return r.json().then(function (j) {
-          if (!r.ok) throw new Error((j && j.error) || 'Login fallido');
-          return j;
-        });
-      }).then(function () {
-        sessionStorage.setItem('uwuAdm', '1');
-        document.getElementById('err').style.display = 'none';
-        showDash();
-      }).catch(function () {
-        document.getElementById('err').style.display = 'block';
-      });
+  function renderSections() {
+    var ops = getOps();
+    if (!ops.sections) ops.sections = {};
+    var list = document.getElementById('secList');
+    if (!list) return;
+    list.innerHTML = SECTIONS.map(function (s) {
+      var on = ops.sections[s.id] !== false;
+      return '<div class="sec-row"><span>' + s.label + '</span>' +
+        '<button class="toggle' + (on ? ' on' : '') + '" data-id="' + s.id + '" type="button" title="' + (on ? 'Visible — clic para ocultar' : 'Oculto — clic para mostrar') + '"></button></div>';
+    }).join('');
+    list.querySelectorAll('.toggle').forEach(function (btn) {
+      btn.onclick = function () {
+        var ops = getOps();
+        var id = btn.dataset.id;
+        var wasOn = btn.classList.contains('on');
+        if (wasOn) ops.sections[id] = false; else delete ops.sections[id];
+        saveOps(ops);
+        btn.classList.toggle('on', !wasOn);
+        btn.title = !wasOn ? 'Visible — clic para ocultar' : 'Oculto — clic para mostrar';
+        if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
+      };
     });
+  }
 
-    document.getElementById('btnOut').onclick = function () {
-      if (confirm('¿Cerrar sesión?')) {
-        fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () {
-          sessionStorage.removeItem('uwuAdm');
-          location.reload();
-        });
+  /* ── Topbar titles per view ── */
+  var VIEW_META = {
+    dashboard:  { title: 'Dashboard',      sub: 'Resumen del sistema' },
+    landing:    { title: 'Landing',         sub: 'Contenido visible de la página principal' },
+    plantillas: { title: 'Plantillas',      sub: 'Edita, publica y gestiona plantillas' },
+    config:     { title: 'Configuración',   sub: 'Sincronización y publicación' }
+  };
+
+  function updateTopbar(viewId) {
+    var m = VIEW_META[viewId] || {};
+    var t = document.getElementById('topbarTitle');
+    var s = document.getElementById('topbarSub');
+    if (t && m.title) t.textContent = m.title;
+    if (s && m.sub)   s.textContent = m.sub;
+  }
+
+  var _origShowView = null;
+
+  /* ── Boot ── */
+  function showDash() {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('dashView').classList.add('on');
+    renderSections();
+    if (window.UWUAdminShell) {
+      // Patch showView to also update topbar
+      if (!_origShowView) {
+        _origShowView = UWUAdminShell.showView;
+        UWUAdminShell.showView = function (id) {
+          _origShowView(id);
+          updateTopbar(id);
+        };
       }
-    };
-  </script>
+      UWUAdminShell.init();
+    }
+    if (window.UWUAdminDashboard) UWUAdminDashboard.init();
+    if (window.UWUAdminLanding)   UWUAdminLanding.init();
+    if (window.UWUAdminTemplates) UWUAdminTemplates.init();
+  }
+
+  if (sessionStorage.getItem('uwuAdm') === '1') {
+    showDash();
+  } else {
+    fetch('/api/admin/session', { credentials: 'include' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.ok) { sessionStorage.setItem('uwuAdm', '1'); showDash(); }
+      }).catch(function () {});
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var errEl = document.getElementById('err');
+    errEl.style.display = 'none';
+    fetch('/api/admin/login', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user: document.getElementById('user').value.trim(),
+        password: document.getElementById('pw').value
+      })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.error) || 'Login fallido');
+        return j;
+      });
+    }).then(function () {
+      sessionStorage.setItem('uwuAdm', '1');
+      showDash();
+    }).catch(function (err) {
+      errEl.textContent = (err && err.message) || 'Error al iniciar sesión';
+      errEl.style.display = 'block';
+    });
+  });
+
+  document.getElementById('btnOut').onclick = function () {
+    if (!confirm('¿Cerrar sesión?')) return;
+    fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () {
+      sessionStorage.removeItem('uwuAdm');
+      location.reload();
+    });
+  };
+</script>
 </body>
 </html>

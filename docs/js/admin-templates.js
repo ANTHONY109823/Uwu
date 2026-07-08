@@ -80,7 +80,7 @@
 
   function filteredItems() {
     return UWU.listAdminTemplates().filter(function (item) {
-      if (item.hidden) return false;
+      // En el admin se muestran TODAS las plantillas, incluidas las ocultas del sitio público
       var tier = item.tpl.tier || 'prem';
       if (activeTier !== 'all' && tier !== activeTier) return false;
       if (activeCat !== 'all' && item.tpl.cat !== activeCat) return false;
@@ -118,7 +118,8 @@
           '<small>' + UWU.esc(t.id) + '</small>' +
           '<div class="tpl-badges">' + tierBadge(t.tier) +
           (item.hasHtml ? '<span class="tpl-badge html">HTML</span>' : '') +
-          (item.hasAudio ? '<span class="tpl-badge html">MP3</span>' : '') + '</div>' +
+          (item.hasAudio ? '<span class="tpl-badge html">MP3</span>' : '') +
+          (item.hidden ? '<span class="tpl-badge" style="background:#FEE2E2;color:#DC2626">Oculta</span>' : '') + '</div>' +
           '<span class="tpl-card-price">' + UWU.fmtPrice(t) + '</span></div></button>';
       }).join('');
       return '<section class="tpl-cat-block"><h3>' + UWU.esc(cat) + ' <span>(' + byCat[cat].length + ')</span></h3><div class="tpl-card-grid">' + cards + '</div></section>';
