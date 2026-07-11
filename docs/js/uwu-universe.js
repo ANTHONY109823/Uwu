@@ -105,7 +105,7 @@
     }
 
     function drawHeart(a, t) {
-      var scaleBase = (Math.min(W, H) / 58) * (1 + zoom * 3.4);
+      var scaleBase = (Math.min(W, H) / 50) * (1 + zoom * 3.4);
       // durante el "recorrido" dentro del corazón: leve deriva/vaivén
       var driftX = zoom * Math.sin(t * 0.6) * W * 0.06;
       var driftY = zoom * Math.cos(t * 0.45) * H * 0.05;
@@ -152,9 +152,9 @@
           '<span class="uc-em">' + tpl.emoji + '</span></div>' +
           '<div class="uc-nm">' + U.esc(tpl.name) + '</div>' +
           '<div class="uc-buy">💳 ' + U.fmtPrice(tpl, U.getCur()) + '</div>';
-        // pausa al pasar el mouse
-        card.addEventListener('mouseenter', function () { card._pause = true; });
-        card.addEventListener('mouseleave', function () { card._pause = false; });
+        // al pasar el mouse: crece y frena un poco (sin detener la órbita)
+        card.addEventListener('mouseenter', function () { card._hover = true; });
+        card.addEventListener('mouseleave', function () { card._hover = false; });
         // clic en la tarjeta → demo en vivo (nueva pestaña)
         card.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -169,25 +169,24 @@
 
     function animateOrbit() {
       var n = cards.length;
-      if (n) {
-        var rx = Math.min(W * 0.36, 340), ry = Math.max(70, H * 0.14);
-        for (var i = 0; i < n; i++) {
-          var c = cards[i];
-          var ang = orbAngle + i * (Math.PI * 2 / n);
-          var depth = (Math.sin(ang) + 1) / 2;           // 0 atrás .. 1 frente
-          var x = Math.cos(ang) * rx, y = Math.sin(ang) * ry;
-          var scale = (0.6 + depth * 0.55) * (1 - zoom);
-          var op = (0.4 + depth * 0.6) * (1 - zoom * 1.6);
-          if (c._pause) { scale = 1.22 * (1 - zoom); op = Math.max(op, (1 - zoom * 1.6)); }
-          c.style.transform = 'translate(-50%,-50%) translate(' + x + 'px,' + y + 'px) scale(' + Math.max(scale, 0) + ')';
-          c.style.opacity = Math.max(op, 0);
-          c.style.zIndex = Math.round(depth * 50) + (c._pause ? 100 : 0);
-          c.style.filter = depth < 0.4 ? 'blur(1.4px)' : 'none';
-        }
-        var anyPause = false;
-        for (var k = 0; k < n; k++) { if (cards[k]._pause) { anyPause = true; break; } }
-        if (!anyPause && zoomT < 0.3 && !reduced) orbAngle += 0.0045;
+      if (!n) return;
+      var rx = Math.min(W * 0.30, 480), ry = Math.max(104, H * 0.22);
+      var anyHover = false;
+      for (var i = 0; i < n; i++) {
+        var c = cards[i];
+        var ang = orbAngle + i * (Math.PI * 2 / n);
+        var depth = (Math.sin(ang) + 1) / 2;             // 0 atrás .. 1 frente
+        var x = Math.cos(ang) * rx, y = Math.sin(ang) * ry;
+        var scale = (0.72 + depth * 0.62) * (1 - zoom);   // más grandes y con más contraste 3D
+        var op = (0.5 + depth * 0.5) * (1 - zoom * 1.6);
+        if (c._hover) { scale *= 1.28; op = (1 - zoom * 1.6); anyHover = true; }
+        c.style.transform = 'translate(-50%,-50%) translate(' + x + 'px,' + y + 'px) scale(' + Math.max(scale, 0) + ')';
+        c.style.opacity = Math.max(op, 0);
+        c.style.zIndex = Math.round(depth * 100) + (c._hover ? 200 : 0);
+        c.style.filter = depth < 0.35 ? 'blur(1.6px)' : 'none';
       }
+      // la órbita NUNCA se detiene: solo va más lento al pasar el mouse
+      if (zoomT < 0.3) orbAngle += anyHover ? 0.0018 : 0.0072;
     }
 
     /* ---------- entrar / salir del corazón ---------- */
