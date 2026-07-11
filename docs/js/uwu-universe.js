@@ -129,7 +129,7 @@
 
     function drawHeart(a, t) {
       var beat = heartbeat(t);                        // latido: crece y se achica
-      var scaleBase = (Math.min(W, H) / 34) * (1 + beat * 0.16) * (1 + zoom * 3.4);
+      var scaleBase = (Math.min(W, H) / 37) * (1 + beat * 0.16) * (1 + zoom * 3.4);
       var sweep = t * 0.9;                            // onda que viaja de un lado a otro
       // durante el "recorrido" dentro del corazón: leve deriva/vaivén
       var driftX = zoom * Math.sin(t * 0.6) * W * 0.06;
@@ -227,7 +227,7 @@
       var base = Math.min(sw, sh);
       var rx = Math.min(base * 0.38, 520);
       var ry = Math.max(72, base * 0.07);
-      var orbitY = Math.max(56, base * 0.10);              // órbita más abajo → corazón visible arriba
+      var orbitY = Math.max(62, base * 0.11);              // órbita un poco más abajo del corazón
       var anyHover = false;
       for (var i = 0; i < n; i++) {
         var c = cards[i];
