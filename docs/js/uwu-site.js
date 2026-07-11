@@ -68,11 +68,6 @@
         { key: 'plantillas.kicker', label: 'Kicker', selector: '#plantillas .kicker' },
         { key: 'plantillas.h2', label: 'Título', selector: '#plantillas h2', html: true, rows: 2 }
       ]
-    },
-    {
-      id: 'footer',
-      title: 'Footer',
-      fields: []
     }
   ];
 

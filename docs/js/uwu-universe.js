@@ -38,7 +38,6 @@
     var canvas = document.getElementById('uniCanvas');
     var orbitEl = document.getElementById('uniOrbit');
     var enterBtn = document.getElementById('uniEnter');
-    var hintEl = document.getElementById('uniHint');
     var bearEl = stage ? stage.querySelector('.uni-bear') : null;
     var glowEl = stage ? stage.querySelector('.uni-glow') : null;
     if (!stage || !canvas || !orbitEl || !U) return;
@@ -46,6 +45,7 @@
     var ctx = canvas.getContext('2d');
     var dpr = Math.min(global.devicePixelRatio || 1, 2);
     var W = 0, H = 0, cx = 0, cy = 0;
+    var plantillasSec = document.getElementById('plantillas');
 
     /* ---------- estado ---------- */
     var activeCat = null;
@@ -185,19 +185,21 @@
         card.className = 'uni-card';
         card.setAttribute('data-slug', slug);
         card.innerHTML =
+          '<button type="button" class="uc-demo" aria-label="Ver demo">👁</button>' +
           '<div class="uc-art" style="background:' + tpl.grad + '">' +
           '<span class="uc-em">' + tpl.emoji + '</span></div>' +
           '<div class="uc-nm">' + U.esc(tpl.name) + '</div>' +
-          '<div class="uc-buy">💳 ' + U.fmtPrice(tpl, U.getCur()) + '</div>';
-        // al pasar el mouse: crece y frena un poco (sin detener la órbita)
+          '<div class="uc-choose">Elegir ✨</div>';
         card.addEventListener('mouseenter', function () { card._hover = true; });
         card.addEventListener('mouseleave', function () { card._hover = false; });
-        // clic en la tarjeta → demo en vivo (nueva pestaña)
         card.addEventListener('click', function (e) {
           e.stopPropagation();
-          if (e.target.classList.contains('uc-buy')) { U.openCheckout(slug); return; }
-          var page = tpl.page || (slug + '.html');
-          global.open('d/' + page, '_blank', 'noopener');
+          if (e.target.classList.contains('uc-demo')) {
+            var page = tpl.page || (slug + '.html');
+            global.open('d/' + page, '_blank', 'noopener');
+            return;
+          }
+          U.openCheckout(slug);
         });
         orbitEl.appendChild(card);
         cards.push(card);
@@ -207,7 +209,8 @@
     function animateOrbit() {
       var n = cards.length;
       if (!n) return;
-      var rx = Math.min(W * 0.30, 480), ry = Math.max(104, H * 0.22);
+      var sw = stage.clientWidth || W, sh = stage.clientHeight || H;
+      var rx = Math.min(sw * 0.30, 480), ry = Math.max(104, sh * 0.22);
       var anyHover = false;
       for (var i = 0; i < n; i++) {
         var c = cards[i];
@@ -228,14 +231,15 @@
 
     // (La función "entrar al corazón" se retiró: zoom queda fijo en 0.)
 
-    /* ---------- parallax con el mouse ---------- */
+    /* ---------- parallax con el mouse (toda la sección plantillas) ---------- */
+    var parallaxEl = plantillasSec || stage;
     if (!reduced) {
-      stage.addEventListener('mousemove', function (e) {
-        var b = stage.getBoundingClientRect();
+      parallaxEl.addEventListener('mousemove', function (e) {
+        var b = parallaxEl.getBoundingClientRect();
         mouseX = ((e.clientX - b.left) / b.width - 0.5) * 2;
         mouseY = ((e.clientY - b.top) / b.height - 0.5) * 2;
       });
-      stage.addEventListener('mouseleave', function () { mouseX = 0; mouseY = 0; });
+      parallaxEl.addEventListener('mouseleave', function () { mouseX = 0; mouseY = 0; });
     }
 
     /* ---------- sincronía con el carrusel de categorías ---------- */
@@ -253,8 +257,15 @@
     });
 
     /* ---------- tamaño / loop ---------- */
+    function canvasSize() {
+      if (document.body.classList.contains('uni-active')) {
+        return { w: global.innerWidth, h: global.innerHeight };
+      }
+      return { w: stage.clientWidth, h: stage.clientHeight };
+    }
     function resize() {
-      W = stage.clientWidth; H = stage.clientHeight;
+      var sz = canvasSize();
+      W = sz.w; H = sz.h;
       cx = W / 2; cy = H * 0.50;
       canvas.width = W * dpr; canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -277,14 +288,29 @@
 
     // pausa el dibujo cuando la sección no está visible (sin detener el loop)
     // y oculta la barra superior (nav) mientras el universo está en pantalla
+    var observeEl = plantillasSec || stage;
     if ('IntersectionObserver' in global) {
       new IntersectionObserver(function (ents) {
         ents.forEach(function (en) {
           visible = en.isIntersecting;
-          document.body.classList.toggle('uni-active', en.intersectionRatio >= 0.3);
+          document.body.classList.toggle('uni-active', en.intersectionRatio >= 0.25);
+          if (en.isIntersecting) resize();
         });
-      }, { threshold: [0, 0.3, 0.6] }).observe(stage);
+      }, { threshold: [0, 0.25, 0.5] }).observe(observeEl);
     }
+
+    /* ---------- sincronía con el panel admin ---------- */
+    global.addEventListener('uwu:catalog-updated', function () {
+      if (U.initCatalog) U.initCatalog();
+      renderCards();
+    });
+    global.addEventListener('storage', function (e) {
+      if (e.key === 'uwuCatalogAdmin') {
+        if (U.invalidateStoreCache) U.invalidateStoreCache();
+        if (U.initCatalog) U.initCatalog();
+        renderCards();
+      }
+    });
 
     resize();
     selectCategory(null);          // arranca mostrando todas

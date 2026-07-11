@@ -63,7 +63,7 @@
   var _storeCache = null;
 
   function emptyStore() {
-    return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {}, audio: {}, audioMeta: {} };
+    return { catalog: {}, order: [], showcase: [], hidden: [], html: {}, versions: {}, activeVersion: {}, audio: {}, audioMeta: {}, tierPrices: {} };
   }
 
   function loadCatalogStore() {
@@ -84,6 +84,7 @@
       if (!s.activeVersion) s.activeVersion = {};
       if (!s.audio) s.audio = {};
       if (!s.audioMeta) s.audioMeta = {};
+      if (!s.tierPrices) s.tierPrices = {};
       _storeCache = s;
       return _storeCache;
     } catch (e) {
@@ -114,6 +115,9 @@
       }
     }
     applyCatalogFromStore(store);
+    try {
+      global.dispatchEvent(new CustomEvent('uwu:catalog-updated', { detail: { store: store } }));
+    } catch (e) { /* noop */ }
   }
 
   function invalidateStoreCache() {
@@ -145,7 +149,8 @@
     var merged = Object.assign({}, _baseCatalog, store.catalog || {});
     (store.hidden || []).forEach(function (slug) { delete merged[slug]; });
     Object.keys(merged).forEach(function (slug) {
-      if (merged[slug]) applyTierPrice(merged[slug]);
+      if (!merged[slug]) return;
+      if (!store.catalog || !store.catalog[slug]) applyTierPrice(merged[slug]);
     });
     Object.keys(CATALOG).forEach(function (k) { delete CATALOG[k]; });
     Object.assign(CATALOG, merged);
@@ -591,6 +596,8 @@
   };
 
   function pricesForTier(tier) {
+    var store = loadCatalogStore();
+    if (store.tierPrices && store.tierPrices[tier]) return store.tierPrices[tier];
     return TIER_PRICES[tier] || TIER_PRICES.prem;
   }
 
