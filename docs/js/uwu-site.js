@@ -16,58 +16,41 @@
     },
     {
       id: 'hero',
-      title: 'Hero principal',
+      title: 'Hero — mensaje principal',
       fields: [
         { key: 'hero.badge', label: 'Badge superior', selector: '#inicio .hero-badge', html: true, wrap: '<span class="dot"></span>{v}' },
         { key: 'hero.h1', label: 'Título principal', selector: '#inicio h1', html: true, rows: 3 },
         { key: 'hero.sub', label: 'Descripción', selector: '#inicio .sub', html: true, rows: 3 },
         { key: 'hero.cta', label: 'Botón principal', selector: '#inicio .ctas .btn' },
-        { key: 'hero.proof', label: 'Prueba social', selector: '#inicio .proof > div:last-child', html: true, rows: 2 }
+        { key: 'hero.proof', label: 'Prueba social', selector: '#inicio .proof > div:last-child', html: true, rows: 2 },
+        { key: 'chip.1', label: 'Chip flotante 1', selector: '#inicio .fc1', html: true },
+        { key: 'chip.2', label: 'Chip flotante 2', selector: '#inicio .fc2' },
+        { key: 'chip.3', label: 'Chip flotante 3', selector: '#inicio .fc3' }
       ]
     },
     {
-      id: 'demo-phone',
-      title: 'Demo móvil (hero)',
+      id: 'hero-demos',
+      title: 'Hero — mockups de ejemplo',
+      hint: 'Decoración del hero. Mismo contenido en móvil y desktop; solo cambia cómo se ve el mockup.',
       fields: [
-        { key: 'phone.tag', label: 'Etiqueta', selector: '#inicio .phone .tag' },
-        { key: 'phone.name', label: 'Nombre', selector: '#inicio .phone .name' },
-        { key: 'phone.msg', label: 'Mensaje', selector: '#inicio .phone .msg', html: true, rows: 2 },
-        { key: 'phone.song', label: 'Canción', selector: '#inicio .phone .player .t', html: true }
+        { key: 'phone.tag', label: 'Teléfono · etiqueta', selector: '#inicio .phone .tag' },
+        { key: 'phone.name', label: 'Teléfono · nombre', selector: '#inicio .phone .name' },
+        { key: 'phone.msg', label: 'Teléfono · mensaje', selector: '#inicio .phone .msg', html: true, rows: 2 },
+        { key: 'phone.song', label: 'Teléfono · canción', selector: '#inicio .phone .player .t', html: true },
+        { key: 'laptop.tag', label: 'Laptop · etiqueta', selector: '#inicio .laptop .btag' },
+        { key: 'laptop.name', label: 'Laptop · título', selector: '#inicio .laptop .bname' },
+        { key: 'laptop.msg', label: 'Laptop · mensaje', selector: '#inicio .laptop .bmsg' },
+        { key: 'laptop.btn', label: 'Laptop · botón', selector: '#inicio .laptop .bbtn' }
       ]
     },
     {
-      id: 'demo-laptop',
-      title: 'Demo laptop (hero)',
+      id: 'page',
+      title: 'Categorías y plantillas',
       fields: [
-        { key: 'laptop.tag', label: 'Etiqueta', selector: '#inicio .laptop .btag' },
-        { key: 'laptop.name', label: 'Título', selector: '#inicio .laptop .bname' },
-        { key: 'laptop.msg', label: 'Mensaje', selector: '#inicio .laptop .bmsg' },
-        { key: 'laptop.btn', label: 'Botón', selector: '#inicio .laptop .bbtn' }
-      ]
-    },
-    {
-      id: 'chips',
-      title: 'Chips flotantes',
-      fields: [
-        { key: 'chip.1', label: 'Chip 1', selector: '#inicio .fc1', html: true },
-        { key: 'chip.2', label: 'Chip 2', selector: '#inicio .fc2' },
-        { key: 'chip.3', label: 'Chip 3', selector: '#inicio .fc3' }
-      ]
-    },
-    {
-      id: 'marquee',
-      title: 'Cinta de categorías',
-      fields: [
-        { key: 'marquee.label', label: 'Texto de la cinta', selector: '#categorias .marquee-label' }
-      ]
-    },
-    {
-      id: 'plantillas',
-      title: 'Sección plantillas',
-      fields: [
-        { key: 'plantillas.kicker', label: 'Kicker', selector: '#plantillas .kicker' },
-        { key: 'plantillas.h2', label: 'Título', selector: '#plantillas h2', html: true, rows: 2 },
-        { key: 'plantillas.lead', label: 'Descripción', selector: '#plantillas .uni-lead' }
+        { key: 'marquee.label', label: 'Texto de la cinta', selector: '#categorias .marquee-label' },
+        { key: 'plantillas.kicker', label: 'Kicker plantillas', selector: '#plantillas .kicker' },
+        { key: 'plantillas.h2', label: 'Título plantillas', selector: '#plantillas h2', html: true, rows: 2 },
+        { key: 'plantillas.lead', label: 'Descripción plantillas', selector: '#plantillas .uni-lead', rows: 2 }
       ]
     }
   ];
@@ -81,6 +64,9 @@
     'hero.sub': 'Crea una <strong>página web romántica</strong> con sus fotos, su canción y tu carta — lista en menos de 5 minutos. Pagas, recibes tu enlace y lo compartes por WhatsApp. Así de mágico.',
     'hero.cta': 'Explorar plantillas 💝',
     'hero.proof': '<span class="stars">★★★★★</span><br />"Lloró de felicidad" — la reseña más repetida',
+    'chip.1': '💌 Vista por primera vez <b style="color:#E8447A">hace 2 min</b>',
+    'chip.2': '🎵 Con su canción favorita',
+    'chip.3': '📱 Compartida por WhatsApp',
     'phone.tag': 'Para el amor de mi vida',
     'phone.name': 'Mariana',
     'phone.msg': '"Desde el día en que llegaste,<br />mi mundo tiene más color…"',
@@ -89,9 +75,6 @@
     'laptop.name': '¡Feliz cumple, Vale!',
     'laptop.msg': '25 razones por las que eres la persona favorita de todos…',
     'laptop.btn': 'Soplar las velitas 🎉',
-    'chip.1': '💌 Vista por primera vez <b style="color:#E8447A">hace 2 min</b>',
-    'chip.2': '🎵 Con su canción favorita',
-    'chip.3': '📱 Compartida por WhatsApp',
     'marquee.label': 'Categorías · una para cada latido',
     'plantillas.kicker': '✦ El universo UWU ✦',
     'plantillas.h2': 'Elige una categoría y <span>orbita el corazón</span>',

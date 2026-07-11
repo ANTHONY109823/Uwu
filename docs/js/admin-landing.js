@@ -31,8 +31,12 @@
           '<span>' + esc(field.label) + '</span>' +
           '<input type="text" data-key="' + field.key + '" value="' + esc(val) + '" /></label>';
       }).join('');
+      var hint = group.hint
+        ? '<p class="site-group-hint">' + esc(group.hint) + '</p>'
+        : '';
       return '<details class="site-group" open>' +
         '<summary>' + esc(group.title) + '</summary>' +
+        hint +
         '<div class="site-fields">' + fields + '</div></details>';
     }).join('');
   }
@@ -89,7 +93,7 @@
     init: function () {
       renderForm();
       bind();
-      setStatus('Edita los textos y guarda. Se publican con Railway/GitHub al sincronizar.', '');
+      setStatus('Un solo contenido responsive. Guarda y sincroniza para publicar.', '');
     },
     renderForm: renderForm
   };

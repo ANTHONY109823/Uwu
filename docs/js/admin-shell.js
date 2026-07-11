@@ -6,9 +6,43 @@
 
   function el(id) { return document.getElementById(id); }
 
+  function dashEl() { return el('dashView'); }
+
+  function closeSidebar() {
+    var dash = dashEl();
+    if (dash) dash.classList.remove('sidebar-open');
+    var overlay = el('sidebarOverlay');
+    if (overlay) overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function openSidebar() {
+    var dash = dashEl();
+    if (dash) dash.classList.add('sidebar-open');
+    var overlay = el('sidebarOverlay');
+    if (overlay) overlay.setAttribute('aria-hidden', 'false');
+  }
+
+  function toggleSidebar() {
+    var dash = dashEl();
+    if (!dash) return;
+    if (dash.classList.contains('sidebar-open')) closeSidebar();
+    else openSidebar();
+  }
+
+  function bindMobileNav() {
+    if (bindMobileNav._done) return;
+    bindMobileNav._done = true;
+    var btn = el('btnMenu');
+    var overlay = el('sidebarOverlay');
+    if (btn) btn.onclick = toggleSidebar;
+    if (overlay) overlay.onclick = closeSidebar;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768) closeSidebar();
+    });
+  }
+
   function showView(id) {
-    // Al cambiar de sección, cerrar el editor de plantilla abierto para
-    // que "Plantillas" siempre muestre el listado y no quede atascado.
+    closeSidebar();
     if (window.UWUAdminTemplates && UWUAdminTemplates.closeWorkspace) {
       UWUAdminTemplates.closeWorkspace();
     }
@@ -26,6 +60,7 @@
   }
 
   function bind() {
+    bindMobileNav();
     if (bind._done) {
       var saved = sessionStorage.getItem('uwuAdminView');
       if (saved && el('view-' + saved)) showView(saved);
@@ -42,6 +77,7 @@
   window.UWUAdminShell = {
     init: bind,
     showView: showView,
-    getView: function () { return currentView; }
+    getView: function () { return currentView; },
+    closeSidebar: closeSidebar
   };
 })();
