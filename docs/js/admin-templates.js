@@ -714,15 +714,9 @@
 
   window.UWUAdminTemplates = {
     init: function () {
-      // Enlazar botones de inmediato (los nodos ya existen en el DOM),
-      // así "Volver", "Guardar" y "Nueva plantilla" funcionan aunque la
-      // carga del catálogo remoto tarde o falle.
       bind();
       initSyncPanel();
       renderBrowser();
-      var refresh = function () { renderBrowser(); };
-      if (UWU.bootstrap) UWU.bootstrap(refresh);
-      else { UWU.initCatalog(); refresh(); }
     },
     renderBrowser: renderBrowser,
     closeWorkspace: closeWorkspace,

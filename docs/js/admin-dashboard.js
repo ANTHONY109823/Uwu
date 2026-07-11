@@ -31,7 +31,8 @@
     var hidden = items.length - active.length;
     var tiers = countByTier(items);
     var orders = JSON.parse(localStorage.getItem('uwuOrders') || '[]');
-    var ops = JSON.parse(localStorage.getItem('uwuOps') || '{}');
+    var opsRaw = JSON.parse(localStorage.getItem('uwuOps') || '{}');
+    var ops = (window.UWU && UWU.normalizeSectionOps) ? UWU.normalizeSectionOps(opsRaw) : opsRaw;
     var site = window.UWUSite ? UWUSite.getSite() : {};
     var siteChanges = 0;
     if (window.UWUSite) {

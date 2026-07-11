@@ -489,7 +489,7 @@
           <div class="card-header">
             <div>
               <h3>Visibilidad de secciones</h3>
-              <p>Oculta o muestra bloques de la página principal</p>
+              <p>Solo las secciones que existen hoy en la landing: hero, categorías y universo de plantillas</p>
             </div>
           </div>
           <div class="card-body">
@@ -605,18 +605,18 @@
                 <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text-2)">⚙️ Opciones avanzadas</summary>
                 <div style="display:grid;gap:10px;margin-top:12px">
                   <p style="font-size:11px;color:var(--text-3);line-height:1.5;margin:0">
-                    Estos valores se generan solos. Solo cámbialos si necesitas un texto o color distinto en la tarjeta del catálogo.
+                    Metadatos de la plantilla. El sitio muestra nombre, emoji y botón «Lo quiero» en la órbita.
                   </p>
                   <div class="field">
                     <label>Código interno <span style="font-weight:500;color:var(--text-3)">(solo referencia)</span></label>
                     <input id="fIdVisible" type="text" readonly style="opacity:.7;background:#F8FAFC" />
                   </div>
                   <div class="field">
-                    <label>Título en tarjeta del catálogo</label>
+                    <label>Título en demo / checkout</label>
                     <input id="fTitleVisible" type="text" placeholder="Por defecto = Nombre" />
                   </div>
                   <div class="field">
-                    <label>Texto del botón en showcase</label>
+                    <label>Etiqueta en vista demo</label>
                     <input id="fPillVisible" type="text" placeholder="Por defecto = Abrir 💝" />
                   </div>
                   <div class="field">
@@ -722,13 +722,20 @@
 <script>
   /* ── Section toggles ── */
   var SECTIONS = [
-    { id: 'hero',     label: 'Hero principal' },
-    { id: 'marquee', label: 'Cinta de categorías' },
-    { id: 'showcase',label: 'Showcase de plantillas' }
+    { id: 'hero',      label: 'Hero principal' },
+    { id: 'marquee',   label: 'Cinta de categorías' },
+    { id: 'plantillas', label: 'Universo de plantillas' }
   ];
 
-  function getOps() { return JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); }
-  function saveOps(ops) { localStorage.setItem('uwuOps', JSON.stringify(ops)); }
+  function getOps() {
+    var ops = JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}');
+    if (window.UWU && UWU.normalizeSectionOps) ops = UWU.normalizeSectionOps(ops);
+    return ops;
+  }
+  function saveOps(ops) {
+    if (window.UWU && UWU.normalizeSectionOps) ops = UWU.normalizeSectionOps(ops);
+    localStorage.setItem('uwuOps', JSON.stringify(ops));
+  }
 
   function renderSections() {
     var ops = getOps();
@@ -829,22 +836,34 @@
   function showDash() {
     document.getElementById('loginView').style.display = 'none';
     document.getElementById('dashView').classList.add('on');
-    renderSections();
-    if (window.UWUAdminShell) {
-      // Patch showView to also update topbar
-      if (!_origShowView) {
-        _origShowView = UWUAdminShell.showView;
-        UWUAdminShell.showView = function (id) {
-          _origShowView(id);
-          updateTopbar(id);
-        };
+
+    function startAdmin() {
+      renderSections();
+      if (window.UWUAdminShell) {
+        if (!_origShowView) {
+          _origShowView = UWUAdminShell.showView;
+          UWUAdminShell.showView = function (id) {
+            _origShowView(id);
+            updateTopbar(id);
+          };
+        }
+        UWUAdminShell.init();
       }
-      UWUAdminShell.init();
+      if (window.UWUAdminDashboard) UWUAdminDashboard.init();
+      if (window.UWUAdminLanding)   UWUAdminLanding.init();
+      if (window.UWUAdminTemplates) UWUAdminTemplates.init();
     }
-    if (window.UWUAdminDashboard) UWUAdminDashboard.init();
-    if (window.UWUAdminLanding)   UWUAdminLanding.init();
-    if (window.UWUAdminTemplates) UWUAdminTemplates.init();
+
+    if (window.UWU && UWU.bootstrap) UWU.bootstrap(startAdmin);
+    else startAdmin();
   }
+
+  window.addEventListener('uwu:catalog-updated', function () {
+    renderSections();
+    if (window.UWUAdminLanding) UWUAdminLanding.renderForm();
+    if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
+    if (window.UWUAdminTemplates && UWUAdminTemplates.renderBrowser) UWUAdminTemplates.renderBrowser();
+  });
 
   if (sessionStorage.getItem('uwuAdm') === '1') {
     showDash();

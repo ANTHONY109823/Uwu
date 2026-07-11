@@ -66,7 +66,8 @@
       title: 'Sección plantillas',
       fields: [
         { key: 'plantillas.kicker', label: 'Kicker', selector: '#plantillas .kicker' },
-        { key: 'plantillas.h2', label: 'Título', selector: '#plantillas h2', html: true, rows: 2 }
+        { key: 'plantillas.h2', label: 'Título', selector: '#plantillas h2', html: true, rows: 2 },
+        { key: 'plantillas.lead', label: 'Descripción', selector: '#plantillas .uni-lead' }
       ]
     }
   ];
@@ -93,7 +94,8 @@
     'chip.3': '📱 Compartida por WhatsApp',
     'marquee.label': 'Categorías · una para cada latido',
     'plantillas.kicker': '✦ El universo UWU ✦',
-    'plantillas.h2': 'Elige una categoría y <span>orbita el corazón</span>'
+    'plantillas.h2': 'Elige una categoría y <span>orbita el corazón</span>',
+    'plantillas.lead': 'Cada plantilla es un mundo. Gíralos, entra al corazón y encuentra el regalo perfecto.'
   };
 
   function allFields() {
@@ -104,9 +106,17 @@
     return list;
   }
 
+  function pruneSite(site) {
+    var clean = {};
+    Object.keys(DEFAULTS).forEach(function (k) {
+      if (site[k] != null) clean[k] = site[k];
+    });
+    return clean;
+  }
+
   function getSite() {
     try {
-      return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'));
+      return Object.assign({}, DEFAULTS, pruneSite(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')));
     } catch (e) {
       return Object.assign({}, DEFAULTS);
     }
@@ -115,7 +125,7 @@
   function saveSite(updates) {
     var site = getSite();
     Object.assign(site, updates);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(site));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(pruneSite(site)));
     return site;
   }
 

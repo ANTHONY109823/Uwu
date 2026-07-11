@@ -213,10 +213,14 @@
       _storeCache = store;
     } catch (e) { /* quota */ }
     if (remote.site && Object.keys(remote.site).length) {
-      var site = Object.assign({}, (global.UWUSite && global.UWUSite.DEFAULTS) || {}, remote.site);
-      localStorage.setItem('uwuSite', JSON.stringify(site));
+      if (global.UWUSite) global.UWUSite.saveSite(remote.site);
+      else {
+        try { localStorage.setItem('uwuSite', JSON.stringify(remote.site)); } catch (e) { /* quota */ }
+      }
     }
-    if (remote.ops) localStorage.setItem('uwuOps', JSON.stringify(remote.ops));
+    if (remote.ops) {
+      localStorage.setItem('uwuOps', JSON.stringify(normalizeSectionOps(remote.ops)));
+    }
     return true;
   }
 
@@ -246,11 +250,23 @@
     });
   }
 
-  var SECTION_OPS_MAP = { hero: '#inicio', marquee: '#categorias', showcase: '#plantillas' };
+  var SECTION_OPS_MAP = { hero: '#inicio', marquee: '#categorias', plantillas: '#plantillas' };
+
+  function normalizeSectionOps(ops) {
+    ops = ops || { sections: {} };
+    if (!ops.sections) ops.sections = {};
+    if (ops.sections.showcase === false && ops.sections.plantillas == null) {
+      ops.sections.plantillas = false;
+    }
+    delete ops.sections.showcase;
+    delete ops.sections.footer;
+    delete ops.sections.precios;
+    return ops;
+  }
 
   function applySectionOps() {
-    var ops = { sections: {} };
-    try { ops = JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); } catch (e) { /* noop */ }
+    var ops = normalizeSectionOps(JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'));
+    try { localStorage.setItem('uwuOps', JSON.stringify(ops)); } catch (e) { /* noop */ }
     Object.keys(SECTION_OPS_MAP).forEach(function (id) {
       var node = document.querySelector(SECTION_OPS_MAP[id]);
       if (!node) return;
@@ -260,9 +276,16 @@
 
   function getSiteOpsPayload() {
     var site = {};
-    var ops = { sections: {} };
-    try { site = JSON.parse(localStorage.getItem('uwuSite') || '{}'); } catch (e) { /* noop */ }
-    try { ops = JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); } catch (e) { /* noop */ }
+    var ops = normalizeSectionOps(JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'));
+    try { localStorage.setItem('uwuOps', JSON.stringify(ops)); } catch (e) { /* noop */ }
+    if (global.UWUSite) {
+      var full = global.UWUSite.getSite();
+      Object.keys(global.UWUSite.DEFAULTS).forEach(function (k) {
+        if (full[k] !== global.UWUSite.DEFAULTS[k]) site[k] = full[k];
+      });
+    } else {
+      try { site = JSON.parse(localStorage.getItem('uwuSite') || '{}'); } catch (e) { site = {}; }
+    }
     return { site: site, ops: ops };
   }
 
@@ -942,10 +965,12 @@
 
   function buildCatalogUI(opts) {
     opts = opts || {};
+    var grid = document.getElementById('showGrid');
+    var car = document.getElementById('car');
+    if (!grid && !car) return;
     var cur = getCur();
     var onDemo = opts.onDemo || function () {};
     var slugs = getSlugsForCategory(activeCategory);
-    var grid = document.getElementById('showGrid');
     var countEl = document.getElementById('catFilterCount');
     if (countEl) {
       countEl.textContent = slugs.length
@@ -1162,6 +1187,7 @@
     tierLabel: tierLabel,
     pricesForTier: pricesForTier,
     applyTierPrice: applyTierPrice,
+    normalizeSectionOps: normalizeSectionOps,
     applySectionOps: applySectionOps,
     getSiteOpsPayload: getSiteOpsPayload,
     refreshLandingUI: refreshLandingUI,
