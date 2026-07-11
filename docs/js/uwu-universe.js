@@ -82,9 +82,12 @@
         var px = hx * s, py = hy * s;
         var puff = Math.sqrt(Math.max(0, 1 - s)) * 6.5; // volumen (eje z)
         var pz = (Math.random() * 2 - 1) * puff;
-        var rr = Math.sqrt(px * px + py * py + pz * pz) / 20; // radio normalizado
+        var dist = Math.sqrt(px * px + py * py + pz * pz) || 1;
+        var rr = dist / 20;                             // radio normalizado
         pts.push({
           x: px, y: py, z: pz, r: rr,
+          nx: (px / 16 + 1) / 2,                        // 0..1 de un lado a otro (para la onda)
+          sdx: px / dist, sdy: py / dist, sdz: pz / dist, // dirección de dispersión (hacia afuera)
           tw: Math.random() * 6.283,                    // fase de parpadeo
           ts: 2.2 + Math.random() * 3.2,                // velocidad de parpadeo
           ch: Math.random() * 6.283                     // desfase de color por punto
@@ -109,8 +112,19 @@
       ctx.globalAlpha = 1;
     }
 
+    // latido tipo corazón (dos golpes: lub-dub), 0..1
+    function heartbeat(tt) {
+      var x = tt % 1.25;
+      var b1 = Math.exp(-Math.pow((x - 0.12) / 0.085, 2));
+      var b2 = Math.exp(-Math.pow((x - 0.40) / 0.10, 2)) * 0.72;
+      var v = b1 + b2;
+      return v > 1 ? 1 : v;
+    }
+
     function drawHeart(a, t) {
-      var scaleBase = (Math.min(W, H) / 40) * (1 + zoom * 3.4);
+      var beat = heartbeat(t);                        // latido: crece y se achica
+      var scaleBase = (Math.min(W, H) / 34) * (1 + beat * 0.16) * (1 + zoom * 3.4);
+      var sweep = t * 0.9;                            // onda que viaja de un lado a otro
       // durante el "recorrido" dentro del corazón: leve deriva/vaivén
       var driftX = zoom * Math.sin(t * 0.6) * W * 0.06;
       var driftY = zoom * Math.cos(t * 0.45) * H * 0.05;
@@ -120,11 +134,18 @@
       ctx.globalCompositeOperation = 'lighter';
       for (var i = 0; i < pts.length; i++) {
         var p = pts[i];
-        var xr = p.x * ca + p.z * sa;
-        var zr = -p.x * sa + p.z * ca;
+        // disolución que viaja de un lado a otro (aparece/desaparece)
+        var dissolve = 0.5 + 0.5 * Math.sin(p.nx * 6.283 - sweep); // 0..1
+        var scatter = (1 - dissolve) * 5.5;            // los puntos se separan al disolverse
+        var ox = p.x + p.sdx * scatter;
+        var oy = p.y + p.sdy * scatter;
+        var oz = p.z + p.sdz * scatter;
+        var xr = ox * ca + oz * sa;
+        var zr = -ox * sa + oz * ca;
         var per = f / (f - zr * scaleBase);
+        if (per < 0.25) per = 0.25; else if (per > 2.8) per = 2.8; // estable (evita puntos disparados)
         var sx = cxh + xr * scaleBase * per;
-        var sy = cyh - p.y * scaleBase * per;
+        var sy = cyh - oy * scaleBase * per;
         var depth = (zr + 16) / 32;                   // 0 atrás .. 1 frente
         if (depth < 0) depth = 0; else if (depth > 1) depth = 1;
         var size = (0.7 + depth * 1.7) * (1 + zoom * 1.4);
@@ -133,9 +154,11 @@
         var phase = t * 1.6 - p.r * 5.0 + p.ch;
         var hue = 330 + Math.sin(phase) * 36;         // rosa ↔ magenta ↔ púrpura, siempre girando
         var lig = 54 + Math.sin(phase) * 16 + depth * 8;
-        // parpadeo continuo de cada punto (siempre titilando), entre 0.35 y 1
+        // parpadeo continuo + desvanecido de la onda de disolución
         var twk = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * p.ts + p.tw));
-        ctx.globalAlpha = (0.30 + depth * 0.6) * twk;
+        var al = (0.30 + depth * 0.6) * twk * (0.18 + 0.82 * dissolve);
+        if (al < 0) al = 0; else if (al > 1) al = 1;
+        ctx.globalAlpha = al;
         ctx.fillStyle = 'hsl(' + hue + ',90%,' + lig + '%)';
         ctx.beginPath(); ctx.arc(sx, sy, size, 0, 6.283); ctx.fill();
       }
@@ -239,7 +262,7 @@
     /* ---------- tamaño / loop ---------- */
     function resize() {
       W = stage.clientWidth; H = stage.clientHeight;
-      cx = W / 2; cy = H * 0.54;
+      cx = W / 2; cy = H * 0.50;
       canvas.width = W * dpr; canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       initStars(); buildHeart();

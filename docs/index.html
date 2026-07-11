@@ -173,9 +173,11 @@
     #catFilterBar[hidden]{display:none!important}
 
     /* ================= UNIVERSO DE PLANTILLAS ================= */
-    .universe-sec{position:relative;padding:44px 0 60px;margin-top:0;
+    .universe-sec{position:relative;padding:18px 0 50px;margin-top:0;
       background:radial-gradient(130% 90% at 50% 30%,#2a0f2e 0%,#160a1e 46%,#0a0510 100%);
       overflow:hidden}
+    /* al ocultar la nav, la cinta de categorías sube al tope (sin hueco blanco) */
+    body.uni-active .marquee{top:0}
     .universe-sec::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
       background:radial-gradient(60% 40% at 50% 8%,rgba(232,68,122,.18),transparent 70%)}
     .universe-sec .uni-head{position:relative;z-index:3;text-align:center;max-width:680px;margin:0 auto;padding:0 20px 6px}
@@ -184,10 +186,10 @@
     .universe-sec h2 span{background:linear-gradient(90deg,#F4A7CB,#E8447A);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:'Dancing Script',cursive;font-weight:700}
     .uni-lead{color:#d9c3e0;opacity:.82;font-size:clamp(.95rem,2.2vw,1.06rem);line-height:1.6;margin-top:12px}
 
-    .uni-stage{position:relative;z-index:2;max-width:1120px;margin:14px auto 0;height:min(78vh,620px);min-height:460px;cursor:default}
+    .uni-stage{position:relative;z-index:2;max-width:1120px;margin:8px auto 0;height:min(82vh,680px);min-height:480px;cursor:default}
     #uniCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:zoom-in}
     .uni-stage.is-zoomed #uniCanvas{cursor:zoom-out}
-    .uni-glow{position:absolute;top:54%;left:50%;width:min(58vw,440px);height:min(58vw,440px);transform:translate(-50%,-50%);
+    .uni-glow{position:absolute;top:50%;left:50%;width:min(66vw,540px);height:min(66vw,540px);transform:translate(-50%,-50%);
       z-index:1;border-radius:50%;pointer-events:none;
       background:radial-gradient(circle,rgba(232,68,122,.46),rgba(232,68,122,0) 68%);filter:blur(20px);
       animation:uniBreathe 4s ease-in-out infinite}
@@ -198,7 +200,7 @@
 
     /* --- órbita de plantillas (glass moderno) --- */
     #uniOrbit{position:absolute;inset:0;z-index:5}
-    .uni-card{position:absolute;top:54%;left:50%;width:158px;border-radius:20px;text-align:center;cursor:pointer;
+    .uni-card{position:absolute;top:50%;left:50%;width:158px;border-radius:20px;text-align:center;cursor:pointer;
       will-change:transform;padding:0 0 12px;overflow:hidden;
       background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
       border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);
