@@ -311,6 +311,14 @@
 
     // pausa el dibujo cuando la sección no está visible (sin detener el loop)
     // y oculta la barra superior (nav) mientras el universo está en pantalla
+    function clampPlantillasScroll() {
+      if (!document.body.classList.contains('uni-active')) return;
+      var hero = document.getElementById('inicio');
+      if (!hero) return;
+      var maxY = hero.offsetHeight;
+      if (global.scrollY > maxY + 1) global.scrollTo(0, maxY);
+    }
+
     var observeEl = plantillasSec || stage;
     if ('IntersectionObserver' in global) {
       new IntersectionObserver(function (ents) {
@@ -318,9 +326,11 @@
           visible = en.isIntersecting;
           document.body.classList.toggle('uni-active', en.intersectionRatio >= 0.25);
           if (en.isIntersecting) resize();
+          if (document.body.classList.contains('uni-active')) clampPlantillasScroll();
         });
       }, { threshold: [0, 0.25, 0.5] }).observe(observeEl);
     }
+    global.addEventListener('scroll', clampPlantillasScroll, { passive: true });
 
     /* ---------- sincronía con el panel admin ---------- */
     global.addEventListener('uwu:catalog-updated', function () {

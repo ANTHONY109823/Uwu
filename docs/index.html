@@ -186,8 +186,18 @@
     .universe-sec h2 span{background:linear-gradient(90deg,#F4A7CB,#E8447A);-webkit-background-clip:text;background-clip:text;color:transparent;font-family:'Dancing Script',cursive;font-weight:700}
     .uni-lead{color:#d9c3e0;opacity:.82;font-size:clamp(.95rem,2.2vw,1.06rem);line-height:1.6;margin-top:12px}
 
-    body.uni-active .universe-sec{min-height:100svh;padding-bottom:0}
-    body.uni-active{background:#0a0510}
+    body.uni-active .universe-sec{
+      min-height:calc(100svh - var(--marquee-h));
+      height:calc(100svh - var(--marquee-h));
+      max-height:calc(100svh - var(--marquee-h));
+      padding:8px 0 0;
+      display:flex;
+      flex-direction:column;
+      box-sizing:border-box;
+    }
+    body.uni-active .uni-head{flex-shrink:0;padding:0 16px 2px}
+    body.uni-active .uni-stage{flex:1;min-height:0;height:auto;max-height:none;margin:0 auto;width:100%}
+    body.uni-active{background:#0a0510;overflow-x:hidden}
     .uni-stage{position:relative;z-index:4;max-width:1120px;margin:8px auto 0;height:min(82vh,680px);min-height:480px;cursor:default}
     .uni-orbit-layer{position:absolute;inset:0;pointer-events:none}
     .uni-orbit-layer .uni-card{pointer-events:auto}
