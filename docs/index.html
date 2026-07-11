@@ -64,11 +64,6 @@
     nav .links{display:none;gap:22px;margin-left:auto}
     nav .links a{font-size:13.5px;font-weight:600;color:#6b5560;text-decoration:none;transition:color .2s}
     nav .links a:hover{color:var(--rose-500)}
-    nav .links a.nav-adm{font-size:12px;color:#9a8490;opacity:.9}
-    nav .links a.nav-adm:hover{color:var(--rose-500);opacity:1}
-    .adm-float{display:none;position:fixed;bottom:14px;right:14px;z-index:50;font-size:12px;font-weight:600;color:#9a8490;text-decoration:none;background:rgba(255,255,255,.78);padding:8px 14px;border-radius:999px;backdrop-filter:blur(10px);border:1px solid rgba(238,126,177,.22);box-shadow:0 4px 16px rgba(0,0,0,.12)}
-    .adm-float:hover{color:var(--rose-500)}
-    body.uni-active .adm-float{display:block}
     nav .cta{margin-left:auto;padding:9px 18px;border-radius:999px;background:var(--grad-hero);color:#fff;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(232,68,122,.35);transition:transform .25s var(--ease),box-shadow .25s}
     nav .cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(232,68,122,.5)}
     @media(min-width:820px){nav .links{display:flex;margin-left:auto}}
@@ -422,7 +417,6 @@
 </head>
 <body>
   <div id="hearts"></div>
-  <a href="admin.html" class="adm-float">Admin</a>
 
   <!-- ============ NAV ============ -->
   <nav>
@@ -431,7 +425,6 @@
       <div class="links">
         <a href="#inicio">Inicio</a>
         <a href="#plantillas">Plantillas</a>
-        <a href="admin.html" class="nav-adm">Admin</a>
       </div>
     </div>
   </nav>
