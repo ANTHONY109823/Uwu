@@ -72,7 +72,7 @@
     /* ---------- corazón 3D de partículas ---------- */
     var pts = [], NP = 0;
     function buildHeart() {
-      NP = W < 640 ? 1600 : 2800;
+      NP = W < 640 ? 2200 : 4200;
       pts = [];
       for (var i = 0; i < NP; i++) {
         var t = Math.random() * Math.PI * 2;
@@ -83,7 +83,12 @@
         var puff = Math.sqrt(Math.max(0, 1 - s)) * 6.5; // volumen (eje z)
         var pz = (Math.random() * 2 - 1) * puff;
         var rr = Math.sqrt(px * px + py * py + pz * pz) / 20; // radio normalizado
-        pts.push({ x: px, y: py, z: pz, r: rr });
+        pts.push({
+          x: px, y: py, z: pz, r: rr,
+          tw: Math.random() * 6.283,                    // fase de parpadeo
+          ts: 2.2 + Math.random() * 3.2,                // velocidad de parpadeo
+          ch: Math.random() * 6.283                     // desfase de color por punto
+        });
       }
     }
 
@@ -105,7 +110,7 @@
     }
 
     function drawHeart(a, t) {
-      var scaleBase = (Math.min(W, H) / 50) * (1 + zoom * 3.4);
+      var scaleBase = (Math.min(W, H) / 40) * (1 + zoom * 3.4);
       // durante el "recorrido" dentro del corazón: leve deriva/vaivén
       var driftX = zoom * Math.sin(t * 0.6) * W * 0.06;
       var driftY = zoom * Math.cos(t * 0.45) * H * 0.05;
@@ -122,14 +127,16 @@
         var sy = cyh - p.y * scaleBase * per;
         var depth = (zr + 16) / 32;                   // 0 atrás .. 1 frente
         if (depth < 0) depth = 0; else if (depth > 1) depth = 1;
-        var size = (0.6 + depth * 1.6) * (1 + zoom * 1.4);
+        var size = (0.7 + depth * 1.7) * (1 + zoom * 1.4);
         if (size < 0.1) size = 0.1;                   // radio SIEMPRE positivo (evita IndexSizeError)
-        // color fluyendo desde adentro hacia afuera
-        var phase = t * 1.4 - p.r * 5.0;
-        var hue = 335 + Math.sin(phase) * 22;         // rosa ↔ magenta ↔ rosa
-        var lig = 52 + Math.sin(phase) * 16 + depth * 8;
-        ctx.globalAlpha = 0.35 + depth * 0.65;
-        ctx.fillStyle = 'hsl(' + hue + ',88%,' + lig + '%)';
+        // color cambiando siempre (ola desde adentro + desfase por punto)
+        var phase = t * 1.6 - p.r * 5.0 + p.ch;
+        var hue = 330 + Math.sin(phase) * 36;         // rosa ↔ magenta ↔ púrpura, siempre girando
+        var lig = 54 + Math.sin(phase) * 16 + depth * 8;
+        // parpadeo continuo de cada punto (siempre titilando), entre 0.35 y 1
+        var twk = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * p.ts + p.tw));
+        ctx.globalAlpha = (0.30 + depth * 0.6) * twk;
+        ctx.fillStyle = 'hsl(' + hue + ',90%,' + lig + '%)';
         ctx.beginPath(); ctx.arc(sx, sy, size, 0, 6.283); ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
@@ -253,10 +260,14 @@
     }
 
     // pausa el dibujo cuando la sección no está visible (sin detener el loop)
+    // y oculta la barra superior (nav) mientras el universo está en pantalla
     if ('IntersectionObserver' in global) {
       new IntersectionObserver(function (ents) {
-        ents.forEach(function (en) { visible = en.isIntersecting; });
-      }, { threshold: 0.02 }).observe(stage);
+        ents.forEach(function (en) {
+          visible = en.isIntersecting;
+          document.body.classList.toggle('uni-active', en.intersectionRatio >= 0.3);
+        });
+      }, { threshold: [0, 0.3, 0.6] }).observe(stage);
     }
 
     resize();

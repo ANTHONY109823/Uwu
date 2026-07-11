@@ -187,44 +187,14 @@
     .uni-stage{position:relative;z-index:2;max-width:1120px;margin:14px auto 0;height:min(78vh,620px);min-height:460px;cursor:default}
     #uniCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:zoom-in}
     .uni-stage.is-zoomed #uniCanvas{cursor:zoom-out}
-    .uni-glow{position:absolute;top:54%;left:50%;width:min(46vw,300px);height:min(46vw,300px);transform:translate(-50%,-50%);
+    .uni-glow{position:absolute;top:54%;left:50%;width:min(58vw,440px);height:min(58vw,440px);transform:translate(-50%,-50%);
       z-index:1;border-radius:50%;pointer-events:none;
-      background:radial-gradient(circle,rgba(232,68,122,.42),rgba(232,68,122,0) 68%);filter:blur(16px);
+      background:radial-gradient(circle,rgba(232,68,122,.46),rgba(232,68,122,0) 68%);filter:blur(20px);
       animation:uniBreathe 4s ease-in-out infinite}
-    @keyframes uniBreathe{50%{transform:translate(-50%,-50%) scale(1.14);opacity:.8}}
+    @keyframes uniBreathe{50%{transform:translate(-50%,-50%) scale(1.14);opacity:.82}}
 
-    /* --- osito 3D (cuerpo completo) --- */
-    .uni-bear{position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);z-index:6;
-      perspective:640px;pointer-events:none;transition:opacity .45s ease;animation:uniBearFloat 5s ease-in-out infinite}
-    @keyframes uniBearFloat{50%{margin-top:-12px}}
-    .ub-rot{position:relative;width:104px;height:150px;transform-style:preserve-3d;animation:uniBearSpin 7s ease-in-out infinite}
-    @keyframes uniBearSpin{0%,100%{transform:rotateY(-24deg)}50%{transform:rotateY(24deg)}}
-    .universe-sec .ub-head{position:absolute;left:20px;top:6px;width:64px;height:58px;border-radius:50%;z-index:4;
-      background:radial-gradient(circle at 36% 30%,#e6ad7f,#c98a5a 55%,#a9683c);
-      box-shadow:inset -5px -7px 12px rgba(0,0,0,.28),inset 4px 5px 9px rgba(255,255,255,.25)}
-    .ub-ear{position:absolute;top:0;width:30px;height:30px;border-radius:50%;z-index:3;
-      background:radial-gradient(circle at 40% 35%,#c98a5a,#a9683c)}
-    .ub-ear::after{content:"";position:absolute;inset:8px;border-radius:50%;background:#f5b9cf}
-    .ub-ear.l{left:16px}.ub-ear.r{right:16px}
-    .ub-muzzle{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:34px;height:26px;border-radius:50%;
-      background:radial-gradient(circle at 45% 35%,#f3d7bd,#e8c2a2)}
-    .ub-nose{position:absolute;left:50%;top:5px;transform:translateX(-50%);width:11px;height:8px;border-radius:50%;background:#5a3826}
-    .ub-mouth{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:12px;height:6px;border-bottom:2px solid #6b4530;border-radius:0 0 8px 8px}
-    .ub-eye{position:absolute;top:22px;width:8px;height:10px;border-radius:50%;background:#3a2418}
-    .ub-eye::after{content:"";position:absolute;left:2px;top:2px;width:2.5px;height:2.5px;border-radius:50%;background:#fff}
-    .ub-eye.l{left:24px}.ub-eye.r{right:24px}
-    .ub-cheek{position:absolute;top:34px;width:12px;height:7px;border-radius:50%;background:rgba(240,110,160,.5);filter:blur(1px)}
-    .ub-cheek.l{left:15px}.ub-cheek.r{right:15px}
-    .ub-body{position:absolute;left:50%;top:52px;transform:translateX(-50%);width:82px;height:78px;border-radius:46% 46% 48% 48%;z-index:2;
-      background:radial-gradient(circle at 40% 30%,#d59d6f,#c98a5a 58%,#a9683c);
-      box-shadow:inset -6px -8px 16px rgba(0,0,0,.28),inset 5px 6px 10px rgba(255,255,255,.2)}
-    .ub-tummy{position:absolute;left:50%;top:24px;transform:translateX(-50%);width:46px;height:44px;border-radius:50%;background:#f3d7bd;opacity:.9}
-    .ub-arm{position:absolute;top:58px;width:26px;height:44px;border-radius:14px;z-index:3;
-      background:radial-gradient(circle at 40% 30%,#cf946a,#a9683c)}
-    .ub-arm.l{left:2px;transform:rotate(16deg)}.ub-arm.r{right:2px;transform:rotate(-16deg)}
-    .ub-leg{position:absolute;top:118px;width:32px;height:34px;border-radius:16px 16px 18px 18px;z-index:1;
-      background:radial-gradient(circle at 40% 30%,#cf946a,#a9683c)}
-    .ub-leg.l{left:16px}.ub-leg.r{right:16px}
+    /* --- ocultar la barra superior (nav) cuando el universo está en pantalla --- */
+    body.uni-active nav{opacity:0;pointer-events:none;transform:translateY(-120%);transition:opacity .4s var(--ease),transform .4s var(--ease)}
 
     /* --- órbita de plantillas (glass moderno) --- */
     #uniOrbit{position:absolute;inset:0;z-index:5}
@@ -537,19 +507,6 @@
     <div class="uni-stage" id="uniStage">
       <canvas id="uniCanvas"></canvas>
       <div class="uni-glow"></div>
-
-      <!-- osito 3D de la marca (cuerpo completo, CSS) -->
-      <div class="uni-bear"><div class="ub-rot">
-        <div class="ub-ear l"></div><div class="ub-ear r"></div>
-        <div class="ub-head">
-          <div class="ub-cheek l"></div><div class="ub-cheek r"></div>
-          <div class="ub-eye l"></div><div class="ub-eye r"></div>
-          <div class="ub-muzzle"><div class="ub-nose"></div><div class="ub-mouth"></div></div>
-        </div>
-        <div class="ub-arm l"></div><div class="ub-arm r"></div>
-        <div class="ub-body"><div class="ub-tummy"></div></div>
-        <div class="ub-leg l"></div><div class="ub-leg r"></div>
-      </div></div>
 
       <div id="uniOrbit"></div>
 
