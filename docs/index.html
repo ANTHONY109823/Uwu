@@ -189,11 +189,19 @@
     body.uni-active .universe-sec{min-height:100svh;padding-bottom:0}
     body.uni-active{background:#0a0510}
     .uni-stage{position:relative;z-index:4;max-width:1120px;margin:8px auto 0;height:min(82vh,680px);min-height:480px;cursor:default}
+    .uni-orbit-layer{position:absolute;inset:0;pointer-events:none}
+    .uni-orbit-layer .uni-card{pointer-events:auto}
+    #uniOrbitBack{z-index:1}
     #uniCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:default;pointer-events:none}
-    body.uni-active #uniCanvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:1}
+    #uniOrbitFront{z-index:3}
+    body.uni-active #uniOrbitBack,
+    body.uni-active #uniOrbitFront{position:fixed;inset:0;width:100vw;height:100vh}
+    body.uni-active #uniOrbitBack{z-index:1}
+    body.uni-active #uniCanvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:2}
+    body.uni-active #uniOrbitFront{z-index:3}
     .uni-stage.is-zoomed #uniCanvas{cursor:zoom-out}
     .uni-glow{position:absolute;top:50%;left:50%;width:min(66vw,540px);height:min(66vw,540px);transform:translate(-50%,-50%);
-      z-index:1;border-radius:50%;pointer-events:none;
+      z-index:2;border-radius:50%;pointer-events:none;
       background:radial-gradient(circle,rgba(232,68,122,.46),rgba(232,68,122,0) 68%);filter:blur(20px);
       animation:uniBreathe 4s ease-in-out infinite}
     @keyframes uniBreathe{50%{transform:translate(-50%,-50%) scale(1.14);opacity:.82}}
@@ -201,8 +209,7 @@
     /* --- ocultar la barra superior (nav) cuando el universo está en pantalla --- */
     body.uni-active nav{opacity:0;pointer-events:none;transform:translateY(-120%);transition:opacity .4s var(--ease),transform .4s var(--ease)}
 
-    /* --- órbita de plantillas (glass moderno) --- */
-    #uniOrbit{position:absolute;inset:0;z-index:5}
+    /* --- órbita de plantillas (glass moderno, 3D alrededor del corazón) --- */
     .uni-card{position:absolute;top:50%;left:50%;width:158px;border-radius:20px;text-align:center;cursor:pointer;
       will-change:transform;padding:0 0 12px;overflow:hidden;
       background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
@@ -498,10 +505,10 @@
     </div>
 
     <div class="uni-stage" id="uniStage">
+      <div id="uniOrbitBack" class="uni-orbit-layer"></div>
       <canvas id="uniCanvas"></canvas>
       <div class="uni-glow"></div>
-
-      <div id="uniOrbit"></div>
+      <div id="uniOrbitFront" class="uni-orbit-layer"></div>
     </div>
 
     <!-- fallback accesible / SEO: enlaces a las plantillas -->

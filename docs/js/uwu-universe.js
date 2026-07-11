@@ -36,11 +36,12 @@
     var U = global.UWU;
     var stage = document.getElementById('uniStage');
     var canvas = document.getElementById('uniCanvas');
-    var orbitEl = document.getElementById('uniOrbit');
+    var orbitBack = document.getElementById('uniOrbitBack');
+    var orbitFront = document.getElementById('uniOrbitFront');
     var enterBtn = document.getElementById('uniEnter');
     var bearEl = stage ? stage.querySelector('.uni-bear') : null;
     var glowEl = stage ? stage.querySelector('.uni-glow') : null;
-    if (!stage || !canvas || !orbitEl || !U) return;
+    if (!stage || !canvas || !orbitBack || !orbitFront || !U) return;
 
     var ctx = canvas.getContext('2d');
     var dpr = Math.min(global.devicePixelRatio || 1, 2);
@@ -172,60 +173,81 @@
     }
 
     /* ---------- órbita de plantillas ---------- */
+    function makeCard(slug, tpl) {
+      var card = document.createElement('div');
+      card.className = 'uni-card';
+      card.setAttribute('data-slug', slug);
+      card.innerHTML =
+        '<button type="button" class="uc-demo" aria-label="Ver demo">👁</button>' +
+        '<div class="uc-art" style="background:' + tpl.grad + '">' +
+        '<span class="uc-em">' + tpl.emoji + '</span></div>' +
+        '<div class="uc-nm">' + U.esc(tpl.name) + '</div>' +
+        '<div class="uc-choose">Elegir ✨</div>';
+      card.addEventListener('mouseenter', function () { card._hover = true; });
+      card.addEventListener('mouseleave', function () { card._hover = false; });
+      card.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (e.target.classList.contains('uc-demo')) {
+          var page = tpl.page || (slug + '.html');
+          global.open('d/' + page, '_blank', 'noopener');
+          return;
+        }
+        U.openCheckout(slug);
+      });
+      return card;
+    }
+
     function renderCards() {
       var limit = (global.innerWidth < 640) ? 6 : MAX_ORBIT;
       var slugs = slugsForCategory(activeCat).slice(0, limit);
-      orbitEl.innerHTML = '';
+      orbitBack.innerHTML = '';
+      orbitFront.innerHTML = '';
       cards = [];
       if (!slugs.length) return;
       slugs.forEach(function (slug) {
         var tpl = U.CATALOG[slug];
         if (!tpl) return;
-        var card = document.createElement('div');
-        card.className = 'uni-card';
-        card.setAttribute('data-slug', slug);
-        card.innerHTML =
-          '<button type="button" class="uc-demo" aria-label="Ver demo">👁</button>' +
-          '<div class="uc-art" style="background:' + tpl.grad + '">' +
-          '<span class="uc-em">' + tpl.emoji + '</span></div>' +
-          '<div class="uc-nm">' + U.esc(tpl.name) + '</div>' +
-          '<div class="uc-choose">Elegir ✨</div>';
-        card.addEventListener('mouseenter', function () { card._hover = true; });
-        card.addEventListener('mouseleave', function () { card._hover = false; });
-        card.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (e.target.classList.contains('uc-demo')) {
-            var page = tpl.page || (slug + '.html');
-            global.open('d/' + page, '_blank', 'noopener');
-            return;
-          }
-          U.openCheckout(slug);
-        });
-        orbitEl.appendChild(card);
+        var card = makeCard(slug, tpl);
+        orbitFront.appendChild(card);
         cards.push(card);
       });
+    }
+
+    function placeCardLayer(card, behind) {
+      var layer = behind ? orbitBack : orbitFront;
+      if (card.parentNode !== layer) layer.appendChild(card);
     }
 
     function animateOrbit() {
       var n = cards.length;
       if (!n) return;
-      var sw = stage.clientWidth || W, sh = stage.clientHeight || H;
-      var rx = Math.min(sw * 0.30, 480), ry = Math.max(104, sh * 0.22);
+      var uniActive = document.body.classList.contains('uni-active');
+      var sw = uniActive ? global.innerWidth : (stage.clientWidth || W);
+      var sh = uniActive ? global.innerHeight : (stage.clientHeight || H);
+      var base = Math.min(sw, sh);
+      var rx = Math.min(base * 0.38, 520);
+      var ry = Math.max(72, base * 0.07);
       var anyHover = false;
       for (var i = 0; i < n; i++) {
         var c = cards[i];
         var ang = orbAngle + i * (Math.PI * 2 / n);
-        var depth = (Math.sin(ang) + 1) / 2;             // 0 atrás .. 1 frente
-        var x = Math.cos(ang) * rx, y = Math.sin(ang) * ry;
-        var scale = (0.72 + depth * 0.62) * (1 - zoom);   // más grandes y con más contraste 3D
-        var op = (0.5 + depth * 0.5) * (1 - zoom * 1.6);
-        if (c._hover) { scale *= 1.28; op = (1 - zoom * 1.6); anyHover = true; }
-        c.style.transform = 'translate(-50%,-50%) translate(' + x + 'px,' + y + 'px) scale(' + Math.max(scale, 0) + ')';
+        // órbita 3D alrededor del eje Y (mismo eje que el corazón)
+        var cosA = Math.cos(ang);
+        var sinA = Math.sin(ang);
+        var depth = (cosA + 1) / 2;                        // 0 atrás .. 1 frente
+        var x = sinA * rx;
+        var y = Math.sin(ang * 2 + i * 0.4) * ry;          // leve onda vertical
+        var behind = cosA < -0.04;
+        placeCardLayer(c, behind);
+        var scale = (0.58 + depth * 0.54) * (1 - zoom);
+        var op = (0.32 + depth * 0.68) * (1 - zoom * 1.6);
+        if (c._hover && !behind) { scale *= 1.28; op = (1 - zoom * 1.6); anyHover = true; }
+        c.style.transform = 'translate(-50%,-50%) translate(' + x + 'px,' + y + 'px) scale(' + Math.max(scale, 0.08) + ')';
         c.style.opacity = Math.max(op, 0);
-        c.style.zIndex = Math.round(depth * 100) + (c._hover ? 200 : 0);
-        c.style.filter = depth < 0.35 ? 'blur(1.6px)' : 'none';
+        c.style.zIndex = Math.round(depth * 100) + (c._hover && !behind ? 200 : 0);
+        c.style.filter = depth < 0.28 ? 'blur(2px)' : (depth < 0.45 ? 'blur(0.8px)' : 'none');
+        c.style.pointerEvents = behind && depth < 0.12 ? 'none' : 'auto';
       }
-      // la órbita NUNCA se detiene: solo va más lento al pasar el mouse
       if (zoomT < 0.3) orbAngle += anyHover ? 0.0018 : 0.0072;
     }
 
