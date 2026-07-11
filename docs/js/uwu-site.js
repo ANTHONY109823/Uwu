@@ -101,8 +101,8 @@
     'chip.2': '🎵 Con su canción favorita',
     'chip.3': '📱 Compartida por WhatsApp',
     'marquee.label': 'Categorías · una para cada latido',
-    'plantillas.kicker': 'Showcase',
-    'plantillas.h2': 'Cada plantilla es <span class="grad">una experiencia completa</span>',
+    'plantillas.kicker': '✦ El universo UWU ✦',
+    'plantillas.h2': 'Elige una categoría y <span>orbita el corazón</span>',
     'footer.brand': 'Uwu 🧸',
     'footer.desc': 'Detalles románticos digitales. Convertimos tus sentimientos en experiencias web inolvidables, hechas con amor desde Latinoamérica para el mundo.',
     'footer.bottom': '© 2026 UWU · Detalles Románticos — <span class="script">hecho con 🧸 y mucho amor</span> · <a href="admin.html" style="color:#6a5560;text-decoration:none;font-size:11px;margin-left:8px" title="Panel administrador">🔧 Admin</a>'
