@@ -182,7 +182,7 @@
         '<div class="uc-art" style="background:' + tpl.grad + '">' +
         '<span class="uc-em">' + tpl.emoji + '</span></div>' +
         '<div class="uc-nm">' + U.esc(tpl.name) + '</div>' +
-        '<div class="uc-choose">Elegir ✨</div>';
+        '<div class="uc-choose">🥰 Lo quiero</div>';
       card.addEventListener('mouseenter', function () { card._hover = true; });
       card.addEventListener('mouseleave', function () { card._hover = false; });
       card.addEventListener('click', function (e) {
@@ -227,6 +227,7 @@
       var base = Math.min(sw, sh);
       var rx = Math.min(base * 0.38, 520);
       var ry = Math.max(72, base * 0.07);
+      var orbitY = Math.max(56, base * 0.10);              // órbita más abajo → corazón visible arriba
       var anyHover = false;
       for (var i = 0; i < n; i++) {
         var c = cards[i];
@@ -236,7 +237,7 @@
         var sinA = Math.sin(ang);
         var depth = (cosA + 1) / 2;                        // 0 atrás .. 1 frente
         var x = sinA * rx;
-        var y = Math.sin(ang * 2 + i * 0.4) * ry;          // leve onda vertical
+        var y = Math.sin(ang * 2 + i * 0.4) * ry + orbitY; // leve onda + desplazamiento hacia abajo
         var behind = cosA < -0.04;
         placeCardLayer(c, behind);
         var scale = (0.58 + depth * 0.54) * (1 - zoom);
@@ -248,7 +249,7 @@
         c.style.filter = depth < 0.28 ? 'blur(2px)' : (depth < 0.45 ? 'blur(0.8px)' : 'none');
         c.style.pointerEvents = behind && depth < 0.12 ? 'none' : 'auto';
       }
-      if (zoomT < 0.3) orbAngle += anyHover ? 0.0018 : 0.0072;
+      if (zoomT < 0.3) orbAngle += anyHover ? 0.001 : 0.0036;
     }
 
     // (La función "entrar al corazón" se retiró: zoom queda fijo en 0.)
@@ -288,7 +289,7 @@
     function resize() {
       var sz = canvasSize();
       W = sz.w; H = sz.h;
-      cx = W / 2; cy = H * 0.50;
+      cx = W / 2; cy = H * 0.46;
       canvas.width = W * dpr; canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       initStars(); buildHeart();
