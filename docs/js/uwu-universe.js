@@ -226,19 +226,7 @@
       if (zoomT < 0.3) orbAngle += anyHover ? 0.0018 : 0.0072;
     }
 
-    /* ---------- entrar / salir del corazón ---------- */
-    function setZoom(on) {
-      zoomT = on ? 1 : 0;
-      stage.classList.toggle('is-zoomed', on);
-      if (enterBtn) enterBtn.textContent = on ? '↩ Salir del corazón' : '💗 Entrar al corazón';
-      if (bearEl) bearEl.style.opacity = on ? '0' : '1';
-      if (hintEl) hintEl.style.opacity = on ? '0' : '';
-    }
-    function toggleZoom() { setZoom(zoomT < 0.3); }
-
-    if (enterBtn) enterBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleZoom(); });
-    canvas.addEventListener('click', toggleZoom);
-    if (glowEl) glowEl.addEventListener('click', toggleZoom);
+    // (La función "entrar al corazón" se retiró: zoom queda fijo en 0.)
 
     /* ---------- parallax con el mouse ---------- */
     if (!reduced) {
