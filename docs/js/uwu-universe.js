@@ -59,12 +59,14 @@
     var stars = [];
     function initStars() {
       stars = [];
-      var n = W < 640 ? 90 : 150;
+      var n = W < 640 ? 120 : 210;
       for (var i = 0; i < n; i++) {
         stars.push({
-          x: Math.random() * W, y: Math.random() * H,
+          x: Math.random() * W, y0: Math.random() * H,
           r: Math.random() * 1.6 + 0.4, p: Math.random() * 6.28,
-          s: Math.random() * 1.6 + 0.4, heart: Math.random() < 0.22
+          s: Math.random() * 1.6 + 0.4, heart: Math.random() < 0.2,
+          vy: 7 + Math.random() * 24,               // caída (px/s)
+          vx: (Math.random() - 0.5) * 10            // deriva lateral
         });
       }
     }
@@ -96,17 +98,20 @@
     }
 
     function drawStars(t) {
+      var fall = reduced ? 0 : t;
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
+        var yy = (s.y0 + fall * s.vy) % (H + 8);       // cae y reaparece arriba
+        var xx = s.x + Math.sin(fall * 0.2 + s.p) * s.vx;
         var tw = 0.35 + 0.65 * Math.abs(Math.sin(t * s.s + s.p));
         ctx.globalAlpha = tw * (1 - zoom * 0.75);
         if (s.heart) {
           ctx.fillStyle = '#F4A7CB';
           ctx.font = (s.r * 7) + 'px serif';
-          ctx.fillText('♥', s.x, s.y);
+          ctx.fillText('♥', xx, yy);
         } else {
           ctx.fillStyle = i % 3 ? '#ffffff' : '#F4A7CB';
-          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+          ctx.beginPath(); ctx.arc(xx, yy, s.r, 0, 6.283); ctx.fill();
         }
       }
       ctx.globalAlpha = 1;
