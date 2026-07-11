@@ -777,10 +777,19 @@
   var staticAdminMode = false;
   var LOCAL_PW_KEY = 'uwuAdminPw';
 
+  function isStaticAdminHost() {
+    if (location.protocol === 'file:') return true;
+    return /\.github\.io$/i.test(location.hostname);
+  }
+
+  function apiUrl(path) {
+    return String(path || '').replace(/^\//, '');
+  }
+
   function fetchJson(url, opts) {
-    return fetch(url, opts).then(function (r) {
+    return fetch(apiUrl(url), opts).then(function (r) {
       var ct = (r.headers.get('content-type') || '').toLowerCase();
-      if (ct.indexOf('json') === -1) {
+      if (ct.indexOf('json') === -1 || r.status === 404 || r.status === 405) {
         return r.text().then(function () {
           var err = new Error('static');
           err.static = true;
@@ -839,16 +848,18 @@
 
   if (sessionStorage.getItem('uwuAdm') === '1') {
     showDash();
+  } else if (isStaticAdminHost()) {
+    showStaticLoginHint();
   } else {
-    fetchJson('/api/admin/session', { credentials: 'include' })
+    fetchJson('api/admin/session', { credentials: 'include' })
       .then(function (res) {
         if (res.json && res.json.ok) {
           sessionStorage.setItem('uwuAdm', '1');
           showDash();
         }
       })
-      .catch(function (err) {
-        if (err && err.static) showStaticLoginHint();
+      .catch(function () {
+        showStaticLoginHint();
       });
   }
 
@@ -859,7 +870,20 @@
     var user = document.getElementById('user').value.trim();
     var password = document.getElementById('pw').value;
 
-    fetchJson('/api/admin/login', {
+    if (staticAdminMode || isStaticAdminHost()) {
+      var local = tryStaticLogin(user, password);
+      if (local.ok) {
+        sessionStorage.setItem('uwuAdm', '1');
+        showDash();
+        return;
+      }
+      errEl.textContent = local.msg || 'Contraseña incorrecta';
+      errEl.style.display = 'block';
+      showStaticLoginHint();
+      return;
+    }
+
+    fetchJson('api/admin/login', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user: user, password: password })
@@ -887,12 +911,12 @@
 
   document.getElementById('btnOut').onclick = function () {
     if (!confirm('¿Cerrar sesión?')) return;
-    if (staticAdminMode) {
+    if (staticAdminMode || isStaticAdminHost()) {
       sessionStorage.removeItem('uwuAdm');
       location.reload();
       return;
     }
-    fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () {
+    fetch(apiUrl('api/admin/logout'), { method: 'POST', credentials: 'include' }).finally(function () {
       sessionStorage.removeItem('uwuAdm');
       location.reload();
     });
