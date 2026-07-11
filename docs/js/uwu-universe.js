@@ -120,8 +120,10 @@
         var per = f / (f - zr * scaleBase);
         var sx = cxh + xr * scaleBase * per;
         var sy = cyh - p.y * scaleBase * per;
-        var depth = (zr + 7) / 14;                    // 0 atrás .. 1 frente
-        var size = (0.6 + depth * 1.5) * (1 + zoom * 1.4);
+        var depth = (zr + 16) / 32;                   // 0 atrás .. 1 frente
+        if (depth < 0) depth = 0; else if (depth > 1) depth = 1;
+        var size = (0.6 + depth * 1.6) * (1 + zoom * 1.4);
+        if (size < 0.1) size = 0.1;                   // radio SIEMPRE positivo (evita IndexSizeError)
         // color fluyendo desde adentro hacia afuera
         var phase = t * 1.4 - p.r * 5.0;
         var hue = 335 + Math.sin(phase) * 22;         // rosa ↔ magenta ↔ rosa
