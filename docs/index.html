@@ -392,27 +392,19 @@
 
     /* ===== footer ===== */
     footer{margin-top:64px;background:linear-gradient(180deg,#1C1420 0%,#140f16 100%);color:#cbb3c0;position:relative;z-index:2;border-top:1px solid rgba(238,126,177,.12)}
-    footer .top{max-width:1120px;margin:0 auto;padding:48px 24px 36px;display:grid;grid-template-columns:1fr;gap:32px}
-    @media(min-width:820px){footer .top{grid-template-columns:1.6fr 1fr 1fr;gap:48px;align-items:start}}
-    footer .brand .lg{font-family:'Dancing Script',cursive;font-size:32px;color:var(--pink-500);line-height:1}
-    footer .brand p{font-size:13px;line-height:1.75;margin-top:10px;max-width:300px;color:#9a8490}
-    footer .soc{display:flex;gap:8px;margin-top:16px}
-    footer .soc a{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;transition:transform .2s var(--ease),background .2s,border-color .2s}
-    footer .soc a:hover{transform:translateY(-2px);background:rgba(238,126,177,.15);border-color:rgba(238,126,177,.3)}
-    footer h5{font-family:'Sora',sans-serif;font-size:11px;color:rgba(255,255,255,.92);margin-bottom:14px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
-    footer ul{list-style:none;display:grid;gap:9px}
-    footer ul a{font-size:13px;color:#9a8490;text-decoration:none;transition:color .2s}
-    footer ul a:hover{color:var(--pink-300)}
-    footer .bottom{border-top:1px solid rgba(255,255,255,.06);padding:18px 24px;text-align:center;font-size:11.5px;color:#7a6670;line-height:1.6}
-    footer .bottom .script{font-family:'Dancing Script',cursive;color:var(--pink-500);font-size:15px}
+    footer .foot-min{max-width:1120px;margin:0 auto;padding:28px 24px 32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 28px}
+    footer .foot-min a{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:#9a8490;text-decoration:none;transition:color .2s}
+    footer .foot-min a:hover{color:var(--pink-300)}
+    footer .foot-min .dot{color:rgba(255,255,255,.15);font-size:10px;user-select:none}
 
-    .adm-entry{position:fixed;bottom:18px;right:18px;z-index:40;width:42px;height:42px;border-radius:50%;background:#1C1420;border:1px solid rgba(238,126,177,.35);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:.55;transition:opacity .2s,transform .2s}
-    .adm-entry:hover{opacity:1;transform:scale(1.06)}
+    /* admin: invisible en inicio, accesible si conoces la esquina */
+    .adm-entry{position:fixed;bottom:0;right:0;z-index:40;width:48px;height:48px;opacity:0;overflow:hidden;text-indent:-9999px;border:none;background:transparent;cursor:default}
+    .adm-entry:focus{outline:none}
   </style>
 </head>
 <body>
   <div id="hearts"></div>
-  <a class="adm-entry" href="admin.html" title="Panel administrador" aria-label="Panel administrador">🔧</a>
+  <a class="adm-entry" href="admin.html" tabindex="-1" aria-hidden="true">Admin</a>
 
   <!-- ============ NAV ============ -->
   <nav>
@@ -521,35 +513,11 @@
 
   <!-- ============ FOOTER ============ -->
   <footer>
-    <div class="top">
-      <div class="brand">
-        <div class="lg">Uwu 🧸</div>
-        <p>Detalles románticos digitales. Convertimos tus sentimientos en experiencias web inolvidables, hechas con amor desde Latinoamérica para el mundo.</p>
-        <div class="soc">
-          <a href="#" aria-label="TikTok">🎵</a>
-          <a href="#" aria-label="Instagram">📸</a>
-          <a href="#" aria-label="YouTube">▶️</a>
-          <a href="#" aria-label="WhatsApp">💬</a>
-        </div>
-      </div>
-      <div>
-        <h5>Producto</h5>
-        <ul>
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#plantillas">Plantillas</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Legal</h5>
-        <ul>
-          <li><a href="#">Términos y condiciones</a></li>
-          <li><a href="#">Política de privacidad</a></li>
-          <li><a href="#">Política de reembolsos</a></li>
-          <li><a href="#">Contacto</a></li>
-        </ul>
-      </div>
+    <div class="foot-min">
+      <a href="#inicio">Inicio</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a href="#plantillas">Plantillas</a>
     </div>
-    <div class="bottom">© 2026 UWU · Detalles Románticos — <span class="script">hecho con 🧸 y mucho amor</span> · <a href="admin.html" style="color:#6a5560;text-decoration:none;font-size:11px;margin-left:8px" title="Panel administrador">🔧 Admin</a></div>
   </footer>
 
   <!-- ============ DEMO MODAL ============ -->
