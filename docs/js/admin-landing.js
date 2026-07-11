@@ -49,14 +49,27 @@
   function saveForm() {
     var updates = readForm();
     UWUSite.saveSite(updates);
-    setStatus('✓ Cambios guardados — recarga la web para verlos', 'ok');
+    publishSiteChanges('✓ Textos guardados');
   }
 
   function resetForm() {
     if (!confirm('¿Restaurar todos los textos de la landing al original?')) return;
     UWUSite.resetSite();
     renderForm();
-    setStatus('✓ Textos restaurados al original', 'ok');
+    publishSiteChanges('✓ Textos restaurados al original');
+  }
+
+  function publishSiteChanges(okMsg) {
+    if (window.UWUAdminTemplates && UWUAdminTemplates.syncNow) {
+      setStatus('Publicando…', 'wait');
+      return UWUAdminTemplates.syncNow(false).then(function () {
+        setStatus(okMsg + ' · sincronizado con el sitio', 'ok');
+      }).catch(function () {
+        setStatus(okMsg + ' · solo en este navegador (configura sync)', 'wait');
+      });
+    }
+    setStatus(okMsg + ' · recarga la web para verlos', 'ok');
+    return Promise.resolve();
   }
 
   function bind() {
@@ -76,7 +89,7 @@
     init: function () {
       renderForm();
       bind();
-      setStatus('Edita los textos y guarda. Los visitantes verán los cambios al recargar.', '');
+      setStatus('Edita los textos y guarda. Se publican con Railway/GitHub al sincronizar.', '');
     },
     renderForm: renderForm
   };

@@ -19,5 +19,8 @@
   },
   "order": [],
   "showcase": [],
-  "hidden": []
+  "hidden": [],
+  "tierPrices": {},
+  "site": {},
+  "ops": { "sections": {} }
 }

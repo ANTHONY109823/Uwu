@@ -88,13 +88,17 @@
     Object.keys(store.catalog || {}).forEach(function (slug) {
       if (catalog[slug] && store.catalog[slug].audio) catalog[slug].audio = store.catalog[slug].audio;
     });
+    var extra = (global.UWU && global.UWU.getSiteOpsPayload) ? global.UWU.getSiteOpsPayload() : { site: {}, ops: { sections: {} } };
     return {
       version: 1,
       updatedAt: new Date().toISOString(),
       catalog: catalog,
       order: (store.order && store.order.length) ? store.order.slice() : (global.UWU ? global.UWU.CATALOG_ORDER.slice() : []),
       showcase: (store.showcase || []).slice(),
-      hidden: (store.hidden || []).slice()
+      hidden: (store.hidden || []).slice(),
+      tierPrices: store.tierPrices || {},
+      site: extra.site || {},
+      ops: extra.ops || { sections: {} }
     };
   }
 
@@ -255,6 +259,7 @@
         order: remote.order || [],
         showcase: remote.showcase || [],
         hidden: remote.hidden || [],
+        tierPrices: remote.tierPrices || {},
         html: {}
       };
     }

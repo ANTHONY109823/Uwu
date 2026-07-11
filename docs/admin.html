@@ -346,6 +346,7 @@
         <button class="btn btn-primary btn-lg btn-block" type="submit">Ingresar al panel</button>
       </form>
       <div class="alert alert-err" id="err" style="margin-top:12px">Usuario o contraseña incorrectos</div>
+      <p class="login-hint" id="loginHint" style="display:none;margin-top:10px;font-size:12px;color:var(--text-3);line-height:1.5"></p>
     </div>
     <a class="login-back" href="index.html">← Volver al sitio web</a>
   </div>
@@ -525,6 +526,8 @@
             <div class="ws-actions" style="margin:0">
               <span id="wsSaveHint" class="html-status" style="font-size:12px;margin-right:4px"></span>
               <button type="button" class="btn btn-outline btn-sm" id="btnPreviewWs">👁 Vista previa</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnHideTpl">🙈 Ocultar del sitio</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnUnhideTpl" style="display:none">👁 Mostrar en sitio</button>
               <button type="button" class="btn btn-outline btn-sm" id="btnDownloadDemo">⬇ Descargar demo</button>
               <button type="button" class="btn btn-outline btn-sm" id="btnSaveWsNew">+ Guardar nueva versión</button>
               <button type="button" class="btn btn-primary btn-sm" id="btnSaveWs">💾 Guardar</button>
@@ -581,7 +584,7 @@
               </div>
 
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-2);margin:0">
-                <input type="checkbox" id="fShowcase" /> Destacar en el showcase de la landing
+                <input type="checkbox" id="fShowcase" /> Destacar en la órbita (sin filtro de categoría)
               </label>
 
               <!-- Audio panel -->
@@ -746,6 +749,9 @@
         saveOps(ops);
         btn.classList.toggle('on', !wasOn);
         btn.title = !wasOn ? 'Visible — clic para ocultar' : 'Oculto — clic para mostrar';
+        if (window.UWUAdminTemplates && UWUAdminTemplates.syncNow) {
+          UWUAdminTemplates.syncNow(false).catch(function () {});
+        }
         if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
       };
     });
@@ -768,6 +774,47 @@
   }
 
   var _origShowView = null;
+  var staticAdminMode = false;
+  var LOCAL_PW_KEY = 'uwuAdminPw';
+
+  function fetchJson(url, opts) {
+    return fetch(url, opts).then(function (r) {
+      var ct = (r.headers.get('content-type') || '').toLowerCase();
+      if (ct.indexOf('json') === -1) {
+        return r.text().then(function () {
+          var err = new Error('static');
+          err.static = true;
+          throw err;
+        });
+      }
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, json: j }; });
+    });
+  }
+
+  function showStaticLoginHint() {
+    staticAdminMode = true;
+    var hint = document.getElementById('loginHint');
+    if (!hint) return;
+    var hasPw = !!localStorage.getItem(LOCAL_PW_KEY);
+    hint.style.display = 'block';
+    hint.textContent = hasPw
+      ? 'Modo GitHub Pages: usa tu contraseña local. Para publicar cambios, configura el token de GitHub en Configuración.'
+      : 'Modo GitHub Pages: la primera vez elige una contraseña local (mín. 4 caracteres). Luego úsala para entrar.';
+  }
+
+  function tryStaticLogin(user, password) {
+    if (!user) return { ok: false, msg: 'Ingresa tu usuario' };
+    if (!password || password.length < 4) {
+      return { ok: false, msg: 'La contraseña local debe tener al menos 4 caracteres' };
+    }
+    var stored = localStorage.getItem(LOCAL_PW_KEY);
+    if (!stored) {
+      localStorage.setItem(LOCAL_PW_KEY, password);
+      return { ok: true };
+    }
+    if (stored === password) return { ok: true };
+    return { ok: false, msg: 'Contraseña incorrecta' };
+  }
 
   /* ── Boot ── */
   function showDash() {
@@ -793,33 +840,46 @@
   if (sessionStorage.getItem('uwuAdm') === '1') {
     showDash();
   } else {
-    fetch('/api/admin/session', { credentials: 'include' })
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        if (j && j.ok) { sessionStorage.setItem('uwuAdm', '1'); showDash(); }
-      }).catch(function () {});
+    fetchJson('/api/admin/session', { credentials: 'include' })
+      .then(function (res) {
+        if (res.json && res.json.ok) {
+          sessionStorage.setItem('uwuAdm', '1');
+          showDash();
+        }
+      })
+      .catch(function (err) {
+        if (err && err.static) showStaticLoginHint();
+      });
   }
 
   document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var errEl = document.getElementById('err');
     errEl.style.display = 'none';
-    fetch('/api/admin/login', {
+    var user = document.getElementById('user').value.trim();
+    var password = document.getElementById('pw').value;
+
+    fetchJson('/api/admin/login', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user: document.getElementById('user').value.trim(),
-        password: document.getElementById('pw').value
-      })
-    }).then(function (r) {
-      return r.json().then(function (j) {
-        if (!r.ok) throw new Error((j && j.error) || 'Login fallido');
-        return j;
-      });
-    }).then(function () {
+      body: JSON.stringify({ user: user, password: password })
+    }).then(function (res) {
+      if (!res.ok) throw new Error((res.json && res.json.error) || 'Login fallido');
       sessionStorage.setItem('uwuAdm', '1');
       showDash();
     }).catch(function (err) {
+      if (staticAdminMode || (err && err.static)) {
+        var local = tryStaticLogin(user, password);
+        if (local.ok) {
+          sessionStorage.setItem('uwuAdm', '1');
+          showDash();
+          return;
+        }
+        errEl.textContent = local.msg || 'Contraseña incorrecta';
+        errEl.style.display = 'block';
+        showStaticLoginHint();
+        return;
+      }
       errEl.textContent = (err && err.message) || 'Error al iniciar sesión';
       errEl.style.display = 'block';
     });
@@ -827,6 +887,11 @@
 
   document.getElementById('btnOut').onclick = function () {
     if (!confirm('¿Cerrar sesión?')) return;
+    if (staticAdminMode) {
+      sessionStorage.removeItem('uwuAdm');
+      location.reload();
+      return;
+    }
     fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () {
       sessionStorage.removeItem('uwuAdm');
       location.reload();

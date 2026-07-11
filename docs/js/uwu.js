@@ -188,21 +188,35 @@
     return !!(Object.keys(remote.catalog || {}).length ||
       (remote.order || []).length ||
       (remote.showcase || []).length ||
-      (remote.hidden || []).length);
+      (remote.hidden || []).length ||
+      Object.keys(remote.tierPrices || {}).length ||
+      Object.keys(remote.site || {}).length ||
+      (remote.ops && remote.ops.sections && Object.keys(remote.ops.sections).length));
   }
 
   function applyRemoteCatalog(remote) {
     if (!hasRemoteData(remote)) return false;
-    var store = { catalog: {}, order: [], showcase: [], hidden: [], html: {} };
-    if (global.UWUGitHubSync && global.UWUGitHubSync.remoteToStore) {
-      store = global.UWUGitHubSync.remoteToStore(remote);
-    } else {
-      store.catalog = remote.catalog || {};
-      store.order = remote.order || [];
-      store.showcase = remote.showcase || [];
-      store.hidden = remote.hidden || [];
+    var store = loadCatalogStore();
+    if (remote.catalog && Object.keys(remote.catalog).length) {
+      Object.keys(remote.catalog).forEach(function (slug) {
+        store.catalog[slug] = remote.catalog[slug];
+      });
     }
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    if (remote.order && remote.order.length) store.order = remote.order.slice();
+    if (remote.showcase) store.showcase = remote.showcase.slice();
+    if (remote.hidden) store.hidden = remote.hidden.slice();
+    if (remote.tierPrices && Object.keys(remote.tierPrices).length) {
+      store.tierPrices = Object.assign({}, store.tierPrices || {}, remote.tierPrices);
+    }
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      _storeCache = store;
+    } catch (e) { /* quota */ }
+    if (remote.site && Object.keys(remote.site).length) {
+      var site = Object.assign({}, (global.UWUSite && global.UWUSite.DEFAULTS) || {}, remote.site);
+      localStorage.setItem('uwuSite', JSON.stringify(site));
+    }
+    if (remote.ops) localStorage.setItem('uwuOps', JSON.stringify(remote.ops));
     return true;
   }
 
@@ -221,11 +235,45 @@
   function bootstrap(cb) {
     loadRemoteCatalog().then(function () {
       initCatalog();
+      if (global.UWUSite) global.UWUSite.applySite();
+      applySectionOps();
       if (typeof cb === 'function') cb();
     }).catch(function () {
       initCatalog();
+      if (global.UWUSite) global.UWUSite.applySite();
+      applySectionOps();
       if (typeof cb === 'function') cb();
     });
+  }
+
+  var SECTION_OPS_MAP = { hero: '#inicio', marquee: '#categorias', showcase: '#plantillas' };
+
+  function applySectionOps() {
+    var ops = { sections: {} };
+    try { ops = JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); } catch (e) { /* noop */ }
+    Object.keys(SECTION_OPS_MAP).forEach(function (id) {
+      var node = document.querySelector(SECTION_OPS_MAP[id]);
+      if (!node) return;
+      node.style.display = (ops.sections && ops.sections[id] === false) ? 'none' : '';
+    });
+  }
+
+  function getSiteOpsPayload() {
+    var site = {};
+    var ops = { sections: {} };
+    try { site = JSON.parse(localStorage.getItem('uwuSite') || '{}'); } catch (e) { /* noop */ }
+    try { ops = JSON.parse(localStorage.getItem('uwuOps') || '{"sections":{}}'); } catch (e) { /* noop */ }
+    return { site: site, ops: ops };
+  }
+
+  function refreshLandingUI() {
+    initCatalog();
+    if (global.UWUSite) global.UWUSite.applySite();
+    applySectionOps();
+    renderMarquee();
+    try {
+      global.dispatchEvent(new CustomEvent('uwu:catalog-updated'));
+    } catch (e) { /* noop */ }
   }
 
   function getStoredHtml(slug) {
@@ -519,7 +567,7 @@
 
   function saveTemplate(slug, tpl, opts) {
     opts = opts || {};
-    applyTierPrice(tpl);
+    if (tpl.pen == null || tpl.usd == null) applyTierPrice(tpl);
     var store = loadCatalogStore();
     store.catalog[slug] = tpl;
     if (store.order.indexOf(slug) === -1) store.order.unshift(slug);
@@ -617,7 +665,9 @@
 
   function fmtPrice(t, cur) {
     cur = cur || getCur();
-    var priced = applyTierPrice(Object.assign({}, t));
+    var priced = Object.assign({}, t);
+    var hasCustom = priced.pen != null && priced.pen !== '' && priced.usd != null && priced.usd !== '';
+    if (!hasCustom) applyTierPrice(priced);
     if (priced.tier === 'free' || priced.pen === '0') return cur === 'pen' ? 'Gratis' : 'Free';
     var prefix = priced.tier === 'excl' ? '💎 ' : '';
     return cur === 'pen' ? prefix + 'S/ ' + priced.pen : prefix + '$' + priced.usd;
@@ -1112,6 +1162,9 @@
     tierLabel: tierLabel,
     pricesForTier: pricesForTier,
     applyTierPrice: applyTierPrice,
+    applySectionOps: applySectionOps,
+    getSiteOpsPayload: getSiteOpsPayload,
+    refreshLandingUI: refreshLandingUI,
     getCur: getCur,
     fmtPrice: fmtPrice,
     slugFromPath: slugFromPath,

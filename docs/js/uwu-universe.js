@@ -17,7 +17,7 @@
     } else { fn(); }
   }
 
-  /* ---- catálogo: slugs para una categoría (replica UWU.getSlugsForCategory) ---- */
+  /* ---- catálogo: slugs para una categoría ---- */
   function slugsForCategory(catId) {
     var U = global.UWU;
     if (!U || !U.CATALOG_ORDER) return [];
@@ -50,6 +50,14 @@
 
     /* ---------- estado ---------- */
     var activeCat = null;
+
+    function orbitSlugs() {
+      if (activeCat) return slugsForCategory(activeCat);
+      if (U.SHOWCASE && U.SHOWCASE.length) {
+        return U.SHOWCASE.filter(function (slug) { return U.CATALOG[slug]; });
+      }
+      return U.CATALOG_ORDER.slice();
+    }
     var cards = [];
     var orbAngle = 0;
     var zoom = 0, zoomT = 0;         // entrar al corazón (0..1)
@@ -199,7 +207,7 @@
 
     function renderCards() {
       var limit = (global.innerWidth < 640) ? 6 : MAX_ORBIT;
-      var slugs = slugsForCategory(activeCat).slice(0, limit);
+      var slugs = orbitSlugs().slice(0, limit);
       orbitBack.innerHTML = '';
       orbitFront.innerHTML = '';
       cards = [];

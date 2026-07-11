@@ -78,11 +78,12 @@
   function afterCatalogChange(msg, slug, extraOpts) {
     refreshBrowserIfVisible();
     if (window.UWUAdminDashboard) UWUAdminDashboard.refresh();
-    if (msg) toast(msg, 'ok');
-    if (UWU.canUseServerStorage && UWU.canUseServerStorage()) {
+    var provider = getSyncProvider();
+    var metaOnly = !(extraOpts && (extraOpts.html != null || extraOpts.audioFile || extraOpts.removeAudio));
+    if (UWU.canUseServerStorage && UWU.canUseServerStorage() && !metaOnly) {
+      if (msg) toast(msg, 'ok');
       return Promise.resolve();
     }
-    var provider = getSyncProvider();
     if (provider) {
       var label = provider === UWURailwaySync ? 'Railway' : 'GitHub';
       return syncNow(false, slug, extraOpts).then(function () {
@@ -305,6 +306,7 @@
     el('fPill').value = t.pill || 'Abrir 💝';
     el('fDesc').value = t.desc || '';
     el('fShowcase').checked = UWU.SHOWCASE.indexOf(slug) !== -1;
+    updateHideButtons(slug);
     ['fTitleVisible', 'fPillVisible', 'fGradVisible'].forEach(function (id) {
       if (el(id)) delete el(id).dataset.touched;
     });
@@ -315,6 +317,21 @@
     });
     updateAudioStatus();
     toast('', '');
+  }
+
+  function updateHideButtons(slug) {
+    var hidden = (UWU.loadCatalogStore().hidden || []).indexOf(slug) !== -1;
+    if (el('btnHideTpl')) el('btnHideTpl').style.display = hidden ? 'none' : '';
+    if (el('btnUnhideTpl')) el('btnUnhideTpl').style.display = hidden ? '' : 'none';
+  }
+
+  function toggleTemplateHidden(hide) {
+    if (!editingSlug) return;
+    if (hide) UWU.deleteTemplate(editingSlug, true);
+    else UWU.unhideTemplate(editingSlug);
+    updateHideButtons(editingSlug);
+    renderBrowser();
+    afterCatalogChange(hide ? 'Plantilla oculta del sitio' : 'Plantilla visible en el sitio', editingSlug);
   }
 
   function closeWorkspace() {
@@ -661,6 +678,8 @@
     renderCatFilter();
     if (el('btnNewTpl')) el('btnNewTpl').onclick = newTemplate;
     if (el('btnCloseWs')) el('btnCloseWs').onclick = closeWorkspace;
+    if (el('btnHideTpl')) el('btnHideTpl').onclick = function () { toggleTemplateHidden(true); };
+    if (el('btnUnhideTpl')) el('btnUnhideTpl').onclick = function () { toggleTemplateHidden(false); };
     if (el('btnSaveWs')) el('btnSaveWs').onclick = function () { saveWorkspace(false); };
     if (el('btnSaveWsNew')) el('btnSaveWsNew').onclick = function () { saveWorkspace(true); };
     if (el('btnPreviewWs')) el('btnPreviewWs').onclick = previewHtml;
