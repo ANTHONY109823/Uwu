@@ -955,7 +955,8 @@
         cat.emoji + ' ' + esc(cat.label) + '</button>';
     }).join('');
     if (saveHalf) global.__marqHalf = html;
-    track.innerHTML = html + html;
+    /* Una sola pasada: todas visibles a la vez (sin esperar a que desfilen) */
+    track.innerHTML = html;
   }
 
   function renderMarquee() {
